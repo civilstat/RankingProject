@@ -13,3 +13,6 @@ Imports: tikzDevice
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
+URL: http://github.com/civilstat/RankingProject
+BugReports: http://github.com/civilstat/RankingProject/issues
+
