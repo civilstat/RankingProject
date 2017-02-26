@@ -1,0 +1,15 @@
+Package: RankingProject
+Type: Package
+Title: The Ranking Project: Visualizations for Comparing Populations
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Jerzy", "Wieczorek", email = "jerzywieczorek@gmail.com", role = c("cre", "aut")),
+    person("Joel", "Beard", role = "ctb"))
+Maintainer: Who to complain to <yourfault@somewhere.net>
+Description: Functions to generate plots and tables for comparing independently-sampled populations. Companion package to "A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals" (Wright, Klein, and Wieczorek, 2017).
+License: GPL-2
+LazyData: TRUE
+Imports: tikzDevice
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr

@@ -1,0 +1,109 @@
+---
+title: "Figures for 'A Primer on Visualizations for Comparing Populations...'"
+author: "Jerzy Wieczorek"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This vignette shows how to reproduce the main figures in "A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals" (Wright, Klein, and Wieczorek, 2017).
+
+TODO: Consider changing from `html_vignette` to `pdf_document`.
+
+TODO: How to show the use of `tikzDevice`?
+
+TODO: Add actual vignette content.
+
+```{r}
+library(RankingProject)
+library(tikzDevice)
+
+USfile <- system.file("extdata", "USA.csv",
+                      package = "RankingProject")
+USdata <- read.csv(USfile, header=TRUE, stringsAsFactors=FALSE)
+USdata <- subset(USdata, Abbreviation != "USA")
+refAbbr <- "CO"
+refRow <- which(USdata$Abbreviation==refAbbr)
+refRank <- USdata$Rank[refRow]
+refName <- USdata$State[refRow]
+refEst <- USdata$Estimate.2dec[refRow]
+
+
+# All but one of the plots
+
+tableParList <- list(Rank = USdata$Rank, PlaceName = USdata$State, 
+  Est = formatC(USdata$Estimate.2dec, format = 'f', digits = 2),
+  SE = substring(formatC(round(USdata$SE.2dec, 2), format = 'f', digits = 2), 2),
+  PlaceType = "State")
+
+figureParList <- list(est = USdata$Estimate.2dec, se = USdata$SE.2dec,
+  names = USdata$Abbreviation, refEst = refEst, ref = refAbbr, refName = refName,
+  cex = 0.6, lwdBold = 5)
+
+annotParList <- list(refRank = refRank, refFullName = refName)
+
+rankCompPlotWithTable(file = tempfile('SimpleAlmond.US.bold', fileext = 'tex'),
+  figwidth = 6.5, figheight = 8,
+  tableParList = tableParList, figureParList = figureParList,
+  annotParList = annotParList, figureFunction = SIMPLE.rankCompPlot)
+
+
+rankCompPlotWithTable(file = tempfile('RegularCIs.US', fileext = 'tex'),
+  figwidth = 6.5, figheight = 8,
+  tableParList = tableParList, figureParList = figureParList,
+  annotParList = NULL, figureFunction = REG.CIs.rankCompPlot)
+
+rankCompPlotWithTable(file = tempfile('AlmondExample.US.bold', fileext = 'tex'),
+  figwidth = 6.5, figheight = 8,
+  tableParList = tableParList, figureParList = figureParList,
+  annotParList = NULL, figureFunction = ALMOND.rankCompPlot)
+
+figureParList$conf.level <- GoldsteinHealyConfLevelA(figureParList$se)
+rankCompPlotWithTable(file = tempfile('GoldsteinHealy.US', fileext = 'tex'),
+  figwidth = 6.5, figheight = 8,
+  tableParList = tableParList, figureParList = figureParList,
+  annotParList = NULL, figureFunction = REG.CIs.rankCompPlot)
+
+figureParList$conf.level <- .9
+annotParList$tablewidthProp <- 2/7
+figureParList$refRank <- refRank
+tableParList$pantyhoseRefLine <- .7
+rankCompPlotWithTable(file = tempfile('Pantyhose.US', fileext = 'tex'),
+  figwidth = 6.5, figheight = 8,
+  tableParList = tableParList, figureParList = figureParList,
+  annotParList = NULL, figureFunction = PANTYHOSE.rankCompPlot)
+
+
+# Double-tiered GH plot
+
+tableParList <- list(Rank = USdata$Rank, PlaceName = USdata$State, 
+                     Est = formatC(USdata$Estimate.2dec, format = 'f', digits = 2),
+                     SE = substring(formatC(round(USdata$SE.2dec, 2), format = 'f', digits = 2), 2),
+                     PlaceType = "State")
+figureParList <- list(est = USdata$Estimate.2dec, se = USdata$SE.2dec,
+                      names = USdata$Abbreviation, refEst = refEst, ref = refAbbr, refName = refName,
+                      cex = 0.6, lwdBold = 5)
+annotParList <- list(refRank = refRank, refFullName = refName)
+
+
+# Adjusting and plotting two-tiered version of Goldstein-Healy:
+# inner tier is usual 90% CIs,
+# outer tier is 50-way Bonf-corrected GH plot
+figureParList$conf.level <- .9
+figureParList$conf.level.2 <- GoldsteinHealyConfLevelA(figureParList$se)
+outfile <- tempfile('DoubleGoldsteinHealy.US.50Bonf', fileext = 'tex')
+rankCompPlotWithTable(file = outfile,
+                      figwidth = 6.5, figheight = 8,
+                      tableParList = tableParList, figureParList = figureParList,
+                      annotParList = NULL, figureFunction = double.REG.CIs.rankCompPlot)
+outfile
+# rmarkdown::render(outfile, "pdf_document")
+# knitr::knit2pdf(outfile)
+# knitr::pandoc(outfile)
+```
+TODO: figure out how to compile the `.tex` automatically. Or, how to use `knitr` to print the figures directly to PDF via tikz without manually making an intermediate tex file.
+
+
