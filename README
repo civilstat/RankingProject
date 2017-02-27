@@ -1,0 +1,3 @@
+The package `RankingProject` is a companion for the article "A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals" (Wright, Klein, and Wieczorek, The American Statistician, 2017).
+
+The functions work, but the package itself is under development: clean up repeated code, add documentation, simplify workflow, etc. This is not yet a stable version.
