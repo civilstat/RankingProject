@@ -1,4 +1,4 @@
-GoldsteinHealyConfLevelA <- function(SE, confLevel = .90) {
+ConfidenceLevelGH <- function(SE, confLevel = .90) {
   # Based on Goldstein & Healy, using Tommy's notation for z_alpha_a
 
   n <- length(SE)

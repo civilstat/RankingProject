@@ -45,24 +45,24 @@ figureParList <- list(est = USdata$Estimate.2dec, se = USdata$SE.2dec,
 
 annotParList <- list(refRank = refRank, refFullName = refName)
 
-rankCompPlotWithTable(file = tempfile('SimpleAlmond.US.bold', fileext = 'tex'),
+RankPlotWithTable(file = tempfile('SimpleAlmond.US.bold', fileext = 'tex'),
   figwidth = 6.5, figheight = 8,
   tableParList = tableParList, figureParList = figureParList,
   annotParList = annotParList, figureFunction = SIMPLE.rankCompPlot)
 
 
-rankCompPlotWithTable(file = tempfile('RegularCIs.US', fileext = 'tex'),
+RankPlotWithTable(file = tempfile('RegularCIs.US', fileext = 'tex'),
   figwidth = 6.5, figheight = 8,
   tableParList = tableParList, figureParList = figureParList,
   annotParList = NULL, figureFunction = REG.CIs.rankCompPlot)
 
-rankCompPlotWithTable(file = tempfile('AlmondExample.US.bold', fileext = 'tex'),
+RankPlotWithTable(file = tempfile('AlmondExample.US.bold', fileext = 'tex'),
   figwidth = 6.5, figheight = 8,
   tableParList = tableParList, figureParList = figureParList,
   annotParList = NULL, figureFunction = ALMOND.rankCompPlot)
 
-figureParList$conf.level <- GoldsteinHealyConfLevelA(figureParList$se)
-rankCompPlotWithTable(file = tempfile('GoldsteinHealy.US', fileext = 'tex'),
+figureParList$conf.level <- ConfidenceLevelGH(figureParList$se)
+RankPlotWithTable(file = tempfile('GoldsteinHealy.US', fileext = 'tex'),
   figwidth = 6.5, figheight = 8,
   tableParList = tableParList, figureParList = figureParList,
   annotParList = NULL, figureFunction = REG.CIs.rankCompPlot)
@@ -71,7 +71,7 @@ figureParList$conf.level <- .9
 annotParList$tablewidthProp <- 2/7
 figureParList$refRank <- refRank
 tableParList$pantyhoseRefLine <- .7
-rankCompPlotWithTable(file = tempfile('Pantyhose.US', fileext = 'tex'),
+RankPlotWithTable(file = tempfile('Pantyhose.US', fileext = 'tex'),
   figwidth = 6.5, figheight = 8,
   tableParList = tableParList, figureParList = figureParList,
   annotParList = NULL, figureFunction = PANTYHOSE.rankCompPlot)
@@ -93,9 +93,9 @@ annotParList <- list(refRank = refRank, refFullName = refName)
 # inner tier is usual 90% CIs,
 # outer tier is 50-way Bonf-corrected GH plot
 figureParList$conf.level <- .9
-figureParList$conf.level.2 <- GoldsteinHealyConfLevelA(figureParList$se)
+figureParList$conf.level.2 <- ConfidenceLevelGH(figureParList$se)
 outfile <- tempfile('DoubleGoldsteinHealy.US.50Bonf', fileext = 'tex')
-rankCompPlotWithTable(file = outfile,
+RankPlotWithTable(file = outfile,
                       figwidth = 6.5, figheight = 8,
                       tableParList = tableParList, figureParList = figureParList,
                       annotParList = NULL, figureFunction = double.REG.CIs.rankCompPlot)

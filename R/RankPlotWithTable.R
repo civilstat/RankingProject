@@ -1,10 +1,11 @@
-# Do something about the fact that rankCompPlot asks for refName
+# Do something about the fact that ___.rankCompPlot funcions ask for refName
 # (which I'd rather use in the first line of inputs instead of refFullName)
 
-rankCompPlotWithTable = function(file, figwidth, figheight,
-                                 tablewidthProp = 3/8,
-                                 tableParList, figureParList, annotParList = NULL,
-                                 figureFunction = SIMPLE.rankCompPlot) {
+RankPlotWithTable = function(file, figwidth, figheight,
+                             tablewidthProp = 3/8,
+                             tableParList, figureParList, annotParList = NULL,
+                             figureFunction = SIMPLE.rankCompPlot,
+                             tableFunction = RankTable) {
 
   oldpar <- par(no.readonly = TRUE)
   oldmar <- par('mar')
@@ -17,7 +18,7 @@ rankCompPlotWithTable = function(file, figwidth, figheight,
 
   # Create a table on the left
   par(xpd=TRUE, mar=c(oldmar[1],0,oldmar[3],0))
-  do.call(estTable, tableParList)
+  do.call(tableFunction, tableParList)
 
   # Create a figure on the right
   par(xpd = FALSE, mar = c(oldmar[1], 1.1, oldmar[3], oldmar[4]))
