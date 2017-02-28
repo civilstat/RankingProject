@@ -1,29 +1,22 @@
 ---
-title: "Figures for 'A Primer on Visualizations for Comparing Populations...'"
+title: "Introduction to the `RankingProject` package"
 author: "Jerzy Wieczorek"
 date: "`r Sys.Date()`"
-output: rmarkdown::pdf_document
+output: rmarkdown::html_document
 vignette: >
-  %\VignetteIndexEntry{Figures for 'A Primer on Visualizations for Comparing Populations...'}
+  %\VignetteIndexEntry{Introduction to the `RankingProject` package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, echo=FALSE, cache=FALSE}
-options(tikzMetricsDictionary="~/Downloads/RankingProject/tikzMetrics")
-```
+This vignette introduces the `RankingProject` package, which accompanies "A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals" (Wright, Klein, and Wieczorek, 2017).
 
-This vignette shows how to reproduce the main figures in "A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals" (Wright, Klein, and Wieczorek, 2017).
+The package provides functions for plotting ranked tables of data side-by-side with their plots. The available plots include grids, confidence intervals, and related visualizations designed for making one-to-many or many-to-many comparisons.
 
-TODO: Remake with output as `html_vignette` without LaTeX figures, in addition to `pdf_document` with `dev='tikz'`.
 
-TODO: How to illustrate the "manual" use of `tikzDevice`? Figure out how to give advice on compiling the `.tex` automatically.
 
-TODO: Explicitly say how to use `knitr` to print the figures directly to PDF via tikz without manually making an intermediate tex file.
-
-```{r, dev='tikz', fig.width=6.5, fig.height=8, cache=TRUE}
+```{r, fig.width=6.5, fig.height=8}
 library(RankingProject)
-library(tikzDevice)
 
 USfile <- system.file("extdata", "USA.csv",
                       package = "RankingProject")
@@ -49,16 +42,10 @@ figureParList <- list(est = USdata$Estimate.2dec, se = USdata$SE.2dec,
 
 annotParList <- list(refRank = refRank, refFullName = refName)
 
-# We will be "plotting" to .TEX files using tikz
-figwidth = 6.5
-figheight = 8
 
-# tikz(tempfile('SimpleAlmond.US.bold', fileext = 'tex'),
-#      standAlone = TRUE, width = figwidth, height = figheight)
 RankPlotWithTable(file = NULL, figwidth = NULL, figheight = NULL,
   tableParList = tableParList, figureParList = figureParList,
   annotParList = annotParList, figureFunction = SIMPLE.rankCompPlot)
-# dev.off()
 
 
 RankPlotWithTable(file = tempfile('RegularCIs.US', fileext = 'tex'),
