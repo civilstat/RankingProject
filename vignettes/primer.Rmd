@@ -2,7 +2,7 @@
 title: "Figures for 'A Primer on Visualizations for Comparing Populations...'"
 author: "Jerzy Wieczorek"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: rmarkdown::pdf_document
 vignette: >
   %\VignetteIndexEntry{Figures for 'A Primer on Visualizations for Comparing Populations...'}
   %\VignetteEngine{knitr::rmarkdown}
@@ -11,13 +11,13 @@ vignette: >
 
 This vignette shows how to reproduce the main figures in "A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals" (Wright, Klein, and Wieczorek, 2017).
 
-TODO: Consider changing from `html_vignette` to `pdf_document`.
+TODO: Remake with output as `html_vignette` without LaTeX figures, in addition to `pdf_document` with `dev='tikz'`.
 
-TODO: How to show the use of `tikzDevice`?
+TODO: How to illustrate the "manual" use of `tikzDevice`? Figure out how to give advice on compiling the `.tex` automatically.
 
-TODO: Add actual vignette content.
+TODO: Explicitly say how to use `knitr` to print the figures directly to PDF via tikz without manually making an intermediate tex file.
 
-```{r}
+```{r, dev='tikz', fig.width=6.5, fig.height=8}
 library(RankingProject)
 library(tikzDevice)
 
@@ -45,10 +45,16 @@ figureParList <- list(est = USdata$Estimate.2dec, se = USdata$SE.2dec,
 
 annotParList <- list(refRank = refRank, refFullName = refName)
 
-RankPlotWithTable(file = tempfile('SimpleAlmond.US.bold', fileext = 'tex'),
-  figwidth = 6.5, figheight = 8,
+# We will be "plotting" to .TEX files using tikz
+figwidth = 6.5
+figheight = 8
+
+# tikz(tempfile('SimpleAlmond.US.bold', fileext = 'tex'),
+#      standAlone = TRUE, width = figwidth, height = figheight)
+RankPlotWithTable(file = NULL, figwidth = NULL, figheight = NULL,
   tableParList = tableParList, figureParList = figureParList,
   annotParList = annotParList, figureFunction = SIMPLE.rankCompPlot)
+# dev.off()
 
 
 RankPlotWithTable(file = tempfile('RegularCIs.US', fileext = 'tex'),
@@ -99,11 +105,6 @@ RankPlotWithTable(file = outfile,
                       figwidth = 6.5, figheight = 8,
                       tableParList = tableParList, figureParList = figureParList,
                       annotParList = NULL, figureFunction = double.REG.CIs.rankCompPlot)
-outfile
-# rmarkdown::render(outfile, "pdf_document")
-# knitr::knit2pdf(outfile)
-# knitr::pandoc(outfile)
 ```
-TODO: figure out how to compile the `.tex` automatically. Or, how to use `knitr` to print the figures directly to PDF via tikz without manually making an intermediate tex file.
 
 

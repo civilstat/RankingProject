@@ -10,9 +10,6 @@ RankPlotWithTable = function(file, figwidth, figheight,
   oldpar <- par(no.readonly = TRUE)
   oldmar <- par('mar')
 
-  # We will be "plotting" to a .TEX file using tikz
-  tikz(file, standAlone = TRUE, width = figwidth, height = figheight)
-
   # Set up the layout: table on left, figure on right
   layout(matrix(c(1, 2), 1, 2), widths = c(tablewidthProp, 1 - tablewidthProp))
 
@@ -31,8 +28,6 @@ RankPlotWithTable = function(file, figwidth, figheight,
     mtext("Rank:~ ", side=1, at=0, line=3, adj=1)
     mtext(annotParList$refRank, side=1, at=0, line=3, adj=0)
   }
-
-  dev.off()
 
   par(oldpar)
 }
