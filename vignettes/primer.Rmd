@@ -15,100 +15,88 @@ options(tikzMetricsDictionary="~/Downloads/RankingProject/tikzMetrics")
 
 This vignette shows how to reproduce the main figures in "A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals" (Wright, Klein, and Wieczorek, 2017).
 
-TODO: Remake with output as `html_vignette` without LaTeX figures, in addition to `pdf_document` with `dev='tikz'`.
-
-TODO: How to illustrate the "manual" use of `tikzDevice`? Figure out how to give advice on compiling the `.tex` automatically.
-
-TODO: Explicitly say how to use `knitr` to print the figures directly to PDF via tikz without manually making an intermediate tex file.
+TODO: Add figure/table options to use LaTeX vs plain labels.
 
 ```{r, dev='tikz', fig.width=6.5, fig.height=8, cache=TRUE}
 library(RankingProject)
 library(tikzDevice)
 
-USfile <- system.file("extdata", "USA.csv",
-                      package = "RankingProject")
-USdata <- read.csv(USfile, header=TRUE, stringsAsFactors=FALSE)
-USdata <- subset(USdata, Abbreviation != "USA")
+USfile  <- system.file("extdata", "USA.csv",
+                       package = "RankingProject")
+USdata  <- read.csv(USfile, header=TRUE, stringsAsFactors=FALSE)
+USdata  <- subset(USdata, Abbreviation != "USA")
 refAbbr <- "CO"
-refRow <- which(USdata$Abbreviation==refAbbr)
+refRow  <- which(USdata$Abbreviation==refAbbr)
 refRank <- USdata$Rank[refRow]
 refName <- USdata$State[refRow]
-refEst <- USdata$Estimate.2dec[refRow]
-
-
-# All but one of the plots
+refEst  <- USdata$Estimate.2dec[refRow]
 
 tableParList <- list(Rank = USdata$Rank, PlaceName = USdata$State, 
-  Est = formatC(USdata$Estimate.2dec, format = 'f', digits = 2),
-  SE = substring(formatC(round(USdata$SE.2dec, 2), format = 'f', digits = 2), 2),
-  PlaceType = "State")
+                     Est = formatC(USdata$Estimate.2dec,
+                                   format = 'f', digits = 2),
+                     SE = substring(formatC(round(USdata$SE.2dec, 2),
+                                            format = 'f', digits = 2), 2),
+                     PlaceType = "State")
 
 figureParList <- list(est = USdata$Estimate.2dec, se = USdata$SE.2dec,
-  names = USdata$Abbreviation, refEst = refEst, ref = refAbbr, refName = refName,
-  cex = 0.6, lwdBold = 5)
+                      names = USdata$Abbreviation, refEst = refEst,
+                      ref = refAbbr, refName = refName,
+                      cex = 0.6, lwdBold = 5, conf.level = .9)
 
 annotParList <- list(refRank = refRank, refFullName = refName)
 
-# We will be "plotting" to .TEX files using tikz
-figwidth = 6.5
-figheight = 8
-
-# tikz(tempfile('SimpleAlmond.US.bold', fileext = 'tex'),
-#      standAlone = TRUE, width = figwidth, height = figheight)
-RankPlotWithTable(file = NULL, figwidth = NULL, figheight = NULL,
-  tableParList = tableParList, figureParList = figureParList,
-  annotParList = annotParList, figureFunction = SIMPLE.rankCompPlot)
-# dev.off()
-
-
-RankPlotWithTable(file = tempfile('RegularCIs.US', fileext = 'tex'),
-  figwidth = 6.5, figheight = 8,
-  tableParList = tableParList, figureParList = figureParList,
-  annotParList = NULL, figureFunction = REG.CIs.rankCompPlot)
-
-RankPlotWithTable(file = tempfile('AlmondExample.US.bold', fileext = 'tex'),
-  figwidth = 6.5, figheight = 8,
-  tableParList = tableParList, figureParList = figureParList,
-  annotParList = NULL, figureFunction = ALMOND.rankCompPlot)
-
-figureParList$conf.level <- ConfidenceLevelGH(figureParList$se)
-RankPlotWithTable(file = tempfile('GoldsteinHealy.US', fileext = 'tex'),
-  figwidth = 6.5, figheight = 8,
-  tableParList = tableParList, figureParList = figureParList,
-  annotParList = NULL, figureFunction = REG.CIs.rankCompPlot)
-
-figureParList$conf.level <- .9
-annotParList$tablewidthProp <- 2/7
+# Pantyhose plot
 figureParList$refRank <- refRank
 tableParList$pantyhoseRefLine <- .7
-RankPlotWithTable(file = tempfile('Pantyhose.US', fileext = 'tex'),
-  figwidth = 6.5, figheight = 8,
-  tableParList = tableParList, figureParList = figureParList,
-  annotParList = NULL, figureFunction = PANTYHOSE.rankCompPlot)
+RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
+                  annotParList = NULL, figureFunction = PANTYHOSE.rankCompPlot,
+                  tablewidthProp = 2/7)
 
+figureParList$refRank <- NULL
+tableParList$pantyhoseRefLine <- NULL
 
-# Double-tiered GH plot
+# Individual CIs
+RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
+                  annotParList = NULL, figureFunction = REG.CIs.rankCompPlot)
 
-tableParList <- list(Rank = USdata$Rank, PlaceName = USdata$State, 
-                     Est = formatC(USdata$Estimate.2dec, format = 'f', digits = 2),
-                     SE = substring(formatC(round(USdata$SE.2dec, 2), format = 'f', digits = 2), 2),
-                     PlaceType = "State")
-figureParList <- list(est = USdata$Estimate.2dec, se = USdata$SE.2dec,
-                      names = USdata$Abbreviation, refEst = refEst, ref = refAbbr, refName = refName,
-                      cex = 0.6, lwdBold = 5)
-annotParList <- list(refRank = refRank, refFullName = refName)
+# CIs for differences from ref
+RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
+                  annotParList = annotParList,
+                  figureFunction = SIMPLE.rankCompPlot)
 
+# Comparison intervals
+RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
+                  annotParList = NULL, figureFunction = ALMOND.rankCompPlot)
 
-# Adjusting and plotting two-tiered version of Goldstein-Healy:
-# inner tier is usual 90% CIs,
-# outer tier is 50-way Bonf-corrected GH plot
+# Goldstein-Healy adjusted CIs
+figureParList$conf.level <- ConfidenceLevelGH(figureParList$se)
+RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
+                  annotParList = NULL, figureFunction = REG.CIs.rankCompPlot)
+
+# Double-tiered GH plot:
+# inner tiers are usual 90% CIs,
+# outer tiers are 50-way demi-Bonferroni-corrected GH CIs
 figureParList$conf.level <- .9
 figureParList$conf.level.2 <- ConfidenceLevelGH(figureParList$se)
-outfile <- tempfile('DoubleGoldsteinHealy.US.50Bonf', fileext = 'tex')
-RankPlotWithTable(file = outfile,
-                      figwidth = 6.5, figheight = 8,
-                      tableParList = tableParList, figureParList = figureParList,
-                      annotParList = NULL, figureFunction = double.REG.CIs.rankCompPlot)
+RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
+                  annotParList = NULL,
+                  figureFunction = double.REG.CIs.rankCompPlot)
 ```
 
+For this vignette, the plots above were automatically converted to PDF format using `knitr` with chunk option `dev='tikz'`. However, to save plots one at a time "manually," you can explicitly call the `tikz()` function from the `tikzDevice` package, as in the following example (not run).
+
+The `tikz()` function works much like `pdf()` or `png()` and other functions for saving plots from R scripts. Remember to call `dev.off()` after the plotting function runs.
+
+This will create and save a `.tex` file. You will need to compile it into a PDF separately, or you can use `texi2pdf()` which compiles the PDF and saves it in the current working directory.
+
+```{r, eval=FALSE}
+# Not run:
+library(tikzDevice)
+tikz("/path/to/my/file.tex", standAlone = TRUE, width = 6.5, height = 8)
+RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
+                  annotParList = NULL,
+                  figureFunction = double.REG.CIs.rankCompPlot)
+dev.off()
+texi2pdf("/path/to/my/file.tex")
+```
 

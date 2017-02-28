@@ -13,89 +13,71 @@ This vignette introduces the `RankingProject` package, which accompanies "A Prim
 
 The package provides functions for plotting ranked tables of data side-by-side with their plots. The available plots include grids, confidence intervals, and related visualizations designed for making one-to-many or many-to-many comparisons.
 
-
+TODO: Add figure/table options to use LaTeX vs plain labels.
 
 ```{r, fig.width=6.5, fig.height=8}
 library(RankingProject)
 
-USfile <- system.file("extdata", "USA.csv",
-                      package = "RankingProject")
-USdata <- read.csv(USfile, header=TRUE, stringsAsFactors=FALSE)
-USdata <- subset(USdata, Abbreviation != "USA")
+USfile  <- system.file("extdata", "USA.csv",
+                       package = "RankingProject")
+USdata  <- read.csv(USfile, header=TRUE, stringsAsFactors=FALSE)
+USdata  <- subset(USdata, Abbreviation != "USA")
 refAbbr <- "CO"
-refRow <- which(USdata$Abbreviation==refAbbr)
+refRow  <- which(USdata$Abbreviation==refAbbr)
 refRank <- USdata$Rank[refRow]
 refName <- USdata$State[refRow]
-refEst <- USdata$Estimate.2dec[refRow]
-
-
-# All but one of the plots
+refEst  <- USdata$Estimate.2dec[refRow]
 
 tableParList <- list(Rank = USdata$Rank, PlaceName = USdata$State, 
-  Est = formatC(USdata$Estimate.2dec, format = 'f', digits = 2),
-  SE = substring(formatC(round(USdata$SE.2dec, 2), format = 'f', digits = 2), 2),
-  PlaceType = "State")
+                     Est = formatC(USdata$Estimate.2dec,
+                                   format = 'f', digits = 2),
+                     SE = substring(formatC(round(USdata$SE.2dec, 2),
+                                            format = 'f', digits = 2), 2),
+                     PlaceType = "State")
 
 figureParList <- list(est = USdata$Estimate.2dec, se = USdata$SE.2dec,
-  names = USdata$Abbreviation, refEst = refEst, ref = refAbbr, refName = refName,
-  cex = 0.6, lwdBold = 5)
+                      names = USdata$Abbreviation, refEst = refEst,
+                      ref = refAbbr, refName = refName,
+                      cex = 0.6, lwdBold = 5, conf.level = .9)
 
 annotParList <- list(refRank = refRank, refFullName = refName)
 
-
-RankPlotWithTable(file = NULL, figwidth = NULL, figheight = NULL,
-  tableParList = tableParList, figureParList = figureParList,
-  annotParList = annotParList, figureFunction = SIMPLE.rankCompPlot)
-
-
-RankPlotWithTable(file = tempfile('RegularCIs.US', fileext = 'tex'),
-  figwidth = 6.5, figheight = 8,
-  tableParList = tableParList, figureParList = figureParList,
-  annotParList = NULL, figureFunction = REG.CIs.rankCompPlot)
-
-RankPlotWithTable(file = tempfile('AlmondExample.US.bold', fileext = 'tex'),
-  figwidth = 6.5, figheight = 8,
-  tableParList = tableParList, figureParList = figureParList,
-  annotParList = NULL, figureFunction = ALMOND.rankCompPlot)
-
-figureParList$conf.level <- ConfidenceLevelGH(figureParList$se)
-RankPlotWithTable(file = tempfile('GoldsteinHealy.US', fileext = 'tex'),
-  figwidth = 6.5, figheight = 8,
-  tableParList = tableParList, figureParList = figureParList,
-  annotParList = NULL, figureFunction = REG.CIs.rankCompPlot)
-
-figureParList$conf.level <- .9
-annotParList$tablewidthProp <- 2/7
+# Pantyhose plot
 figureParList$refRank <- refRank
 tableParList$pantyhoseRefLine <- .7
-RankPlotWithTable(file = tempfile('Pantyhose.US', fileext = 'tex'),
-  figwidth = 6.5, figheight = 8,
-  tableParList = tableParList, figureParList = figureParList,
-  annotParList = NULL, figureFunction = PANTYHOSE.rankCompPlot)
+RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
+                  annotParList = NULL, figureFunction = PANTYHOSE.rankCompPlot,
+                  tablewidthProp = 2/7)
 
+figureParList$refRank <- NULL
+tableParList$pantyhoseRefLine <- NULL
 
-# Double-tiered GH plot
+# Individual CIs
+RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
+                  annotParList = NULL, figureFunction = REG.CIs.rankCompPlot)
 
-tableParList <- list(Rank = USdata$Rank, PlaceName = USdata$State, 
-                     Est = formatC(USdata$Estimate.2dec, format = 'f', digits = 2),
-                     SE = substring(formatC(round(USdata$SE.2dec, 2), format = 'f', digits = 2), 2),
-                     PlaceType = "State")
-figureParList <- list(est = USdata$Estimate.2dec, se = USdata$SE.2dec,
-                      names = USdata$Abbreviation, refEst = refEst, ref = refAbbr, refName = refName,
-                      cex = 0.6, lwdBold = 5)
-annotParList <- list(refRank = refRank, refFullName = refName)
+# CIs for differences from ref
+RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
+                  annotParList = annotParList,
+                  figureFunction = SIMPLE.rankCompPlot)
 
+# Comparison intervals
+RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
+                  annotParList = NULL, figureFunction = ALMOND.rankCompPlot)
 
-# Adjusting and plotting two-tiered version of Goldstein-Healy:
-# inner tier is usual 90% CIs,
-# outer tier is 50-way Bonf-corrected GH plot
+# Goldstein-Healy adjusted CIs
+figureParList$conf.level <- ConfidenceLevelGH(figureParList$se)
+RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
+                  annotParList = NULL, figureFunction = REG.CIs.rankCompPlot)
+
+# Double-tiered GH plot:
+# inner tiers are usual 90% CIs,
+# outer tiers are 50-way demi-Bonferroni-corrected GH CIs
 figureParList$conf.level <- .9
 figureParList$conf.level.2 <- ConfidenceLevelGH(figureParList$se)
-outfile <- tempfile('DoubleGoldsteinHealy.US.50Bonf', fileext = 'tex')
-RankPlotWithTable(file = outfile,
-                      figwidth = 6.5, figheight = 8,
-                      tableParList = tableParList, figureParList = figureParList,
-                      annotParList = NULL, figureFunction = double.REG.CIs.rankCompPlot)
+RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
+                  annotParList = NULL,
+                  figureFunction = double.REG.CIs.rankCompPlot)
 ```
 
 
