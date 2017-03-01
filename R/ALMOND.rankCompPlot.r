@@ -1,40 +1,15 @@
-#############################################################
-#
-#	The function rankCompPlot creates a graph as
-#	described by Almond, Lewis, Tukey, and Yan (2000)
-#	for visualizing significant differences between
-#	one reference parameter and a set of other
-#	parameters, and automatically adds appropraite axis
-#	labels.
-#
-#	Arguments:
-#
-#	est: 		vector of point estimates
-#	se:		vector of standard errors of estimates
-#	names: 	optional vector of characters giving the
-#			names the estimates represent
-#	ref: 		either an index number or one of the
-#			values of "names" giving the
-#			estimate which is being compared to
-#	conf.level:	a number between 0 and 1 giving the
-#			confidence level for the set of all
-#			pairwise comparisons with the reference
-#	length:	specifies the length of the ends of the
-#			error bars. By default set to 2/n, where
-#			n is the length of est
-#	regions:	optional vector of regions. If used,
-#			the values of est will be plotted in
-#			groups by region
-#
-#############################################################
+ALMOND.rankCompPlot = function(est, se, names=NULL, ref=1,
+	conf.level = 0.9, xlim=NULL,
+	xlab="", ylab="", xaxt = "n", yaxt = "n", cex=1, length=NULL, regions=NULL,
+	rangefactor=1.2,
+	legendPos = "topleft", lwdBold = 3,
+	showYlab = FALSE, thetaLine = 1.5) {
 
-ALMOND.rankCompPlot = function(est, se, names=NULL, ref=1, refName="", conf.level = 0.9, xlim=NULL,
-	xlab="", ylab="", yaxt = "n", xaxt = "n", cex=1, length=NULL, regions=NULL,
-	legendPos = "topleft", showYlab = FALSE, thetaLine = 1.5, lwdBold = 3, ...) {
+    refName = names[ref]
 
 	n = length(est)
 	range = max(est)-min(est)
-	extrange = 1.2*range
+	extrange = rangefactor*range
 
 	#determine units to use on axes
 

@@ -1,41 +1,42 @@
 #############################################################
 #
-#	The function rankCompPlot creates a graph as 
+#	The function rankCompPlot creates a graph as
 #	described by Almond, Lewis, Tukey, and Yan (2000)
 #	for visualizing significant differences between
-#	one reference parameter and a set of other 
-#	parameters, and automatically adds appropraite axis 
+#	one reference parameter and a set of other
+#	parameters, and automatically adds appropraite axis
 #	labels.
 #
 #	Arguments:
 #
 #	est: 		vector of point estimates
 #	se:		vector of standard errors of estimates
-#	names: 	optional vector of characters giving the 
+#	names: 	optional vector of characters giving the
 #			names the estimates represent
-#	ref: 		either an index number or one of the 
+#	ref: 		either an index number or one of the
 #			values of "names" giving the
 #			estimate which is being compared to
 #	conf.level:	a number between 0 and 1 giving the
 #			confidence level for the set of all
 #			pairwise comparisons with the reference
-#	length:	specifies the length of the ends of the 
+#	length:	specifies the length of the ends of the
 #			error bars. By default set to 2/n, where
 #			n is the length of est
-#	regions:	optional vector of regions. If used, 
-#			the values of est will be plotted in  
-#			groups by region		
+#	regions:	optional vector of regions. If used,
+#			the values of est will be plotted in
+#			groups by region
 #
 #############################################################
 
-REG.CIs.rankCompPlot = function(est, se, names=NULL, ref=1, conf.level = 0.9, xlim=NULL,
-	xlab="", ylab="", yaxt = "n", xaxt = "n", cex=1, length=NULL, regions=NULL,
-	rangefactor=1.2, ...) {
+REG.CIs.rankCompPlot = function(est, se, names=NULL, ref=1,
+	conf.level = 0.9, xlim=NULL,
+	xlab="", ylab="", xaxt = "n", yaxt = "n", cex=1, length=NULL, regions=NULL,
+	rangefactor=1.2) {
 
 	n = length(est)
 	range = max(est)-min(est)
 	extrange = rangefactor*range
-	
+
 	#determine units to use on axes
 
 	exp5 = floor(log10(extrange/2.5))
@@ -49,10 +50,10 @@ REG.CIs.rankCompPlot = function(est, se, names=NULL, ref=1, conf.level = 0.9, xl
 	unit = 2^exp2*5^exp5
 
 	#sort estimates from least to greatest (and by region, if specified)
-	
+
 	estSort = sort(est)
 	seSort = se[order(est)]
-	
+
 	if (!is.null(regions)) {
 		if (is.null(names)) stop ("Please provide names");
 		regSort = regions[order(est)]
@@ -61,7 +62,7 @@ REG.CIs.rankCompPlot = function(est, se, names=NULL, ref=1, conf.level = 0.9, xl
 	}
 
 	#match reference with index of sorted estimates
-	
+
 	if (is.null(names) & is.numeric(ref)) {
 		refInd = order(est)[ref]
 		namesSort = order(est)
@@ -75,9 +76,9 @@ REG.CIs.rankCompPlot = function(est, se, names=NULL, ref=1, conf.level = 0.9, xl
 		namesSort = namesSort[order(regSort)]
 		refInd = which(namesSort == ref)
 	}
-	
+
 	#NOT doing any Bonferroni-correction for error margins
-	
+
 	p = 1 - ((1 - conf.level)/2)
 	q = qnorm(p)
 
@@ -88,13 +89,13 @@ REG.CIs.rankCompPlot = function(est, se, names=NULL, ref=1, conf.level = 0.9, xl
 		xlower = (floor(min(est)/unit)-1)*unit
 		xupper = (ceiling(max(est)/unit)+1)*unit
 		xlim = c(xlower, xupper)
-	} 
+	}
 
 	#set width of error bars
 
 	arlen = ifelse(is.null(length), 2/n, length)
 
-	#create empty plot 
+	#create empty plot
 	plot(seq(xlim[1], xlim[2], length = n+2), 0:(n+1), type = "n",
 		xlab=xlab, ylab=ylab, xlim = c(xlim[1],xlim[2]), yaxt=yaxt, xaxt=xaxt,
 # make y-axis go from 0 to n+1
@@ -112,13 +113,13 @@ REG.CIs.rankCompPlot = function(est, se, names=NULL, ref=1, conf.level = 0.9, xl
 		ps = ifelse(estSort[i] < estSort[refInd], -1, 1)
 		lwd = 1
 		points(estSort[i], i, pch=16, cex=cex)
-		arrows(x0 = estSort[i], y0 = i, x1 = estSort[i] - moe[i], 
+		arrows(x0 = estSort[i], y0 = i, x1 = estSort[i] - moe[i],
 			angle = 90, length = arlen, lwd=lwd)
 		arrows(x0 = estSort[i], y0 = i, x1 = estSort[i] + moe[i],
 			angle = 90, length = arlen, lwd=lwd)
 		text(estSort[i] + ps*moe[i], i, labels = namesSort[i], pos = 3+ps,
 			cex=cex)
-	}	
+	}
 
 	#add axes
 
@@ -141,6 +142,5 @@ REG.CIs.rankCompPlot = function(est, se, names=NULL, ref=1, conf.level = 0.9, xl
 			text(xlim[2], y[i], labels = regText[i], pos = 2, cex=cex)
 		}
 	}
-	
-}
 
+}

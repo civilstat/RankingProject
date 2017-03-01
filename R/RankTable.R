@@ -2,8 +2,7 @@
 RankTable <- function(Rank, PlaceName, Est, SE, PlaceType = "State",
                      col1 = .15, col2 = .6, col3 = .85, col4 = 1,
                      textPos = 2, titleCex = 0.9, titleLift = 1.5, contentCex = 0.7,
-                     pantyhoseRefLine = NULL, ...) {
-  # TODO: can/should we remove ... from function defintion?
+                     pantyhoseRefLine = NULL) {
 
   n <- length(Rank)
   # "textPos = 2" is right-aligned;
