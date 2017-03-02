@@ -5,8 +5,6 @@ ALMOND.rankCompPlot = function(est, se, names=NULL, ref=1,
 	legendPos = "topleft", lwdBold = 3,
 	showYlab = FALSE, thetaLine = 1.5) {
 
-    refName = names[ref]
-
 	n = length(est)
 	range = max(est)-min(est)
 	extrange = rangefactor*range
@@ -176,7 +174,7 @@ if(FALSE){
 
 	legend(legendPos, inset=0.02,legend=c("Significantly Different","Not Significantly Different"),
 		lwd=c(SigDiffLtw,NotDiffLtw), bg="white",
-		title=paste("Compared to ", refName),
+		title=paste("Compared to ", ref),
 	cex=.8)
 }
 

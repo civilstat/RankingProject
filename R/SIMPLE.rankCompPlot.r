@@ -4,8 +4,7 @@ SIMPLE.rankCompPlot = function(est, se, names=NULL, ref=1,
     rangefactor=1.2,
 	legendPos="topleft", lwdBold = 3) {
 
-    refName = names[ref]
-    refEst = est[ref]
+    refEst = est[which(names == ref)]
 
 	# Re-center the data around the reference area's estimate
 	# (only done for SIMPLE.rankCompPlot, not for the other variants)
@@ -159,7 +158,7 @@ if(FALSE){ # Tommy wants to remove top axis
 	#add legend
 	legend(legendPos, inset=0.02, legend=c("Significantly Different","Not Significantly Different"),
 		lwd=c(SigDiffLtw,NotDiffLtw), bg="white",
-		title=paste("Compared to ", refName),
+		title=paste("Compared to ", ref),
 	cex=.8)
 }
 

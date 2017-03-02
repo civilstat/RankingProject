@@ -36,9 +36,9 @@ tableParList <- list(Rank = USdata$Rank, PlaceName = USdata$State,
                      PlaceType = "State")
 
 figureParList <- list(est = USdata$Estimate.2dec, se = USdata$SE.2dec,
-                      names = USdata$Abbreviation, refEst = refEst,
-                      ref = refAbbr, refName = refName,
-                      cex = 0.6, lwdBold = 5, conf.level = .9)
+                      names = USdata$Abbreviation, 
+                      ref = refAbbr,
+                      cex = 0.6, conf.level = .9)
 
 annotParList <- list(refRank = refRank, refFullName = refName)
 
@@ -48,7 +48,6 @@ tableParList$pantyhoseRefLine <- .7
 RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
                   annotParList = NULL, figureFunction = PANTYHOSE.rankCompPlot,
                   tablewidthProp = 2/7)
-
 figureParList$refRank <- NULL
 tableParList$pantyhoseRefLine <- NULL
 
@@ -57,6 +56,7 @@ RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
                   annotParList = NULL, figureFunction = REG.CIs.rankCompPlot)
 
 # CIs for differences from ref
+figureParList$lwdBold = 5
 RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
                   annotParList = annotParList,
                   figureFunction = SIMPLE.rankCompPlot)
@@ -64,6 +64,7 @@ RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
 # Comparison intervals
 RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
                   annotParList = NULL, figureFunction = ALMOND.rankCompPlot)
+figureParList$lwdBold = NULL
 
 # Goldstein-Healy adjusted CIs
 figureParList$conf.level <- ConfidenceLevelGH(figureParList$se)
