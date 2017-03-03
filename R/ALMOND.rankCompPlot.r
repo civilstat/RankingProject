@@ -1,13 +1,13 @@
 ALMOND.rankCompPlot = function(est, se, names=NULL, ref=1,
-	conf.level = 0.9, xlim=NULL,
+	confLevel = 0.9, xlim=NULL,
 	xlab="", ylab="", xaxt = "n", yaxt = "n", cex=1, length=NULL, regions=NULL,
-	rangefactor=1.2,
+	rangeFactor=1.2,
 	legendPos = "topleft", lwdBold = 3,
 	showYlab = FALSE, thetaLine = 1.5) {
 
 	n = length(est)
 	range = max(est)-min(est)
-	extrange = rangefactor*range
+	extrange = rangeFactor*range
 
 	#determine units to use on axes
 
@@ -51,7 +51,7 @@ ALMOND.rankCompPlot = function(est, se, names=NULL, ref=1,
 
 	#Bonferroni-correction for error margins
 
-	p = 1 - ((1 - conf.level)/2)/(n-1)
+	p = 1 - ((1 - confLevel)/2)/(n-1)
 	q = qnorm(p)
 
 	#compute error margins

@@ -38,7 +38,7 @@ tableParList <- list(Rank = USdata$Rank, PlaceName = USdata$State,
 figureParList <- list(est = USdata$Estimate.2dec, se = USdata$SE.2dec,
                       names = USdata$Abbreviation, 
                       ref = refAbbr,
-                      cex = 0.6, conf.level = .9)
+                      cex = 0.6, confLevel = .9)
 
 annotParList <- list(refRank = refRank, refFullName = refName)
 
@@ -52,8 +52,12 @@ figureParList$refRank <- NULL
 tableParList$pantyhoseRefLine <- NULL
 
 # Individual CIs
+figureParList$plotType <- "individual"
+# figureParList$legendText <- ""  # can remove auto-legend this way
 RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
                   annotParList = NULL, figureFunction = REG.CIs.rankCompPlot)
+figureParList$plotType <- NULL
+# figureParList$legendText <- NULL
 
 # CIs for differences from ref
 figureParList$lwdBold = 5
@@ -67,18 +71,30 @@ RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
 figureParList$lwdBold = NULL
 
 # Goldstein-Healy adjusted CIs
-figureParList$conf.level <- ConfidenceLevelGH(figureParList$se)
+figureParList$plotType <- "individual"
+figureParList$GH <- TRUE
 RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
                   annotParList = NULL, figureFunction = REG.CIs.rankCompPlot)
 
 # Double-tiered GH plot:
-# inner tiers are usual 90% CIs,
-# outer tiers are 50-way demi-Bonferroni-corrected GH CIs
-figureParList$conf.level <- .9
-figureParList$conf.level.2 <- ConfidenceLevelGH(figureParList$se)
+# inner tiers are GH CIs,
+# outer tiers are usual 90% CIs
+figureParList$tiers <- 2
+# Not sure why legend auto-positioning is wonky,
+# but we can get around it by controlling X,Y manually
+figureParList$legendX <- 12
+figureParList$legendY <- 53
 RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
                   annotParList = NULL,
-                  figureFunction = double.REG.CIs.rankCompPlot)
+                  figureFunction = REG.CIs.rankCompPlot)
+
+# Double-tiered GH + Bonferroni plot:
+# inner tiers are usual 90% CIs,
+# outer tiers are 50-way demi-Bonferroni-corrected GH CIs
+figureParList$Bonferroni <- "demi"
+RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
+                  annotParList = NULL,
+                  figureFunction = REG.CIs.rankCompPlot)
 ```
 
 

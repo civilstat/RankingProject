@@ -3,9 +3,9 @@
 # TODO: clean up and remove anything not strictly necessary;
 # cite that this is based on the internals of stats::heatmap()
 
-PANTYHOSE.rankCompPlot <- function(est, se, names, refRank, conf.level = 0.9, ...) {
+PANTYHOSE.rankCompPlot <- function(est, se, names, refRank, confLevel = 0.9, ...) {
   signifmatrix <- apply(cbind(est, se), 1, myfun,
-                        alldata = cbind(est, se), conf.level = conf.level)
+                        alldata = cbind(est, se), confLevel = confLevel)
   #  row.names(signifmatrix) <- ACSdata[,"State"]
   colnames(signifmatrix) <- names
 
@@ -21,7 +21,7 @@ PANTYHOSE.rankCompPlot <- function(est, se, names, refRank, conf.level = 0.9, ..
 
 
 
-myfun <- function(x, alldata, conf.level = 0.9){
+myfun <- function(x, alldata, confLevel = 0.9){
   # x[1] and x[2] are the current area's est and se;
   # alldata[, 1] and alldata[, 2] are all the ests and ses.
 
@@ -29,8 +29,8 @@ myfun <- function(x, alldata, conf.level = 0.9){
   # Note: correction is only for (n-1) comparisons,
   # not for choose(n-1, 2) comparisons!
   n=nrow(alldata)
-  #	q.Uncorrected <- qnorm(1-(1-conf.level)/2)
-  p.Bonf = 1 - ((1 - conf.level)/2)/(n-1)
+  #	q.Uncorrected <- qnorm(1-(1-confLevel)/2)
+  p.Bonf = 1 - ((1 - confLevel)/2)/(n-1)
   q.Bonf = qnorm(p.Bonf)
   #	q.ratio <- q.Bonf/q.Uncorrected
 
