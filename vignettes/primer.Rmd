@@ -40,22 +40,21 @@ tableParList <- list(Rank = USdata$Rank, PlaceName = USdata$State,
 
 figureParList <- list(est = USdata$Estimate.2dec, se = USdata$SE.2dec,
                       names = USdata$Abbreviation, 
-                      ref = refAbbr,
-                      cex = 0.6, confLevel = .9)
+                      refName = refAbbr,
+                      confLevel = .9)
 
 annotParList <- list(refRank = refRank, refFullName = refName)
 
 # Pantyhose plot
-figureParList$refRank <- refRank
 tableParList$pantyhoseRefLine <- .7
 RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
                   annotParList = NULL, figureFunction = PANTYHOSE.rankCompPlot,
                   tablewidthProp = 2/7)
-figureParList$refRank <- NULL
 tableParList$pantyhoseRefLine <- NULL
 
 # Individual CIs
 figureParList$plotType <- "individual"
+figureParList$cex <- 0.6
 # figureParList$legendText <- ""  # can remove auto-legend this way
 RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
                   annotParList = NULL, figureFunction = REG.CIs.rankCompPlot)

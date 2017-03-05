@@ -3,36 +3,31 @@
 # TODO: clean up and remove anything not strictly necessary;
 # cite that this is based on the internals of stats::heatmap()
 
-PANTYHOSE.rankCompPlot <- function(est, se, names, refRank, confLevel = 0.9, ...) {
-  signifmatrix <- apply(cbind(est, se), 1, myfun,
+PANTYHOSE.rankCompPlot <- function(est, se, names, refName = NULL,
+                                   confLevel = 0.9) {
+  signifMatrix <- apply(cbind(est, se), 1, FindSignifInColumn,
                         alldata = cbind(est, se), confLevel = confLevel)
-  #  row.names(signifmatrix) <- ACSdata[,"State"]
-  colnames(signifmatrix) <- names
+  colnames(signifMatrix) <- names
 
   n <- length(est)
+  refInd <- ifelse(is.null(refName), NA, which(names[order(est)] == refName))
+  print(refInd)
 
-  heatmapJW(signifmatrix, Rowv=NA, Colv=NA, scale='none',
-            col = c('grey80','white','grey50'), cexCol = 0.6,
-            add.expr={abline(h=(.5+1:(n-1)),col="grey90"); abline(v=refRank+c(-.5,.5),col="grey90")})
-
+  RankHeatmap(signifMatrix, Rowv=NA, Colv=NA, scale='none',
+              col = c('grey80','white','grey50'), cexCol = 0.6,
+              add.expr={abline(h=(.5+1:(n-1)),col="grey90"); abline(v=refInd+c(-.5,.5),col="grey90")})
 }
 
 
 
-
-
-myfun <- function(x, alldata, confLevel = 0.9){
+FindSignifInColumn <- function(x, alldata, confLevel = 0.9){
   # x[1] and x[2] are the current area's est and se;
   # alldata[, 1] and alldata[, 2] are all the ests and ses.
 
-  #Bonferroni-correction for error margins
-  # Note: correction is only for (n-1) comparisons,
-  # not for choose(n-1, 2) comparisons!
+  # Demi-Bonferroni-correction for error margins, for (n-1) comparisons
   n=nrow(alldata)
-  #	q.Uncorrected <- qnorm(1-(1-confLevel)/2)
   p.Bonf = 1 - ((1 - confLevel)/2)/(n-1)
   q.Bonf = qnorm(p.Bonf)
-  #	q.ratio <- q.Bonf/q.Uncorrected
 
   x <- as.matrix(x)
   x <- cbind(x[1],x[2])
@@ -41,12 +36,10 @@ myfun <- function(x, alldata, confLevel = 0.9){
 
 
 
-
-
-# heatmap() function code copied
-# and commenting out the lines that use layout()
+# stats::heatmap() function code copied,
+# then commenting out the lines that use layout()
 # in order to get a layout-free heatmap (with no dendograms)
-heatmapJW <- function (x, Rowv = NULL, Colv = if (symm) "Rowv" else NULL,
+RankHeatmap <- function (x, Rowv = NULL, Colv = if (symm) "Rowv" else NULL,
                        distfun = dist, hclustfun = hclust, reorderfun = function(d,
                                                                                  w) reorder(d, w), add.expr, symm = FALSE, revC = identical(Colv,
                                                                                                                                             "Rowv"), scale = c("row", "column", "none"), na.rm = TRUE,
