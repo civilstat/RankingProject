@@ -16,29 +16,40 @@ The package provides functions for plotting ranked tables of data side-by-side w
 ```{r, fig.width=6.5, fig.height=8}
 library(RankingProject)
 
+# TODO: drop USA row (or add an example using it as reference "state"?);
+# resave in .Rdata format; add a documentation file for the dataset too
 USfile  <- system.file("extdata", "USA.csv",
                        package = "RankingProject")
 USdata  <- read.csv(USfile, header=TRUE, stringsAsFactors=FALSE)
 USdata  <- subset(USdata, Abbreviation != "USA")
+head(USdata)
+
+# Format estimates and SEs into strings with 2 digits past the decimal
+USdata$Estimate.Print = formatC(USdata$Estimate.2dec,
+                                format = 'f', digits = 2)
+# For SEs, also drop the leading 0
+USdata$SE.Print = substring(formatC(USdata$SE.2dec,
+                                    format = 'f', digits = 2),
+                            first = 2)
+
+# Set Colorado as the reference state
 refAbbr <- "CO"
 refRow  <- which(USdata$Abbreviation==refAbbr)
-refRank <- USdata$Rank[refRow]
-refName <- USdata$State[refRow]
-refEst  <- USdata$Estimate.2dec[refRow]
 
-tableParList <- list(Rank = USdata$Rank, PlaceName = USdata$State, 
-                     Est = formatC(USdata$Estimate.2dec,
-                                   format = 'f', digits = 2),
-                     SE = substring(formatC(round(USdata$SE.2dec, 2),
-                                            format = 'f', digits = 2), 2),
-                     PlaceType = "State")
+# Set up parameter lists for table function, figure function, and annotations
+tableParList <- with(USdata,
+                     list(ranks = Rank, names = State, 
+                          est = Estimate.Print, se = SE.Print,
+                          placeType = "State"))
 
-figureParList <- list(est = USdata$Estimate.2dec, se = USdata$SE.2dec,
-                      names = USdata$Abbreviation, 
-                      refName = refAbbr,
-                      confLevel = .9)
+figureParList <- with(USdata,
+                      list(est = Estimate.2dec, se = SE.2dec,
+                           names = Abbreviation, refName = refAbbr,
+                           confLevel = .9))
 
-annotParList <- list(refRank = refRank, refFullName = refName)
+annotParList <- with(USdata,
+                     list(refRank = Rank[refRow],
+                          refFullName = State[refRow]))
 
 # Pantyhose plot
 figureParList$plotType <- "columns"
