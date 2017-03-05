@@ -15,9 +15,7 @@ options(tikzMetricsDictionary="~/Downloads/RankingProject/tikzMetrics")
 
 This vignette shows how to reproduce the main figures in "A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals" (Wright, Klein, and Wieczorek, 2017).
 
-TODO: Add figure/table options to use LaTeX vs plain labels.
-
-```{r, dev='tikz', fig.width=6.5, fig.height=8, cache=TRUE}
+```{r, dev='tikz', fig.width=6.5, fig.height=8, cache=FALSE}
 library(RankingProject)
 library(tikzDevice)
 
@@ -36,14 +34,17 @@ tableParList <- list(Rank = USdata$Rank, PlaceName = USdata$State,
                                    format = 'f', digits = 2),
                      SE = substring(formatC(round(USdata$SE.2dec, 2),
                                             format = 'f', digits = 2), 2),
-                     PlaceType = "State")
+                     PlaceType = "State",
+                     tikzText = TRUE)
 
 figureParList <- list(est = USdata$Estimate.2dec, se = USdata$SE.2dec,
                       names = USdata$Abbreviation, 
                       refName = refAbbr,
-                      confLevel = .9)
+                      confLevel = .9,
+                     tikzText = TRUE)
 
-annotParList <- list(refRank = refRank, refFullName = refName)
+annotParList <- list(refRank = refRank, refFullName = refName,
+                     tikzText = TRUE)
 
 # Pantyhose plot
 figureParList$plotType <- "columns"

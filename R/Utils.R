@@ -72,6 +72,13 @@ FindSignifInColumn <- function(x, alldata, confLevel = 0.9){
 # basically just commenting out the lines that use layout()
 # in order to get a layout-free heatmap (with no dendograms)
 # so we can use the heatmap inside a larger layout
+#
+# The source is within src/library/stats/R/dendrogram.R
+# which states it is licensed under GPL-2,
+# and the heatmap() function is prefaced by this comment:
+# "original Andy Liaw; modified RG, MM :"
+# See for instance here:
+# https://github.com/wch/r-source/blob/trunk/src/library/stats/R/dendrogram.R
 RankHeatmap <- function (x, Rowv = NULL, Colv = if (symm) "Rowv" else NULL,
                          distfun = dist, hclustfun = hclust, reorderfun = function(d,
                                                                                    w) reorder(d, w), add.expr, symm = FALSE, revC = identical(Colv,

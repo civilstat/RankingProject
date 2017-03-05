@@ -37,7 +37,8 @@ RankPlot = function(est, se, names, refName=NULL,
                     tiers = 1, GH = FALSE,
                     Bonferroni = ifelse(plotType == "individual", "none", "demi"),
                     legendX = "topleft", legendY = NULL, legendText = NULL,
-                    lwdReg = 1, lwdBold = 3, showYlab = FALSE, thetaLine = 1) {
+                    lwdReg = 1, lwdBold = 3, showYlab = FALSE, thetaLine = 1,
+                    tikzText = NULL) {
 
   n = length(est)
   stopifnot(length(se) == n & length(names) == n)
@@ -74,6 +75,22 @@ RankPlot = function(est, se, names, refName=NULL,
                    refName = refName, confLevel = confLevel)
     # Don't continue with rest of plotting function below
     return()
+  }
+
+  if(!is.null(tikzText) & isTRUE(tikzText)) {
+    textR = "$\\hat{r}_k$"
+    textTheta = ifelse(plotType == "difference",
+                       "$\\theta_k-\\theta_{k^*}$",
+                       "$\\theta_k$")
+    textThetaStar = "$\\hat{\\theta}_{k^*}$"
+    textPercent = "\\%"
+  } else {
+    textR = expression(hat(r)[k])
+    textTheta = ifelse(plotType == "difference",
+                       expression(theta[k]-theta[paste(k,"*")]),
+                       expression(theta[k]))
+    textThetaStar = expression(hat(theta)[paste(k,"*")])
+    textPercent = "%"
   }
 
 
@@ -128,7 +145,7 @@ RankPlot = function(est, se, names, refName=NULL,
     qC = qnorm(pC)
 
     legendDetails = c(paste0("tier: individual ", 100*confLevel,
-                             "\\% CIs\n"),
+                             textPercent, " CIs\n "),
                       paste0("tier: ",
                              ifelse(GH, "Goldstein-Healy", ""),
                              ifelse(GH & Bonferroni != "none",
@@ -136,16 +153,17 @@ RankPlot = function(est, se, names, refName=NULL,
                              ifelse(Bonferroni != "none",
                                     paste0(Bonferroni, "-Bonferroni"), ""),
                              "\nadjusted intervals"))
+
     # Compare and assign bigger factor to outer tier
     if(qC > qI) {
       q = qI
       qOut = qC
-      legendText = paste(c("Inner", "Outer"), legendDetails)
+      legendText = paste0(c("Inner ", "Outer "), legendDetails)
     } else {
       q = qC
       qOut = qI
-      legendText = paste(c("Inner", "Outer"), rev(legendDetails),
-                         c("\n", ""))
+      legendText = paste0(c("Inner ", "Outer "), rev(legendDetails),
+                         c("\n ", ""))
     }
     moeOut = qOut*sePlot
   } else {
@@ -239,21 +257,18 @@ RankPlot = function(est, se, names, refName=NULL,
   if(showYlab) {
     ylabels = 1:n
     # Use mtext, not title, to make the y-label listen to las=2
-    mtext("$\\hat{r}_k$", side=2, line=2.5, las=2)
+    mtext(textR, side=2, line=2.5, las=2)
   } else {
     ylabels = rep("", n)
   }
   axis(2, at = 1:n, labels=ylabels, las=2, cex.axis=0.7)
 
-  # add "\theta_k" below reference area
-  thetaText = ifelse(plotType == "difference",
-                     "$\\theta_k-\\theta_{k^*}$",
-                     "$\\theta_k$")
+  # add theta_k below reference area
   adj = ifelse(plotType == "comparison", NA, 1)
-  mtext(thetaText, side=1, at=xlim[2]+.3*unit, line=thetaLine, adj=adj)
+  mtext(textTheta, side=1, at=xlim[2]+.3*unit, line=thetaLine, adj=adj)
   if(plotType == "comparison") {
     # add theta_star symbol below reference area
-    mtext("$\\hat{\\theta}_{k^*}$", side=1, at=estSort[refInd], line=thetaLine)
+    mtext(textThetaStar, side=1, at=estSort[refInd], line=thetaLine)
   }
 
   # add region names (if necessary)
@@ -269,13 +284,13 @@ RankPlot = function(est, se, names, refName=NULL,
   # add legend
   if(plotType == "individual" & is.null(legendText)) {
     if(!GH & Bonferroni == "none") {
-      legendText = paste0(100*confLevel, "\\% confidence intervals")
+      legendText = paste0(100*confLevel, textPercent, " confidence intervals")
     } else {
       legendText = paste0(ifelse(GH, "Goldstein-Healy", ""),
                           ifelse(GH & Bonferroni != "none", "\nand ", ""),
                           ifelse(Bonferroni != "none",
                                  paste0(Bonferroni, "-Bonferroni"), ""),
-                          "\nadjusted ", 100*confLevel, "\\% intervals")
+                          "\nadjusted ", 100*confLevel, textPercent, " intervals")
     }
   }
   if(plotType == "individual" & !is.null(legendText)) {

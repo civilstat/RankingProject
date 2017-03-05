@@ -1,6 +1,3 @@
-# TODO: Do something about the fact that ___.rankCompPlot functions ask for refName
-# (which I'd rather use in the first line of inputs instead of refFullName)
-
 # TODO: allow moving table from left to right?
 # but that would also require adjusting plots,
 # so that the y-axis ticks are on right side,
@@ -28,10 +25,18 @@ RankPlotWithTable = function(tableParList, figureParList, annotParList = NULL,
   do.call(figureFunction, figureParList)
 
   if(!is.null(annotParList)) {
+    if(!is.null(annotParList$tikzText) & isTRUE(annotParList$tikzText)) {
+      textK = "($k^*$):~"
+      textRank = "Rank:~ "
+    } else {
+      textK = "(k*):"
+      textRank = "Rank: "
+    }
     # Create annotations on the bottom of the figure
-    mtext(paste0("Reference ", tableParList$PlaceType, " ($k^*$):~ "), side=1, at=0, line=2, adj=1)
+    mtext(paste0("Reference ", tableParList$PlaceType, " ", textK, " "),
+          side=1, at=0, line=2, adj=1)
     mtext(annotParList$refFullName, side=1, at=0, line=2, adj=0)
-    mtext("Rank:~ ", side=1, at=0, line=3, adj=1)
+    mtext(textRank, side=1, at=0, line=3, adj=1)
     mtext(annotParList$refRank, side=1, at=0, line=3, adj=0)
   }
 

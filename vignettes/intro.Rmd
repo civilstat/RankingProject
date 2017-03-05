@@ -13,8 +13,6 @@ This vignette introduces the `RankingProject` package, which accompanies "A Prim
 
 The package provides functions for plotting ranked tables of data side-by-side with their plots. The available plots include grids, confidence intervals, and related visualizations designed for making one-to-many or many-to-many comparisons.
 
-TODO: Add figure/table options to use LaTeX vs plain labels.
-
 ```{r, fig.width=6.5, fig.height=8}
 library(RankingProject)
 
