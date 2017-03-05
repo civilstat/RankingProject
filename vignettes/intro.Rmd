@@ -56,19 +56,22 @@ figureParList$plotType <- "individual"
 # figureParList$legendText <- ""  # can remove auto-legend this way
 RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
                   annotParList = NULL, figureFunction = REG.CIs.rankCompPlot)
-figureParList$plotType <- NULL
 # figureParList$legendText <- NULL
 
 # CIs for differences from ref
-figureParList$lwdBold = 5
+figureParList$lwdBold <- 5
+figureParList$plotType <- "difference"
 RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
                   annotParList = annotParList,
-                  figureFunction = SIMPLE.rankCompPlot)
+                  figureFunction = REG.CIs.rankCompPlot)
 
 # Comparison intervals
+figureParList$plotType <- "comparison"
+figureParList$thetaLine <- 1.5
 RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
-                  annotParList = NULL, figureFunction = ALMOND.rankCompPlot)
-figureParList$lwdBold = NULL
+                  annotParList = NULL, figureFunction = REG.CIs.rankCompPlot)
+figureParList$thetaLine <- NULL
+figureParList$lwdBold <- NULL
 
 # Goldstein-Healy adjusted CIs
 figureParList$plotType <- "individual"

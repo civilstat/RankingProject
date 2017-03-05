@@ -36,7 +36,8 @@ REG.CIs.rankCompPlot = function(est, se, names, refName=NULL,
     plotType = c("individual", "difference", "comparison"),
     tiers = 1, GH = FALSE,
     Bonferroni = ifelse(plotType == "individual", "none", "demi"),
-    legendX = "topleft", legendY = NULL, legendText = NULL) {
+    legendX = "topleft", legendY = NULL, legendText = NULL,
+    lwdReg = 1, lwdBold = 3, showYlab = FALSE, thetaLine = 1) {
 
     n = length(est)
     stopifnot(length(se) == n & length(names) == n)
@@ -90,6 +91,20 @@ REG.CIs.rankCompPlot = function(est, se, names, refName=NULL,
         refInd = which(namesSort == refName)
     }
 
+    if(plotType == "individual") {
+        sePlot = seSort
+    } else if(plotType == "difference") {
+        # center at the reference state
+        estSort = estSort - estSort[refInd]
+        # compute SEs of differences
+        sePlot = sqrt(seSort[refInd]^2 + seSort^2)
+        sePlot[refInd] = 0
+    } else if(plotType == "comparison") {
+        # compute special "SEs" for comparison intervals
+        sePlot = sqrt(seSort[refInd]^2 + seSort^2) - seSort[refInd]
+        sePlot[refInd] = seSort[refInd]
+    }
+
     denomC = 2 * switch(Bonferroni,
                         none = 1, demi = n-1, full= choose(n, 2))
     confLevelC = ifelse(GH, ConfidenceLevelGH(se, confLevel),
@@ -122,41 +137,62 @@ REG.CIs.rankCompPlot = function(est, se, names, refName=NULL,
             legendText = paste(c("Inner", "Outer"), rev(legendDetails),
                                c("\n", ""))
         }
-        moeOut = qOut*seSort
+        moeOut = qOut*sePlot
     } else {
         p = 1 - ((1 - confLevelC)/denomC)
         q = qnorm(p)
     }
 
     #compute error margins
-    moe = q*seSort
+    moe = q*sePlot
 
     if (is.null(xlim)) {
-        xlower = (floor(min(est)/unit)-1)*unit
-        xupper = (ceiling(max(est)/unit)+1)*unit
+        xlower = (floor(min(estSort)/unit)-1)*unit
+        xupper = (ceiling(max(estSort)/unit)+1)*unit
         xlim = c(xlower, xupper)
     }
 
     #set width of error bars
     tickWidth = ifelse(is.null(tickWidth), 2/n, tickWidth)
 
-    #create empty plot
+    # create empty plot
     plot(seq(xlim[1], xlim[2], length = n+2), 0:(n+1), type = "n",
         xlab=xlab, ylab=ylab, xlim = c(xlim[1],xlim[2]), yaxt=yaxt, xaxt=xaxt,
         # make y-axis go from 0 to n+1
         yaxs='i')
 
+    # add reference line/strip at 0 for difference/comparison plots
+    if(plotType == "difference") {
+        abline(v = estSort[refInd])
+    } else if(plotType == "comparison") {
+        rect(estSort[refInd] - moe[refInd], 0,
+             estSort[refInd] + moe[refInd], n+1, border=NA, col='grey')
+        abline(v = estSort[refInd] - moe[refInd], lty=2)
+        abline(v = estSort[refInd] + moe[refInd], lty=2)
+        abline(v = estSort[refInd])
+        mtext(namesSort[refInd], side=3, at=estSort[refInd], line=0.5, cex=0.7)
+        mtext("Distance from the strip", side=3, line=2.2)
+    }
+
+    # plot reference state
     points(estSort[refInd], refInd, cex=cex, pch=16)
     text(estSort[refInd] - (moe[refInd] + textPad), refInd,
         labels = namesSort[refInd], pos = 2, cex=cex)
     text(estSort[refInd] + (moe[refInd] + textPad), refInd,
         labels = namesSort[refInd], pos = 4, cex=cex)
 
-    #plot ALL values with error bars
-    pts = (1:n)
+    #plot values with error bars
+    if(plotType == "individual") {
+        pts = 1:n
+    } else {
+        pts = (1:n)[-refInd]
+    }
     for (i in pts) {
         ps = ifelse(estSort[i] < estSort[refInd], -1, 1)
-        lwd = 1
+        lwd = ifelse(plotType != "individual" &
+                ((ps == -1 & estSort[i]+moe[i] < estSort[refInd]-moe[refInd]) |
+                 (ps == 1 & estSort[i]-moe[i] > estSort[refInd]+moe[refInd])),
+                     lwdBold, lwdReg)
         points(estSort[i], i, pch=16, cex=cex)
         arrows(x0 = estSort[i], y0 = i, x1 = estSort[i] - moe[i],
                angle = 90, length = tickWidth, lwd=lwd)
@@ -170,23 +206,47 @@ REG.CIs.rankCompPlot = function(est, se, names, refName=NULL,
             # also draw outer CIs, with no "arrows"
             segments(x0 = estSort[i] + moeOut[i], y0 = i,
                      x1 = estSort[i] - moeOut[i], 
-                     lwd = lwd)
+                     lwd = lwdReg)
         }
     }
 
-    #add axes
+    # add axes
 
+    # bottom axis
     xax = seq(xlim[1],xlim[2],by=unit)
     axis(1, at = xax, cex.axis=0.7, mgp=c(3,0.3,0))
 
+    # top axis
+    if(plotType == "comparison") {
+        toplab1 = rev((0:(floor(2*(estSort[refInd] - moe[refInd] - xlim[1])/unit)))*unit/2)
+        toplab2 = (0:(floor(2*(xlim[2] - estSort[refInd] - moe[refInd])/unit)))*unit/2
+        toplab = c(toplab1, toplab2)
+        topax = c(estSort[refInd] - moe[refInd] - toplab1, estSort[refInd] + moe[refInd] + toplab2)
+        axis(3, at = topax, labels = toplab, cex.axis=0.7)
+    }
+
     # left axis
-    axis(2, at = 1:n, labels=rep('',n), las=2, cex.axis=0.7)
+    if(showYlab) {
+      ylabels = 1:n
+      # Use mtext, not title, to make the y-label listen to las=2
+      mtext("$\\hat{r}_k$", side=2, line=2.5, las=2)
+    } else {
+      ylabels = rep("", n)
+    }
+    axis(2, at = 1:n, labels=ylabels, las=2, cex.axis=0.7)
 
     # add "\theta_k" below reference area
-    mtext("$\\theta_k$", side=1, at=xlim[2]+.3*unit, line=1, adj=1)
+    thetaText = ifelse(plotType == "difference",
+                       "$\\theta_k-\\theta_{k^*}$",
+                       "$\\theta_k$")
+    adj = ifelse(plotType == "comparison", NA, 1)
+    mtext(thetaText, side=1, at=xlim[2]+.3*unit, line=thetaLine, adj=adj)
+    if(plotType == "comparison") {
+        # add theta_star symbol below reference area
+        mtext("$\\hat{\\theta}_{k^*}$", side=1, at=estSort[refInd], line=thetaLine)
+    }
 
-    #add region names (if necessary)
-
+    # add region names (if necessary)
     if (!is.null(regions)) {
         y = cumsum(as.numeric(summary(regions)))
         regText = levels(regions)
@@ -196,6 +256,7 @@ REG.CIs.rankCompPlot = function(est, se, names, refName=NULL,
         }
     }
 
+    # add legend
     if(plotType == "individual" & is.null(legendText)) {
         if(!GH & Bonferroni == "none") {
             legendText = paste0(100*confLevel, "\\% confidence intervals")
@@ -207,10 +268,15 @@ REG.CIs.rankCompPlot = function(est, se, names, refName=NULL,
                 "\nadjusted ", 100*confLevel, "\\% intervals")
         }
     }
-    if(!is.null(legendText)) {
+    if(plotType == "individual" & !is.null(legendText)) {
         legend(x = legendX, y = legendY,
                legend = legendText, bty = "n",
                inset = 0.02, cex = 0.8)
+    } else if(plotType != "individual") {
+        legend(x = legendX, y = legendY,
+               legend = c("Significantly Different",
+                          "Not Significantly Different"),
+               lwd = c(lwdBold, lwdReg), inset = 0.02, cex = 0.8, bg = "white",
+               title = paste0("Compared to ", refName))
     }
-
 }
