@@ -46,9 +46,9 @@ figureParList <- list(est = USdata$Estimate.2dec, se = USdata$SE.2dec,
 annotParList <- list(refRank = refRank, refFullName = refName)
 
 # Pantyhose plot
+figureParList$plotType <- "columns"
 tableParList$pantyhoseRefLine <- .7
 RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
-                  annotParList = NULL, figureFunction = PANTYHOSE.rankCompPlot,
                   tablewidthProp = 2/7)
 tableParList$pantyhoseRefLine <- NULL
 
@@ -56,50 +56,42 @@ tableParList$pantyhoseRefLine <- NULL
 figureParList$plotType <- "individual"
 figureParList$cex <- 0.6
 # figureParList$legendText <- ""  # can remove auto-legend this way
-RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
-                  annotParList = NULL, figureFunction = REG.CIs.rankCompPlot)
+RankPlotWithTable(tableParList = tableParList, figureParList = figureParList)
 # figureParList$legendText <- NULL
 
 # CIs for differences from ref
 figureParList$lwdBold <- 5
 figureParList$plotType <- "difference"
 RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
-                  annotParList = annotParList,
-                  figureFunction = REG.CIs.rankCompPlot)
+                  annotParList = annotParList)
 
 # Comparison intervals
 figureParList$plotType <- "comparison"
 figureParList$thetaLine <- 1.5
-RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
-                  annotParList = NULL, figureFunction = REG.CIs.rankCompPlot)
+RankPlotWithTable(tableParList = tableParList, figureParList = figureParList)
 figureParList$thetaLine <- NULL
 figureParList$lwdBold <- NULL
 
 # Goldstein-Healy adjusted CIs
 figureParList$plotType <- "individual"
 figureParList$GH <- TRUE
-RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
-                  annotParList = NULL, figureFunction = REG.CIs.rankCompPlot)
+RankPlotWithTable(tableParList = tableParList, figureParList = figureParList)
 
 # Double-tiered GH plot:
 # inner tiers are GH CIs,
 # outer tiers are usual 90% CIs
 figureParList$tiers <- 2
-# Not sure why legend auto-positioning is wonky,
-# but we can get around it by controlling X,Y manually
+# Legend auto-positioning is poor with line breaks in legend text;
+# we can improve it by controlling (X,Y) manually
 figureParList$legendX <- 12
 figureParList$legendY <- 53
-RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
-                  annotParList = NULL,
-                  figureFunction = REG.CIs.rankCompPlot)
+RankPlotWithTable(tableParList = tableParList, figureParList = figureParList)
 
 # Double-tiered GH + Bonferroni plot:
 # inner tiers are usual 90% CIs,
 # outer tiers are 50-way demi-Bonferroni-corrected GH CIs
 figureParList$Bonferroni <- "demi"
-RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
-                  annotParList = NULL,
-                  figureFunction = REG.CIs.rankCompPlot)
+RankPlotWithTable(tableParList = tableParList, figureParList = figureParList)
 ```
 
 For this vignette, the plots above were automatically converted to PDF format using `knitr` with chunk option `dev='tikz'`. However, to save plots one at a time "manually," you can explicitly call the `tikz()` function from the `tikzDevice` package, as in the following example (not run).

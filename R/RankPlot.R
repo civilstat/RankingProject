@@ -1,232 +1,292 @@
-#### Pantyhose plot ####
-
-# TODO: clean up and remove anything not strictly necessary;
-# cite that this is based on the internals of stats::heatmap()
-
-PANTYHOSE.rankCompPlot <- function(est, se, names, refName = NULL,
-                                   confLevel = 0.9) {
-  signifMatrix <- apply(cbind(est, se), 1, FindSignifInColumn,
-                        alldata = cbind(est, se), confLevel = confLevel)
-  colnames(signifMatrix) <- names
-
-  n <- length(est)
-  refInd <- ifelse(is.null(refName), NA, which(names[order(est)] == refName))
-  print(refInd)
-
-  RankHeatmap(signifMatrix, Rowv=NA, Colv=NA, scale='none',
-              col = c('grey80','white','grey50'), cexCol = 0.6,
-              add.expr={abline(h=(.5+1:(n-1)),col="grey90"); abline(v=refInd+c(-.5,.5),col="grey90")})
-}
-
-
-
-FindSignifInColumn <- function(x, alldata, confLevel = 0.9){
-  # x[1] and x[2] are the current area's est and se;
-  # alldata[, 1] and alldata[, 2] are all the ests and ses.
-
-  # Demi-Bonferroni-correction for error margins, for (n-1) comparisons
-  n=nrow(alldata)
-  p.Bonf = 1 - ((1 - confLevel)/2)/(n-1)
-  q.Bonf = qnorm(p.Bonf)
-
-  x <- as.matrix(x)
-  x <- cbind(x[1],x[2])
-  (abs(alldata[,1]-x[1]) > q.Bonf*sqrt(alldata[,2]^2+x[2]^2)) * sign(alldata[,1]-x[1])
-}
-
-
-
-# stats::heatmap() function code copied,
-# then commenting out the lines that use layout()
-# in order to get a layout-free heatmap (with no dendograms)
-RankHeatmap <- function (x, Rowv = NULL, Colv = if (symm) "Rowv" else NULL,
-                       distfun = dist, hclustfun = hclust, reorderfun = function(d,
-                                                                                 w) reorder(d, w), add.expr, symm = FALSE, revC = identical(Colv,
-                                                                                                                                            "Rowv"), scale = c("row", "column", "none"), na.rm = TRUE,
-                       margins = c(5, 5), ColSideColors, RowSideColors, cexRow = 0.2 +
-                         1/log10(nr), cexCol = 0.2 + 1/log10(nc), labRow = NULL,
-                       labCol = NULL, oneColumn = FALSE,
-                       main = NULL, xlab = NULL, ylab = NULL, keep.dendro = FALSE,
-                       verbose = getOption("verbose"), ...)
-{
-  scale <- if (symm && missing(scale))
-    "none"
-  else match.arg(scale)
-  if (length(di <- dim(x)) != 2 || !is.numeric(x))
-    stop("'x' must be a numeric matrix")
-  nr <- di[1L]
-  nc <- di[2L]
-  if (nr <= 1 || nc <= 1)
-    stop("'x' must have at least 2 rows and 2 columns")
-  if (!is.numeric(margins) || length(margins) != 2L)
-    stop("'margins' must be a numeric vector of length 2")
-  doRdend <- !identical(Rowv, NA)
-  doCdend <- !identical(Colv, NA)
-  if (!doRdend && identical(Colv, "Rowv"))
-    doCdend <- FALSE
-  if (is.null(Rowv))
-    Rowv <- rowMeans(x, na.rm = na.rm)
-  if (is.null(Colv))
-    Colv <- colMeans(x, na.rm = na.rm)
-  if (doRdend) {
-    if (inherits(Rowv, "dendrogram"))
-      ddr <- Rowv
-    else {
-      hcr <- hclustfun(distfun(x))
-      ddr <- as.dendrogram(hcr)
-      if (!is.logical(Rowv) || Rowv)
-        ddr <- reorderfun(ddr, Rowv)
-    }
-    if (nr != length(rowInd <- order.dendrogram(ddr)))
-      stop("row dendrogram ordering gave index of wrong length")
-  }
-  else rowInd <- 1L:nr
-  if (doCdend) {
-    if (inherits(Colv, "dendrogram"))
-      ddc <- Colv
-    else if (identical(Colv, "Rowv")) {
-      if (nr != nc)
-        stop("Colv = \"Rowv\" but nrow(x) != ncol(x)")
-      ddc <- ddr
-    }
-    else {
-      hcc <- hclustfun(distfun(if (symm)
-        x
-        else t(x)))
-      ddc <- as.dendrogram(hcc)
-      if (!is.logical(Colv) || Colv)
-        ddc <- reorderfun(ddc, Colv)
-    }
-    if (nc != length(colInd <- order.dendrogram(ddc)))
-      stop("column dendrogram ordering gave index of wrong length")
-  }
-  else colInd <- 1L:nc
-  x <- x[rowInd, colInd]
-  labRow <- if (is.null(labRow))
-    if (is.null(rownames(x)))
-      (1L:nr)[rowInd]
-  else rownames(x)
-  else labRow[rowInd]
-  labCol <- if (is.null(labCol))
-    if (is.null(colnames(x)))
-      (1L:nc)[colInd]
-  else colnames(x)
-  else labCol[colInd]
-  if (scale == "row") {
-    x <- sweep(x, 1L, rowMeans(x, na.rm = na.rm), check.margin = FALSE)
-    sx <- apply(x, 1L, sd, na.rm = na.rm)
-    x <- sweep(x, 1L, sx, "/", check.margin = FALSE)
-  }
-  else if (scale == "column") {
-    x <- sweep(x, 2L, colMeans(x, na.rm = na.rm), check.margin = FALSE)
-    sx <- apply(x, 2L, sd, na.rm = na.rm)
-    x <- sweep(x, 2L, sx, "/", check.margin = FALSE)
-  }
-  lmat <- rbind(c(NA, 3), 2:1)
-  lwid <- c(if (doRdend) 1 else 0.05, 4)
-  lhei <- c((if (doCdend) 1 else 0.05) + if (!is.null(main)) 0.2 else 0,
-            4)
-  if (!missing(ColSideColors)) {
-    if (!is.character(ColSideColors) || length(ColSideColors) !=
-        nc)
-      stop("'ColSideColors' must be a character vector of length ncol(x)")
-    lmat <- rbind(lmat[1, ] + 1, c(NA, 1), lmat[2, ] + 1)
-    lhei <- c(lhei[1L], 0.2, lhei[2L])
-  }
-  if (!missing(RowSideColors)) {
-    if (!is.character(RowSideColors) || length(RowSideColors) !=
-        nr)
-      stop("'RowSideColors' must be a character vector of length nrow(x)")
-    lmat <- cbind(lmat[, 1] + 1, c(rep(NA, nrow(lmat) - 1),
-                                   1), lmat[, 2] + 1)
-    lwid <- c(lwid[1L], 0.2, lwid[2L])
-  }
-  lmat[is.na(lmat)] <- 0
-  if (verbose) {
-    cat("layout: widths = ", lwid, ", heights = ", lhei,
-        "; lmat=\n")
-    print(lmat)
-  }
-  dev.hold()
-  on.exit(dev.flush())
-  op <- par(no.readonly = TRUE)
-  on.exit(par(op), add = TRUE)
-  #    layout(lmat, widths = lwid, heights = lhei, respect = TRUE)
-  if (!missing(RowSideColors)) {
-    par(mar = c(margins[1L], 0, 0, 0.5))
-    image(rbind(1L:nr), col = RowSideColors[rowInd], axes = FALSE)
-  }
-  if (!missing(ColSideColors)) {
-    par(mar = c(0.5, 0, 0, margins[2L]))
-    image(cbind(1L:nc), col = ColSideColors[colInd], axes = FALSE)
-  }
-  #    par(mar = c(margins[1L], 0, 0, margins[2L]))
-  # Find another way to do the margins so it doesn't take up entire space
-  # Just using the default values for now;
-  #  if doesn't work, we'll have to find out what Joel's code does & match that
-  # Ok, works. Now I'd like to cut off the RHS axis labels,
-  #  which I'll do by commenting them out further below
-  par(mar = c(5.1, 1.1, 4.1, 2.1))
-  if (!symm || scale != "none")
-    x <- t(x)
-  if (revC) {
-    iy <- nr:1
-    if (doRdend)
-      ddr <- rev(ddr)
-    x <- x[, iy]
-  }
-  else iy <- 1L:nr
-  ###
-  # Here's where it actually plots the heatmap with image()
-  image(1L:nc, 1L:nr, x, xlim = 0.5 + c(0, nc), ylim = 0.5 +
-          c(0, nr), axes = FALSE, xlab = "", ylab = "", ...)
-  ###
-  if(!oneColumn)
-    axis(1, 1L:nc, labels = labCol, las = 2, line = -0.5, tick = 0,
-         cex.axis = cexCol)
-  else
-    axis(1, 2, labels = labCol[2], las = 1, line = -1, tick = 0,
-         cex.axis = cexCol)
-  if (!is.null(xlab))
-    mtext(xlab, side = 1, line = margins[1L] - 1.25)
-  #    axis(4, iy, labels = labRow, las = 2, line = -0.5, tick = 0,
-  #        cex.axis = cexRow)
-  if (!is.null(ylab))
-    mtext(ylab, side = 4, line = margins[2L] - 1.25)
-  if (!missing(add.expr))
-    # CHANGED to use parent.frame() as the environment,
-    # so we can use the values of n etc. from the calling function
-    # for the sake of drawing all the horizontal and vertical lines
-    eval(substitute(add.expr, parent.frame()))
-  par(mar = c(margins[1L], 0, 0, 0))
-  #    if (doRdend)
-  #        plot(ddr, horiz = TRUE, axes = FALSE, yaxs = "i", leaflab = "none")
-  #    else frame()
-  par(mar = c(0, 0, if (!is.null(main)) 1 else 0, margins[2L]))
-  #    if (doCdend)
-  #        plot(ddc, axes = FALSE, xaxs = "i", leaflab = "none")
-  #    else if (!is.null(main))
-  #        frame()
-  if (!is.null(main)) {
-    par(xpd = NA)
-    title(main, cex.main = 1.5 * op[["cex.main"]])
-  }
-  invisible(list(rowInd = rowInd, colInd = colInd, Rowv = if (keep.dendro &&
-                                                              doRdend) ddr, Colv = if (keep.dendro && doCdend) ddc))
-}
-
-
-#### All other plots ####
-
-# TODO: consolidate all the CI plots
-# into one function RankPlot()
-# with argument/option specifying which plot type to use
-# (including the Pantyhose plot above).
+#############################################################
 #
-# Place that single function here and delete the separate files,
-# which are currently:
-# ALMOND.rankCompPlot.R,
-# double.REG.CIs.rankCompPlot.R,
-# REG.CIs.rankCompPlot.R,
-# SIMPLE.rankCompPlot.R
+#   The function RankPlot creates a graph as
+#   described by Almond, Lewis, Tukey, and Yan (2000)
+#   for visualizing significant differences between
+#   one reference parameter and a set of other
+#   parameters, and automatically adds appropraite axis
+#   labels.
+#
+#   Arguments:
+#
+#   est:        vector of point estimates
+#   se:     vector of standard errors of estimates
+#   names:  vector of characters giving the
+#           names the estimates represent
+#   refName: one of the values of "names" giving the
+#           estimate which is being compared to
+#           (optional if plotType=="individual", then defaults to median)
+#   confLevel:  a number between 0 and 1 giving the
+#           confidence level for the set of all
+#           pairwise comparisons with the reference
+#   tickWidth:  specifies the length of the ends of the
+#           error bars. By default set to 2/n, where
+#           n is the length of est
+#   regions:    optional factor vector of regions. If used,
+#           the values of est will be plotted in
+#           groups by region
+#
+#############################################################
 
+RankPlot = function(est, se, names, refName=NULL,
+                    confLevel = 0.9, xlim=NULL,
+                    xlab="", ylab="", xaxt = "n", yaxt = "n", cex=1, tickWidth=NULL, regions=NULL,
+                    rangeFactor=1.2,
+                    textPad = 0,
+                    plotType = c("individual", "difference", "comparison", "columns"),
+                    tiers = 1, GH = FALSE,
+                    Bonferroni = ifelse(plotType == "individual", "none", "demi"),
+                    legendX = "topleft", legendY = NULL, legendText = NULL,
+                    lwdReg = 1, lwdBold = 3, showYlab = FALSE, thetaLine = 1) {
+
+  n = length(est)
+  stopifnot(length(se) == n & length(names) == n)
+  stopifnot(is.numeric(est) & is.numeric(se))
+
+  stopifnot(0 < confLevel & confLevel < 1)
+  plotType = match.arg(plotType)
+  stopifnot(tiers %in% 1:2)
+  stopifnot(GH %in% c(TRUE, FALSE))
+  Bonferroni = match.arg(Bonferroni, c("none", "demi", "full"))
+  if(plotType != "individual") {
+    if(is.null(refName) & plotType != "columns") {
+      stop("Must provide refName")
+    }
+    if(Bonferroni != "demi") {
+      stop("Must use Bonferroni='demi' unless plotType='individual'")
+    }
+    if(GH) {
+      stop("Must use GH=FALSE unless plotType='individual'")
+    }
+    if(tiers != 1) {
+      stop("Must use tiers=1 unless plotType='individual'")
+    }
+  }
+  if(tiers == 2) { # need at least one of GH or Bonf correction
+    stopifnot(GH | Bonferroni != "none")
+  }
+
+  if(plotType == "columns") {
+    # TODO: sanitize args, warning users that
+    # it won't have any effect if they tried setting non-default args
+    # for anything that doesn't get passed to RankColumnPlot() here
+    RankColumnPlot(est = est, se = se, names = names,
+                   refName = refName, confLevel = confLevel)
+    # Don't continue with rest of plotting function below
+    return()
+  }
+
+
+  # determine units to use on axes
+  range = max(est)-min(est)
+  extrange = rangeFactor*range
+  unit = range2units(extrange)
+
+  # sort estimates from least to greatest (and by region, if specified);
+  # match reference with index of sorted estimates
+  estSort = sort(est)
+  seSort = se[order(est)]
+  namesSort = names[order(est)]
+  if (!is.null(regions)) {
+    regSort = regions[order(est)]
+    estSort = estSort[order(regSort)]
+    seSort = seSort[order(regSort)]
+    namesSort = namesSort[order(regSort)]
+  }
+  if(is.null(refName)) {
+    # use median as "reference" state
+    refInd = floor(n/2)
+    refName = namesSort[refInd]
+  } else {
+    refInd = which(namesSort == refName)
+  }
+
+  if(plotType == "individual") {
+    sePlot = seSort
+  } else if(plotType == "difference") {
+    # center at the reference state
+    estSort = estSort - estSort[refInd]
+    # compute SEs of differences
+    sePlot = sqrt(seSort[refInd]^2 + seSort^2)
+    sePlot[refInd] = 0
+  } else if(plotType == "comparison") {
+    # compute special "SEs" for comparison intervals
+    sePlot = sqrt(seSort[refInd]^2 + seSort^2) - seSort[refInd]
+    sePlot[refInd] = seSort[refInd]
+  }
+
+  denomC = 2 * switch(Bonferroni,
+                      none = 1, demi = n-1, full= choose(n, 2))
+  confLevelC = ifelse(GH, ConfidenceLevelGH(se, confLevel),
+                      confLevel)
+  if(tiers == 2) {
+    # Individual CIs: no Bonferroni or Goldstein-Healy correction
+    pI = 1 - ((1 - confLevel)/2)
+    qI = qnorm(pI)
+    # Corrected CIs
+    pC = 1 - ((1 - confLevelC)/denomC)
+    qC = qnorm(pC)
+
+    legendDetails = c(paste0("tier: individual ", 100*confLevel,
+                             "\\% CIs\n"),
+                      paste0("tier: ",
+                             ifelse(GH, "Goldstein-Healy", ""),
+                             ifelse(GH & Bonferroni != "none",
+                                    "\nand ", ""),
+                             ifelse(Bonferroni != "none",
+                                    paste0(Bonferroni, "-Bonferroni"), ""),
+                             "\nadjusted intervals"))
+    # Compare and assign bigger factor to outer tier
+    if(qC > qI) {
+      q = qI
+      qOut = qC
+      legendText = paste(c("Inner", "Outer"), legendDetails)
+    } else {
+      q = qC
+      qOut = qI
+      legendText = paste(c("Inner", "Outer"), rev(legendDetails),
+                         c("\n", ""))
+    }
+    moeOut = qOut*sePlot
+  } else {
+    p = 1 - ((1 - confLevelC)/denomC)
+    q = qnorm(p)
+  }
+
+  #compute error margins
+  moe = q*sePlot
+
+  if (is.null(xlim)) {
+    xlower = (floor(min(estSort)/unit)-1)*unit
+    xupper = (ceiling(max(estSort)/unit)+1)*unit
+    xlim = c(xlower, xupper)
+  }
+
+  #set width of error bars
+  tickWidth = ifelse(is.null(tickWidth), 2/n, tickWidth)
+
+  # create empty plot
+  plot(seq(xlim[1], xlim[2], length = n+2), 0:(n+1), type = "n",
+       xlab=xlab, ylab=ylab, xlim = c(xlim[1],xlim[2]), yaxt=yaxt, xaxt=xaxt,
+       # make y-axis go from 0 to n+1
+       yaxs='i')
+
+  # add reference line/strip at 0 for difference/comparison plots
+  if(plotType == "difference") {
+    abline(v = estSort[refInd])
+  } else if(plotType == "comparison") {
+    rect(estSort[refInd] - moe[refInd], 0,
+         estSort[refInd] + moe[refInd], n+1, border=NA, col='grey')
+    abline(v = estSort[refInd] - moe[refInd], lty=2)
+    abline(v = estSort[refInd] + moe[refInd], lty=2)
+    abline(v = estSort[refInd])
+    mtext(namesSort[refInd], side=3, at=estSort[refInd], line=0.5, cex=0.7)
+    mtext("Distance from the strip", side=3, line=2.2)
+  }
+
+  # plot reference state
+  points(estSort[refInd], refInd, cex=cex, pch=16)
+  text(estSort[refInd] - (moe[refInd] + textPad), refInd,
+       labels = namesSort[refInd], pos = 2, cex=cex)
+  text(estSort[refInd] + (moe[refInd] + textPad), refInd,
+       labels = namesSort[refInd], pos = 4, cex=cex)
+
+  #plot values with error bars
+  if(plotType == "individual") {
+    pts = 1:n
+  } else {
+    pts = (1:n)[-refInd]
+  }
+  for (i in pts) {
+    ps = ifelse(estSort[i] < estSort[refInd], -1, 1)
+    lwd = ifelse(plotType != "individual" &
+                   ((ps == -1 & estSort[i]+moe[i] < estSort[refInd]-moe[refInd]) |
+                      (ps == 1 & estSort[i]-moe[i] > estSort[refInd]+moe[refInd])),
+                 lwdBold, lwdReg)
+    points(estSort[i], i, pch=16, cex=cex)
+    arrows(x0 = estSort[i], y0 = i, x1 = estSort[i] - moe[i],
+           angle = 90, length = tickWidth, lwd=lwd)
+    arrows(x0 = estSort[i], y0 = i, x1 = estSort[i] + moe[i],
+           angle = 90, length = tickWidth, lwd=lwd)
+    if(i != refInd) { # refInd was already labeled earlier
+      text(estSort[i] + ps*(moe[i] + textPad), i, labels = namesSort[i],
+           pos = 3+ps, cex=cex)
+    }
+    if(tiers == 2) {
+      # also draw outer CIs, with no "arrows"
+      segments(x0 = estSort[i] + moeOut[i], y0 = i,
+               x1 = estSort[i] - moeOut[i],
+               lwd = lwdReg)
+    }
+  }
+
+  # add axes
+
+  # bottom axis
+  xax = seq(xlim[1],xlim[2],by=unit)
+  axis(1, at = xax, cex.axis=0.7, mgp=c(3,0.3,0))
+
+  # top axis
+  if(plotType == "comparison") {
+    toplab1 = rev((0:(floor(2*(estSort[refInd] - moe[refInd] - xlim[1])/unit)))*unit/2)
+    toplab2 = (0:(floor(2*(xlim[2] - estSort[refInd] - moe[refInd])/unit)))*unit/2
+    toplab = c(toplab1, toplab2)
+    topax = c(estSort[refInd] - moe[refInd] - toplab1, estSort[refInd] + moe[refInd] + toplab2)
+    axis(3, at = topax, labels = toplab, cex.axis=0.7)
+  }
+
+  # left axis
+  if(showYlab) {
+    ylabels = 1:n
+    # Use mtext, not title, to make the y-label listen to las=2
+    mtext("$\\hat{r}_k$", side=2, line=2.5, las=2)
+  } else {
+    ylabels = rep("", n)
+  }
+  axis(2, at = 1:n, labels=ylabels, las=2, cex.axis=0.7)
+
+  # add "\theta_k" below reference area
+  thetaText = ifelse(plotType == "difference",
+                     "$\\theta_k-\\theta_{k^*}$",
+                     "$\\theta_k$")
+  adj = ifelse(plotType == "comparison", NA, 1)
+  mtext(thetaText, side=1, at=xlim[2]+.3*unit, line=thetaLine, adj=adj)
+  if(plotType == "comparison") {
+    # add theta_star symbol below reference area
+    mtext("$\\hat{\\theta}_{k^*}$", side=1, at=estSort[refInd], line=thetaLine)
+  }
+
+  # add region names (if necessary)
+  if (!is.null(regions)) {
+    y = cumsum(as.numeric(summary(regions)))
+    regText = levels(regions)
+    nregs = length(regText)
+    for (i in 1:nregs) {
+      text(xlim[2], y[i], labels = regText[i], pos = 2, cex=cex)
+    }
+  }
+
+  # add legend
+  if(plotType == "individual" & is.null(legendText)) {
+    if(!GH & Bonferroni == "none") {
+      legendText = paste0(100*confLevel, "\\% confidence intervals")
+    } else {
+      legendText = paste0(ifelse(GH, "Goldstein-Healy", ""),
+                          ifelse(GH & Bonferroni != "none", "\nand ", ""),
+                          ifelse(Bonferroni != "none",
+                                 paste0(Bonferroni, "-Bonferroni"), ""),
+                          "\nadjusted ", 100*confLevel, "\\% intervals")
+    }
+  }
+  if(plotType == "individual" & !is.null(legendText)) {
+    legend(x = legendX, y = legendY,
+           legend = legendText, bty = "n",
+           inset = 0.02, cex = 0.8)
+  } else if(plotType != "individual") {
+    legend(x = legendX, y = legendY,
+           legend = c("Significantly Different",
+                      "Not Significantly Different"),
+           lwd = c(lwdBold, lwdReg), inset = 0.02, cex = 0.8, bg = "white",
+           title = paste0("Compared to ", refName))
+  }
+}

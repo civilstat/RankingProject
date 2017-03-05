@@ -9,7 +9,7 @@
 
 RankPlotWithTable = function(tableParList, figureParList, annotParList = NULL,
                              tableFunction = RankTable,
-                             figureFunction = SIMPLE.rankCompPlot,
+                             figureFunction = RankPlot,
                              tablewidthProp = 3/8) {
 
   oldpar <- par(no.readonly = TRUE)
