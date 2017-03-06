@@ -1,45 +1,192 @@
+# TODO: sanitize args when plotType = "columns", warning users that
+# it won't have any effect if they tried setting non-default args
+# for anything that doesn't get passed to RankColumnPlot()
+
+# TODO: explicitly cite Almond et al (2000) and G-H (1995).
+
+# TODO: note which args do/don't apply to plotType = "columns"?
+
+# TODO: allow user to stop from showing *any* legend?
+# e.g. if legendText = NA ??? in case the default legend is not wanted
+
+# TODO: test or remove regions, showYlab, and xlim etc.;
+# regions needs to work with RankTable if we include it at all.
+
 #############################################################
 #
 #   The function RankPlot creates a graph as
 #   described by Almond, Lewis, Tukey, and Yan (2000)
 #   for visualizing significant differences between
 #   one reference parameter and a set of other
-#   parameters, and automatically adds appropraite axis
+#   parameters, and automatically adds appropriate axis
 #   labels.
 #
 #   Arguments:
 #
-#   est:        vector of point estimates
-#   se:     vector of standard errors of estimates
-#   names:  vector of characters giving the
-#           names the estimates represent
+#   est:     vector of point estimates
+#   se:      vector of standard errors of estimates
+#   names:   vector of characters giving the
+#            names the estimates represent
 #   refName: one of the values of "names" giving the
-#           estimate which is being compared to
-#           (optional if plotType=="individual", then defaults to median)
+#            estimate which is being compared to
+#            (optional if plotType=="individual",
+#             then defaults to median)
 #   confLevel:  a number between 0 and 1 giving the
-#           confidence level for the set of all
-#           pairwise comparisons with the reference
+#            confidence level for the set of all
+#            pairwise comparisons with the reference
 #   tickWidth:  specifies the length of the ends of the
-#           error bars. By default set to 2/n, where
-#           n is the length of est
-#   regions:    optional factor vector of regions. If used,
-#           the values of est will be plotted in
-#           groups by region
+#            error bars. By default set to 2/n, where
+#            n is the length of est
+#   regions: optional factor vector of regions. If used,
+#            the values of est will be plotted in
+#            groups by region
 #
 #############################################################
 
+
+
+#' Figure containing a plot of ranking data.
+#'
+#' \code{RankPlot} creates a figure with a plot of ranking data,
+#'   from among several options for showing uncertainty in the ranked estimates.
+#'   This function is meant for use within \code{\link{RankPlotWithTable}},
+#'   which draws a ranking table aligned with this plot of the data
+#'   in one combined figure.
+#'
+#' Users may wish to modify this code and write
+#'   their own plot function, which can be swapped into \code{figureFunction}
+#'   within \code{\link{RankPlotWithTable}}. Be aware that
+#'   \code{RankPlotWithTable} uses \code{\link{layout}} to arrange
+#'   the table and plot side-by-side, so \code{layout} cannot be used within
+#'   a new \code{figureFunction}.
+#'
+#' See Goldstein and Healy (1995, JRSS) [cite?] for details on the
+#'   "average" confidence level procedure used when \code{GH = TRUE}.
+#'   See Almond, Lewis, Tukey, and Yan (2000, TAS) [cite?] for details
+#'   on the "comparison intervals" procedure.
+#'
+#' @param est,se Vectors containing the point estimate and its standard error
+#'   for each area.
+#' @param names Vector containing the name of each area.
+#'   Abbreviations may be preferable to full names
+#'   (e.g. "CO" instead of "Colorado")
+#'   since these names will be displayed directly on the plot.
+#' @param refName String containing the name of the reference area;
+#'   must be one of the values in \code{names}.
+#'   Required for \code{plotType = c("difference", "comparison")}.
+#'   Optional for \code{plotType = "individual"} (where it only determines
+#'   the row above/below which the \code{names} are plotted to the right/left
+#'   of the intervals; if unspecified, defaults to median rank);
+#'   or for \code{plotType = "columns"} (where it selects one column
+#'   to be highlighted by vertical lines, if specified).
+#' @param confLevel Number between 0 and 1: confidence level for individual
+#'   (uncorrected) hypothesis tests and/or confidence intervals. E.g. with
+#'   \code{plotType = "individual"}, \code{confLevel = 0.9} will plot
+#'   individual 90\% confidence intervals. If using \code{GH = TRUE}
+#'   and/or \code{Bonferroni != "none"}, the Goldstein-Healy and/or Bonferroni
+#'   corrections will be applied to the \code{confLevel} baseline.
+#' @param plotType Which type of ranking plot to use. See vignettes for
+#'   examples and details.
+#'   \itemize{
+#'   \item \code{"individual"} is used for usual individual
+#'   confidence intervals, with or without Goldstein-Healy adjustment and/or
+#'   (demi or full) Bonferroni corrections.
+#'   \item \code{"difference"} shows confidence intervals for the differences
+#'   between the reference area \code{refName} and all other areas.
+#'   \item \code{"comparison"} also compares the reference area \code{refName}
+#'   to all others, but using the "comparison intervals"
+#'   of Almond et al. (2000).
+#'   \item \code{"columns"} plots a grid of shaded columns, where each column
+#'   uses shading to report demi-Bonferroni-corrected significance tests
+#'   for comparing the reference area (labeled at the bottom of the column)
+#'   with all other areas.
+#'   }
+#' @param tiers Numeric, either 1 for usual confidence intervals,
+#'   or 2 for two-tiered intervals. 2 can only be used with
+#'   \code{plotType = "individual"}, when either \code{GH = TRUE}
+#'   or \code{Bonferroni != "none"} or both.
+#'   In that case, the "inner tiers" run between each interval's cross-bars,
+#'   and the "outer tiers" run past the cross-bars
+#'   all the way to the ends of each interval.
+#'   One of the tiers will show uncorrected
+#'   \code{confLevel*100}\% confidence intervals,
+#'   and the other tier will show the Golstein-Healy and/or Bonferroni
+#'   adjusted intervals. A legend will show which tier is which;
+#'   usually Goldstein-Healy alone gives shorter intervals (inner tier),
+#'   but Bonferroni corrections make them into longer intervals (outer tier).
+#' @param GH Logical, for whether or not to plot adjusted
+#'   confidence intervals at an "average" \code{confLevel*100}\%
+#'   confidence level as in Goldstein and Healy (1995).
+#'   Can only be used with \code{plotType = "individual"}.
+#' @param Bonferroni Whether and how to correct for multiple comparisons by a
+#'   Bonferroni correction to the confidence level of the tests or intervals.
+#'   \code{"none"} performs no correction; \code{"demi"} corrects for
+#'   comparing one reference area to all \code{n-1} other areas; and
+#'   \code{"full"} corrects for comparing all possible \code{choose(n-1, 2)}
+#'   pairs of areas.
+#'   If \code{GH = TRUE}, the Goldstein-Healy adjustment
+#'   is performed first, and any Bonferroni correction is applied afterwards.
+#'   Settings \code{"none"} and \code{"full"} can only be used
+#'   with \code{plotType = "individual"};
+#'   all other plot types use the setting \code{"demi"}.
+#' @param tikzText Logical, for whether or not to format text for tikz plotting.
+#' @param cex \strong{C}haracter \strong{ex}pansion factor for
+#'   the points use to plot each area's point estimate, and for the
+#'   text used to plot each area's name next to its interval.
+#' @param tickWidth Numeric height of the cross-bars on interval endpoints
+#'   (or inner tiers, if \code{tiers = 2}). The function tries to leave
+#'   a reasonable amount of space between intervals plotted in different rows,
+#'   but sometimes it may help to adjust \code{tickWidth} manually.
+#' @param rangeFactor Numeric multiple by which to expand the range of the data
+#'   when setting the x-axis limits. The function tries to leave sufficient room
+#'   for plotting margins of error and names next to each area,
+#'   but sometimes it may help to adjust \code{rangeFactor} manually.
+#' @param textPad Numeric amount by which to shift the text of \code{names}
+#'   past the interval endpoints when plotting. Positive values shift outwards
+#'   (towards the edges of the plot); negative values shift inwards.
+#' @param legendX,legendY The x and y co-ordinates used to position the legend;
+#'   see \code{\link{legend}} for details on specifying \code{x} by keyword.
+#' @param legendText String, or string vector, with legend text. By default,
+#'   each plot type adds informative legend text, but the user may override.
+#' @param lwdReg Positive number for the line width of regular lines.
+#'   Used for all intervals when \code{plotType = "individual"},
+#'   or for intervals not significantly different from the reference area
+#'   when \code{plotType = c("difference", "comparison")}.
+#' @param lwdBold Positive number for the line width of bold lines.
+#'   Used for intervals significantly different from the reference area
+#'   when \code{plotType = c("difference", "comparison")}.
+#' @param thetaLine Number for how many lines below bottom axis to display
+#'   "theta" or other default x-axis labels (which depend on \code{plotType}).
+#' @param regions Deprecated: untested; does not work with RankTable.
+#' @param showYlab Deprecated: untested.
+#' @param xlim Deprecated: untested.
+#' @param xlab Deprecated: untested.
+#' @param ylab Deprecated: untested.
+#' @param xaxt Deprecated: untested.
+#' @param yaxt Deprecated: untested.
+#' @examples
+#' # Table of US states' mean travel times to work, from the 2011 ACS
+#' data(TravelTime2011)
+#' with(TravelTime2011,
+#'      RankPlot(est = Estimate.2dec, se = SE.2dec,
+#'               names = Abbreviation, refName = "USA",
+#'               confLevel = 0.9, cex = 0.6,
+#'               plotType = "individual"))
+#' @seealso \code{\link{RankPlotWithTable}} and \code{\link{RankTable}}.
 #' @export
 RankPlot = function(est, se, names, refName=NULL,
-                    confLevel = 0.9, xlim=NULL,
-                    xlab="", ylab="", xaxt = "n", yaxt = "n", cex=1, tickWidth=NULL, regions=NULL,
-                    rangeFactor=1.2,
-                    textPad = 0,
+                    confLevel = 0.9,
                     plotType = c("individual", "difference", "comparison", "columns"),
                     tiers = 1, GH = FALSE,
                     Bonferroni = ifelse(plotType == "individual", "none", "demi"),
+                    tikzText = NULL,
+                    cex=1,
+                    tickWidth=NULL,rangeFactor=1.2,
+                    textPad = 0,
                     legendX = "topleft", legendY = NULL, legendText = NULL,
-                    lwdReg = 1, lwdBold = 3, showYlab = FALSE, thetaLine = 1,
-                    tikzText = NULL) {
+                    lwdReg = 1, lwdBold = 3, thetaLine = 1,
+                    regions=NULL, showYlab = FALSE,
+                    xlim=NULL, xlab="", ylab="", xaxt = "n", yaxt = "n") {
 
   n = length(est)
   stopifnot(length(se) == n & length(names) == n)
@@ -69,9 +216,6 @@ RankPlot = function(est, se, names, refName=NULL,
   }
 
   if(plotType == "columns") {
-    # TODO: sanitize args, warning users that
-    # it won't have any effect if they tried setting non-default args
-    # for anything that doesn't get passed to RankColumnPlot() here
     RankColumnPlot(est = est, se = se, names = names,
                    refName = refName, confLevel = confLevel)
     # Don't continue with rest of plotting function below

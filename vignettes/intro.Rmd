@@ -33,13 +33,13 @@ USdata$SE.Print = substring(formatC(USdata$SE.2dec,
 refAbbr <- "CO"
 refRow  <- which(USdata$Abbreviation==refAbbr)
 
-# Set up parameter lists for table function, figure function, and annotations
+# Set up parameter lists for table function, plot function, and annotations
 tableParList <- with(USdata,
                      list(ranks = Rank, names = State, 
                           est = Estimate.Print, se = SE.Print,
                           placeType = "State"))
 
-figureParList <- with(USdata,
+plotParList <- with(USdata,
                       list(est = Estimate.2dec, se = SE.2dec,
                            names = Abbreviation, refName = refAbbr,
                            confLevel = .9))
@@ -49,52 +49,52 @@ annotParList <- with(USdata,
                           refFullName = State[refRow]))
 
 # Pantyhose plot
-figureParList$plotType <- "columns"
-tableParList$pantyhoseRefLine <- .7
-RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
-                  tablewidthProp = 2/7)
-tableParList$pantyhoseRefLine <- NULL
+plotParList$plotType <- "columns"
+tableParList$columnsPlotRefLine <- .7
+RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
+                  tableWidthProp = 2/7)
+tableParList$columnsPlotRefLine <- NULL
 
 # Individual CIs
-figureParList$plotType <- "individual"
-figureParList$cex <- 0.6
-# figureParList$legendText <- ""  # can remove auto-legend this way
-RankPlotWithTable(tableParList = tableParList, figureParList = figureParList)
-# figureParList$legendText <- NULL
+plotParList$plotType <- "individual"
+plotParList$cex <- 0.6
+# plotParList$legendText <- ""  # can remove auto-legend this way
+RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
+# plotParList$legendText <- NULL
 
 # CIs for differences from ref
-figureParList$lwdBold <- 5
-figureParList$plotType <- "difference"
-RankPlotWithTable(tableParList = tableParList, figureParList = figureParList,
+plotParList$lwdBold <- 5
+plotParList$plotType <- "difference"
+RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
                   annotParList = annotParList)
 
 # Comparison intervals
-figureParList$plotType <- "comparison"
-figureParList$thetaLine <- 1.5
-RankPlotWithTable(tableParList = tableParList, figureParList = figureParList)
-figureParList$thetaLine <- NULL
-figureParList$lwdBold <- NULL
+plotParList$plotType <- "comparison"
+plotParList$thetaLine <- 1.5
+RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
+plotParList$thetaLine <- NULL
+plotParList$lwdBold <- NULL
 
 # Goldstein-Healy adjusted CIs
-figureParList$plotType <- "individual"
-figureParList$GH <- TRUE
-RankPlotWithTable(tableParList = tableParList, figureParList = figureParList)
+plotParList$plotType <- "individual"
+plotParList$GH <- TRUE
+RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
 
 # Double-tiered GH plot:
 # inner tiers are GH CIs,
 # outer tiers are usual 90% CIs
-figureParList$tiers <- 2
+plotParList$tiers <- 2
 # Legend auto-positioning is poor with line breaks in legend text;
 # we can improve it by controlling (X,Y) manually
-figureParList$legendX <- 12
-figureParList$legendY <- 53
-RankPlotWithTable(tableParList = tableParList, figureParList = figureParList)
+plotParList$legendX <- 12
+plotParList$legendY <- 53
+RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
 
 # Double-tiered GH + Bonferroni plot:
 # inner tiers are usual 90% CIs,
 # outer tiers are 50-way demi-Bonferroni-corrected GH CIs
-figureParList$Bonferroni <- "demi"
-RankPlotWithTable(tableParList = tableParList, figureParList = figureParList)
+plotParList$Bonferroni <- "demi"
+RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
 ```
 
 
