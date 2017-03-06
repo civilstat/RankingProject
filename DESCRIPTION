@@ -1,7 +1,7 @@
 Package: RankingProject
 Type: Package
 Title: The Ranking Project: Visualizations for Comparing Populations
-Version: 0.0.0.9012
+Version: 0.0.0.9013
 Authors@R: c(
     person("Jerzy", "Wieczorek", email = "jerzywieczorek@gmail.com", role = c("cre", "aut")),
     person("Joel", "Beard", role = "ctb"))
@@ -12,9 +12,9 @@ Description: Functions to generate plots and tables for comparing independently-
 License: GPL-2
 LazyData: TRUE
 Suggests:
-    knitr,
-    rmarkdown,
-    tikzDevice
+    knitr (>= 1.15.1),
+    rmarkdown (>= 0.9.6),
+    tikzDevice (>= 0.10-1)
 VignetteBuilder: knitr
 URL: http://github.com/civilstat/RankingProject
 BugReports: http://github.com/civilstat/RankingProject/issues
