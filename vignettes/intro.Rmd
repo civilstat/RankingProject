@@ -16,12 +16,9 @@ The package provides functions for plotting ranked tables of data side-by-side w
 ```{r, fig.width=6.5, fig.height=8}
 library(RankingProject)
 
-# TODO: drop USA row (or add an example using it as reference "state"?);
-# resave in .Rdata format; add a documentation file for the dataset too
-USfile  <- system.file("extdata", "USA.csv",
-                       package = "RankingProject")
-USdata  <- read.csv(USfile, header=TRUE, stringsAsFactors=FALSE)
-USdata  <- subset(USdata, Abbreviation != "USA")
+# TODO: add an example using USA as reference "state"
+data(TravelTime2011)
+USdata  <- subset(TravelTime2011, Abbreviation != "USA")
 head(USdata)
 
 # Format estimates and SEs into strings with 2 digits past the decimal

@@ -28,6 +28,7 @@
 #
 #############################################################
 
+#' @export
 RankPlot = function(est, se, names, refName=NULL,
                     confLevel = 0.9, xlim=NULL,
                     xlab="", ylab="", xaxt = "n", yaxt = "n", cex=1, tickWidth=NULL, regions=NULL,
@@ -216,7 +217,7 @@ RankPlot = function(est, se, names, refName=NULL,
     pts = (1:n)[-refInd]
   }
   for (i in pts) {
-    ps = ifelse(estSort[i] < estSort[refInd], -1, 1)
+    ps = ifelse(estSort[i] <= estSort[refInd], -1, 1)
     lwd = ifelse(plotType != "individual" &
                    ((ps == -1 & estSort[i]+moe[i] < estSort[refInd]-moe[refInd]) |
                       (ps == 1 & estSort[i]-moe[i] > estSort[refInd]+moe[refInd])),

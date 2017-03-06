@@ -19,12 +19,9 @@ This vignette shows how to reproduce the main figures in "A Primer on Visualizat
 library(RankingProject)
 library(tikzDevice)
 
-# TODO: drop USA row (or add an example using it as reference "state"?);
-# resave in .Rdata format; add a documentation file for the dataset too
-USfile  <- system.file("extdata", "USA.csv",
-                       package = "RankingProject")
-USdata  <- read.csv(USfile, header=TRUE, stringsAsFactors=FALSE)
-USdata  <- subset(USdata, Abbreviation != "USA")
+# TODO: add an example using USA as reference "state"
+data(TravelTime2011)
+USdata  <- subset(TravelTime2011, Abbreviation != "USA")
 head(USdata)
 
 # Format estimates and SEs into strings with 2 digits past the decimal

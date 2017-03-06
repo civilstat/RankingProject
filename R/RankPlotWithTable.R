@@ -4,6 +4,7 @@
 # and adjusting all the text...
 # Let's skip this feature for now!
 
+#' @export
 RankPlotWithTable = function(tableParList, figureParList, annotParList = NULL,
                              tableFunction = RankTable,
                              figureFunction = RankPlot,
