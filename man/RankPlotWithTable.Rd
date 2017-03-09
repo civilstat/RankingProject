@@ -31,7 +31,7 @@ on the right-hand side of the layout. Default is \code{\link{RankPlot}}.}
 layout's width should be used to plot the table. The remaining proportion
 \code{1-tableWidthProp} is used to plot the figure.}
 
-\item{tikzText}{Logical, formats text for tikz plotting if \code{TRUE}).}
+\item{tikzText}{Logical, formats text for tikz plotting if \code{TRUE}.}
 
 \item{annotRefName, annotRefRank}{Optional rank and name of the reference
 area, for adding an extra

@@ -10,8 +10,7 @@ RankPlot(est, se, names, refName = NULL, confLevel = 0.9,
   "none", "demi"), tikzText = FALSE, cex = 1, tickWidth = NULL,
   rangeFactor = 1.2, textPad = 0, legendX = "topleft", legendY = NULL,
   legendText = NULL, lwdReg = 1, lwdBold = 3, thetaLine = 1,
-  regions = NULL, showYlab = FALSE, xlim = NULL, xlab = "", ylab = "",
-  xaxt = "n", yaxt = "n")
+  xlim = NULL)
 }
 \arguments{
 \item{est, se}{Vectors containing the point estimate and its standard error
@@ -125,19 +124,9 @@ when \code{plotType = c("difference", "comparison")}.}
 \item{thetaLine}{Number for how many lines below bottom axis to display
 "theta" or other default x-axis labels (which depend on \code{plotType}).}
 
-\item{regions}{Deprecated: untested; does not work with RankTable.}
-
-\item{showYlab}{Deprecated: untested.}
-
-\item{xlim}{Deprecated: untested.}
-
-\item{xlab}{Deprecated: untested.}
-
-\item{ylab}{Deprecated: untested.}
-
-\item{xaxt}{Deprecated: untested.}
-
-\item{yaxt}{Deprecated: untested.}
+\item{xlim}{Vector of 2 numbers for x-axis limits. If \code{NULL},
+will be automatically set using range of data
+expanded by \code{rangeFactor}.}
 }
 \description{
 \code{RankPlot} creates a figure with a plot of ranking data,
@@ -154,9 +143,9 @@ Users may wish to modify this code and write
   the table and plot side-by-side, so \code{layout} cannot be used within
   a new \code{figureFunction}.
 
-See Goldstein and Healy (1995, JRSS) [cite?] for details on the
+See Goldstein and Healy (1995, JRSS) for details on the
   "average" confidence level procedure used when \code{GH = TRUE}.
-  See Almond, Lewis, Tukey, and Yan (2000, TAS) [cite?] for details
+  See Almond, Lewis, Tukey, and Yan (2000, TAS) for details
   on the "comparison intervals" procedure.
 }
 \examples{

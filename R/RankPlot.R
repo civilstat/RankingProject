@@ -9,9 +9,6 @@
 # TODO: allow user to stop from showing *any* legend?
 # e.g. if legendText = NA ??? in case the default legend is not wanted
 
-# TODO: test or remove regions, showYlab, and xlim etc.;
-# regions needs to work with RankTable if we include it at all.
-
 #############################################################
 #
 #   The function RankPlot creates a graph as
@@ -37,9 +34,6 @@
 #   tickWidth:  specifies the length of the ends of the
 #            error bars. By default set to 2/n, where
 #            n is the length of est
-#   regions: optional factor vector of regions. If used,
-#            the values of est will be plotted in
-#            groups by region
 #
 #############################################################
 
@@ -158,13 +152,9 @@
 #'   when \code{plotType = c("difference", "comparison")}.
 #' @param thetaLine Number for how many lines below bottom axis to display
 #'   "theta" or other default x-axis labels (which depend on \code{plotType}).
-#' @param regions Deprecated: untested; does not work with RankTable.
-#' @param showYlab Deprecated: untested.
-#' @param xlim Deprecated: untested.
-#' @param xlab Deprecated: untested.
-#' @param ylab Deprecated: untested.
-#' @param xaxt Deprecated: untested.
-#' @param yaxt Deprecated: untested.
+#' @param xlim Vector of 2 numbers for x-axis limits. If \code{NULL},
+#'   will be automatically set using range of data
+#'   expanded by \code{rangeFactor}.
 #' @examples
 #' # Table of US states' mean travel times to work, from the 2011 ACS
 #' data(TravelTime2011)
@@ -186,8 +176,7 @@ RankPlot = function(est, se, names, refName=NULL,
                     textPad = 0,
                     legendX = "topleft", legendY = NULL, legendText = NULL,
                     lwdReg = 1, lwdBold = 3, thetaLine = 1,
-                    regions=NULL, showYlab = FALSE,
-                    xlim=NULL, xlab="", ylab="", xaxt = "n", yaxt = "n") {
+                    xlim=NULL) {
 
   n = length(est)
   stopifnot(length(se) == n & length(names) == n)
@@ -250,12 +239,6 @@ RankPlot = function(est, se, names, refName=NULL,
   estSort = sort(est)
   seSort = se[order(est)]
   namesSort = names[order(est)]
-  if (!is.null(regions)) {
-    regSort = regions[order(est)]
-    estSort = estSort[order(regSort)]
-    seSort = seSort[order(regSort)]
-    namesSort = namesSort[order(regSort)]
-  }
   if(is.null(refName)) {
     # use median as "reference" state
     refInd = floor(n/2)
@@ -335,7 +318,7 @@ RankPlot = function(est, se, names, refName=NULL,
 
   # create empty plot
   plot(seq(xlim[1], xlim[2], length = n+2), 0:(n+1), type = "n",
-       xlab=xlab, ylab=ylab, xlim = c(xlim[1],xlim[2]), yaxt=yaxt, xaxt=xaxt,
+       xlab="", ylab="", xlim = c(xlim[1],xlim[2]), yaxt="n", xaxt="n",
        # make y-axis go from 0 to n+1
        yaxs='i')
 
@@ -403,15 +386,7 @@ RankPlot = function(est, se, names, refName=NULL,
     axis(3, at = topax, labels = toplab, cex.axis=0.7)
   }
 
-  # left axis
-  if(showYlab) {
-    ylabels = 1:n
-    # Use mtext, not title, to make the y-label listen to las=2
-    mtext(textR, side=2, line=2.5, las=2)
-  } else {
-    ylabels = rep("", n)
-  }
-  axis(2, at = 1:n, labels=ylabels, las=2, cex.axis=0.7)
+  axis(2, at = 1:n, labels=rep("", n), las=2, cex.axis=0.7)
 
   # add theta_k below reference area
   adj = ifelse(plotType == "comparison", NA, 1)
@@ -419,16 +394,6 @@ RankPlot = function(est, se, names, refName=NULL,
   if(plotType == "comparison") {
     # add theta_star symbol below reference area
     mtext(textThetaStar, side=1, at=estSort[refInd], line=thetaLine)
-  }
-
-  # add region names (if necessary)
-  if (!is.null(regions)) {
-    y = cumsum(as.numeric(summary(regions)))
-    regText = levels(regions)
-    nregs = length(regText)
-    for (i in 1:nregs) {
-      text(xlim[2], y[i], labels = regText[i], pos = 2, cex=cex)
-    }
   }
 
   # add legend
