@@ -14,7 +14,8 @@
 #' The present package does not rely directly on Almond et al.'s S code,
 #' but draws inspiration from it. Their script was originally hosted at
 #' Statlib at \url{http://stat.cmu.edu/S/comprB} and may still be found at
-#' various Statlib mirrors.
+#' various Statlib mirrors, such as
+#' \url{http://ftp.uni-bayreuth.de/math/statlib/S/comprB}.
 #'
 #' The code for the "columns" plots is directly based on R's stats::heatmap()
 #' function, with minor modifications to remove dendograms and allow the heatmap

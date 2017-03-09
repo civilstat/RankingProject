@@ -7,7 +7,7 @@
 RankTable(ranks, names, est, se, placeType = "State", col1 = 0.15,
   col2 = 0.6, col3 = 0.85, col4 = 1, textPos = 2, titleCex = 0.9,
   titleLift = 1.5, contentCex = 0.7, columnsPlotRefLine = NULL,
-  tikzText = NULL)
+  tikzText = FALSE)
 }
 \arguments{
 \item{ranks}{Vector containing the rank of each area.}

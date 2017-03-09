@@ -9,16 +9,23 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This vignette introduces the `RankingProject` package, which accompanies "A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals" (Wright, Klein, and Wieczorek, 2017).
+```{r, echo=FALSE, cache=FALSE}
+library(knitr)
+opts_chunk$set(fig.width=6.5, fig.height=8, cache=FALSE)
+```
 
-The package provides functions for plotting ranked tables of data side-by-side with their plots. The available plots include grids, confidence intervals, and related visualizations designed for making one-to-many or many-to-many comparisons.
+This vignette introduces the `RankingProject` package, which accompanies "A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals" (Wright, Klein, and Wieczorek, 2017, *The American Statistician*, in press). For instructions on exactly replicating the article's main figures, please see the [`Primer`](primer.pdf) vignette.
 
-```{r, fig.width=6.5, fig.height=8}
+The package provides functions for plotting ranked tables of data side-by-side with their plots. The available visualizations include shaded columns plots, adjusted confidence intervals, and related plots intended for making one-to-many or many-to-many comparisons.
+
+## Data preparation and a simple figure
+
+First, we load the package and the `TravelTime2011` dataset used in the paper. We also create string versions of our estimates and their standard errors that will print with a consistent number of digits.
+
+```{r}
 library(RankingProject)
-
-# TODO: add an example using USA as reference "state"
 data(TravelTime2011)
-USdata  <- subset(TravelTime2011, Abbreviation != "USA")
+USdata  <- TravelTime2011
 head(USdata)
 
 # Format estimates and SEs into strings with 2 digits past the decimal
@@ -28,58 +35,103 @@ USdata$Estimate.Print = formatC(USdata$Estimate.2dec,
 USdata$SE.Print = substring(formatC(USdata$SE.2dec,
                                     format = 'f', digits = 2),
                             first = 2)
+```
 
-# Set Colorado as the reference state
-refAbbr <- "CO"
+Next, we set up several list-type objects to contain parameters needed for the tables and plots. We will use the full-USA estimate as the reference area. In particular, to plot individual confidence intervals, we set `plotType="individual"` inside `plotParList`.
+
+```{r}
+# Set USA as the reference state
+refAbbr <- "USA"
 refRow  <- which(USdata$Abbreviation==refAbbr)
 
-# Set up parameter lists for table function, plot function, and annotations
+# Set up parameter lists for table function and plot function
 tableParList <- with(USdata,
                      list(ranks = Rank, names = State, 
                           est = Estimate.Print, se = SE.Print,
                           placeType = "State"))
+plotParList <- with(USdata,
+                      list(est = Estimate.2dec, se = SE.2dec,
+                           names = Abbreviation, refName = refAbbr,
+                           confLevel = .9, cex = 0.6,
+                           plotType = "individual"))
+```
 
+Finally, we create a simple plot of individual 90% confidence intervals (CIs), alongside the ranking table:
+
+```{r}
+# Individual CIs
+RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
+```
+
+However, such individual 90% confidence intervals are not really designed to be compared. As noted in the article, when reading individual CIs it is tempting to conclude that states with overlapping intervals are not significantly different at the $\alpha=0.10$ significance level, but this is not necessarily true. The `RankingProject` package includes several other plot types that are specifically designed for making inferences from a plot appropriately.
+
+Notes: if we set `plotParList$refName=NULL` for the individual CIs plot above, the state abbreviations will flip sides around the median state instead of around the reference state. And if we wish, we can set `plotParList$legendText <- NA` to remove the default legend.
+
+
+## Data preparation for other plot types and options
+
+First, we drop the full-USA row from the dataset and only compare states to one an other. We will use Colorado (CO) as the reference state, as in the article. We need to redefine the parameter lists to use this revised dataset.
+
+```{r}
+# Drop the full-USA row from the dataset
+USdata  <- USdata[-which(USdata$Abbreviation=="USA"), ]
+
+# Set Colorado as the reference state instead
+refAbbr <- "CO"
+refRow  <- which(USdata$Abbreviation==refAbbr)
+
+# Set up parameter lists for table function and plot function
+tableParList <- with(USdata,
+                     list(ranks = Rank, names = Abbreviation,
+                          est = Estimate.Print, se = SE.Print,
+                          placeType = "State"))
 plotParList <- with(USdata,
                       list(est = Estimate.2dec, se = SE.2dec,
                            names = Abbreviation, refName = refAbbr,
                            confLevel = .9))
+```
 
-annotParList <- with(USdata,
-                     list(refRank = Rank[refRow],
-                          refFullName = State[refRow]))
+## Shaded columns plot
 
-# Pantyhose plot
+First, we can use `plotParList$plotType="columns"` to create a grid or "shaded columns plot" that simply shows which states are significantly different from one another. We start with significance level $\alpha=0.10$ and apply a "demi-Bonferroni" correction for 50 comparisons between one reference state and all other states. Then we perform these 50 one-to-many tests within each column of the plot, testing the reference state (labeled at the bottom of the column) against each other state at significance level $\alpha/50 = 0.002$.
+
+(The intended audience behind this demi-Bonferroni correction is a reader who already has one reference state in mind, such as his or her home state, and does not care about comparisons that exclude this particular state. For more general all-to-all comparisons, the 50-way demi-Bonferroni correction could be replaced with a ${51 \choose 2}$-way full-Bonferroni correction, but this has not been implemented in the package for this plot type yet.)
+
+```{r}
+# Shaded Columns plot
 plotParList$plotType <- "columns"
-tableParList$columnsPlotRefLine <- .7
+# Specify where to position the "Reference State:" text,
+# and adjust column widths from their defaults
+tableParList = c(tableParList,
+                 list(columnsPlotRefLine = .7, col2 = .55, col3 = .8))
 RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
                   tableWidthProp = 2/7)
-tableParList$columnsPlotRefLine <- NULL
+# Reset defaults for future plots
+tableParList[c("columnsPlotRefLine", "col2", "col3")] <- NULL
+tableParList$names <- USdata$State
+```
 
-# Individual CIs
-plotParList$plotType <- "individual"
+The vertical lines highlighting Colorado are optional and could be removed by setting `plotParList$refName=NULL`.
+
+
+## Individual, Goldstein-Healy adjusted, and Bonferroni-corrected CIs
+
+We can improve the first plot (of individual CIs) by performing a Goldstein-Healy adjustment, as summarized in the article and originally proposed by Goldstein and Healy (1995). Using this adjustment, instead of plotting actual 90% CIs, we plot CIs at a different confidence level which is chosen (based on the standard errors of all the estimates) to achieve an "average significance level" of 0.10. This lets us actually perform inferences by checking for overlap of intervals. If two intervals do (do not) overlap, they are not (are) significantly different at this "average significance level." Usual CIs do not have this property.
+
+```{r}
+# Set smaller plot text and lower x-axis label for future plots
 plotParList$cex <- 0.6
-# plotParList$legendText <- ""  # can remove auto-legend this way
-RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
-# plotParList$legendText <- NULL
-
-# CIs for differences from ref
-plotParList$lwdBold <- 5
-plotParList$plotType <- "difference"
-RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
-                  annotParList = annotParList)
-
-# Comparison intervals
-plotParList$plotType <- "comparison"
 plotParList$thetaLine <- 1.5
-RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
-plotParList$thetaLine <- NULL
-plotParList$lwdBold <- NULL
 
 # Goldstein-Healy adjusted CIs
 plotParList$plotType <- "individual"
 plotParList$GH <- TRUE
 RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
+```
 
+We could show both the usual CIs and the Goldstein-Healy-adjusted versions on a single plot, by using two-tiered error bars. Here, the inner tier (between the cross bars) shows the Goldstein-Healy adjustment, and the outer tier (all the way to the ends of the intervals) shows the individual 90% CIs. When we set `plotParList$tiers=2` the plot function will always show individual confidence intervals on one tier, and Goldstein-Healy and/or Bonferroni adjustments on another tier. The legend will automatically show which tier is which (since adjusted intervals could either all be shorter or all be longer than the un-adjusted intervals, depending on which adjustments are made).
+
+```{r}
 # Double-tiered GH plot:
 # inner tiers are GH CIs,
 # outer tiers are usual 90% CIs
@@ -89,7 +141,11 @@ plotParList$tiers <- 2
 plotParList$legendX <- 12
 plotParList$legendY <- 53
 RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
+```
 
+However, the Goldstein-Healy adjustment allows for visual inspection of overlap, but does not correct for multiple comparisons. If we have one reference state in mind, we may wish to use a demi-Bonferroni correction for comparing one state against the other 50:
+
+```{r}
 # Double-tiered GH + Bonferroni plot:
 # inner tiers are usual 90% CIs,
 # outer tiers are 50-way demi-Bonferroni-corrected GH CIs
@@ -97,4 +153,42 @@ plotParList$Bonferroni <- "demi"
 RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
 ```
 
+Finally, if we do not have a reference state in mind, we may prefer to use a full-Bonferroni correction, for all ${51 \choose 2}$ possible pairwise comparisons:
 
+```{r}
+# Double-tiered GH + Bonferroni plot:
+# inner tiers are usual 90% CIs,
+# outer tiers are (51 choose 2)-way full-Bonferroni-corrected GH CIs
+plotParList$Bonferroni <- "full"
+RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
+# Reset defaults for future plots
+plotParList[c("Bonferroni", "GH", "tiers", "legendX", "legendY")] <- NULL
+```
+
+## Plotting differences from the reference state
+
+Instead of using Goldstein and Healy (1995)'s adjustment to confidence levels, we may prefer to directly plot the differences between the reference state and all others. If the 90% CI for such a difference does (does not) contain 0, the difference is not (is) statistically significant. Again, we use a demi-Bonferroni correction for the 50 possible comparisons against the reference state.
+
+```{r}
+# CIs for differences from reference state
+plotParList$plotType <- "difference"
+RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
+                  annotRefName = USdata$Rank[refRow],
+                  annotRefRank = USdata$State[refRow])
+```
+
+Finally, when we plot the CIs for differences above, we cannot show a confidence interval for the reference state's estimate itself. Almond et al. (2000) proposed a variant plot of "comparison intervals," which does allows us to show the reference state's confidence interval as well. Here, all the other states' intervals are designed such that their difference from the reference is (is not) statistically significant if they do not (do) overlap with the reference state's individual CI. However, these other states' "comparison intervals" are designed for this particular comparison, and they **should not** be interpreted as standard confidence intervals.
+
+```{r}
+# Comparison intervals (Almond et al. 2000)
+plotParList$plotType <- "comparison"
+RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
+```
+
+## Figures with LaTeX-style text and symbols
+
+Please see the [`Primer`](primer.pdf) vignette for instructions on using the `tikzDevice` package to create figures with LaTeX-style text, instead of default R-style text.
+
+## User-designed tables or plots
+
+By default, `RankPlotWithTable()` uses the built-in functions `RankTable()` and `RankPlot()` to create the table and plot within each figure. If these functions are not flexible enough to show what the user would like to see (e.g. if we wanted to have more or fewer than 4 columns in the ranking table), we can write a modified version of either of these functions. This new function can be plugged into `RankPlotWithTable()` using the `tableFunction` and `plotFunction` arguments.

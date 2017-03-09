@@ -10,16 +10,21 @@ vignette: >
 ---
 
 ```{r, echo=FALSE, cache=FALSE}
+library(knitr)
 options(tikzMetricsDictionary="~/Downloads/RankingProject/tikzMetrics")
+opts_chunk$set(dev='tikz', fig.width=6.5, fig.height=8, cache=FALSE)
 ```
 
-This vignette shows how to reproduce the main figures in "A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals" (Wright, Klein, and Wieczorek, 2017).
+This vignette shows how to reproduce the main figures in "A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals" (Wright, Klein, and Wieczorek, 2017, *The American Statistician*, in press).
 
-```{r, dev='tikz', fig.width=6.5, fig.height=8, cache=FALSE}
+Note: For this vignette itself, we automatically save the figures below using the `knitr` package with option `dev='tikz'` instead of saving them individually. In the final section of the vignette, we show an example of how to save individual plots using the `tikz()` function in the `tikzDevice` package.
+
+## Workflow to reproduce figures from the article
+
+First, we load the package and the `TravelTime2011` dataset used in the paper. To match the article's figures, we drop the row containing the full-USA estimate. We also create string versions of our estimates and their standard errors that will print with a consistent number of digits.
+
+```{r}
 library(RankingProject)
-library(tikzDevice)
-
-# TODO: add an example using USA as reference "state"
 data(TravelTime2011)
 USdata  <- subset(TravelTime2011, Abbreviation != "USA")
 head(USdata)
@@ -31,58 +36,90 @@ USdata$Estimate.Print = formatC(USdata$Estimate.2dec,
 USdata$SE.Print = substring(formatC(USdata$SE.2dec,
                                     format = 'f', digits = 2),
                             first = 2)
+```
 
+Next, we set up several list-type objects to contain parameters needed for the tables and plots. As in the article, we use Colorado (CO) as the reference state. The option `tikzText=TRUE` lets us use LaTeX-style text and symbols in the figures, instead of basic R-style text.
+
+```{r}
 # Set Colorado as the reference state
 refAbbr <- "CO"
 refRow  <- which(USdata$Abbreviation==refAbbr)
 
-# Set up parameter lists for table function, figure function, and annotations
+# Set up parameter lists for table function and figure function
 tableParList <- with(USdata,
-                     list(ranks = Rank, names = State, 
+                     list(ranks = Rank, names = Abbreviation, 
                           est = Estimate.Print, se = SE.Print,
                           placeType = "State", tikzText = TRUE))
-
 plotParList <- with(USdata,
                       list(est = Estimate.2dec, se = SE.2dec,
                            names = Abbreviation, refName = refAbbr,
                            confLevel = .9, tikzText = TRUE))
+```
 
-annotParList <- with(USdata,
-                     list(refRank = Rank[refRow],
-                          refFullName = State[refRow], tikzText = TRUE))
+Reproduce Figure 3, the "shaded columns plot":
 
-# Pantyhose plot
+```{r}
+# Shaded Columns plot
 plotParList$plotType <- "columns"
-tableParList$columnsPlotRefLine <- .7
+# Specify where to position the "Reference State:" text,
+# and adjust column widths from their defaults
+tableParList = c(tableParList,
+                 list(columnsPlotRefLine = .7, col2 = .55, col3 = .8))
 RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
-                  tableWidthProp = 2/7)
-tableParList$columnsPlotRefLine <- NULL
+                  tableWidthProp = 2/7, tikzText = TRUE)
+# Reset defaults for future plots
+tableParList[c("columnsPlotRefLine", "col2", "col3")] <- NULL
+```
+
+Reproduce Figure 1, the plot of individual 90% confidence intervals (CIs):
+
+```{r}
+# For all remaining figures,
+# table will show full state names instead of abbreviations
+tableParList$names <- USdata$State
 
 # Individual CIs
 plotParList$plotType <- "individual"
 plotParList$cex <- 0.6
-# plotParList$legendText <- ""  # can remove auto-legend this way
-RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
-# plotParList$legendText <- NULL
+RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
+                  tikzText = TRUE)
+```
 
+Reproduce Figure 4, the plot of demi-Bonferroni-corrected 90% CIs for the difference between the reference state Colorado and all other states:
+
+```{r}
 # CIs for differences from ref
-plotParList$lwdBold <- 5
 plotParList$plotType <- "difference"
 RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
-                  annotParList = annotParList)
+                  annotRefName = USdata$State[refRow],
+                  annotRefRank = USdata$Rank[refRow],
+                  tikzText = TRUE)
+```
 
+Reproduce Figure 7, the plot of demi-Bonferroni-corrected 90% "comparison intervals" (based on Almond et al., 2000) for comparing the reference state Colorado to all other states:
+
+```{r}
 # Comparison intervals
 plotParList$plotType <- "comparison"
 plotParList$thetaLine <- 1.5
-RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
+RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
+                  tikzText = TRUE)
 plotParList$thetaLine <- NULL
-plotParList$lwdBold <- NULL
+```
 
+Reproduce Figure 10, the plot of Goldstein-Healy-adjusted "90%" CIs (based on Goldstein and Healy, 1995), which are in fact 77.49% CIs as chosen to achieve an "average significance level" of $\alpha=0.10$:
+
+```{r}
 # Goldstein-Healy adjusted CIs
 plotParList$plotType <- "individual"
 plotParList$GH <- TRUE
-RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
+RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
+                  tikzText = TRUE)
+```
 
+Reproduce Figure 11, the plot of two-tiered error bars, where the inner tier are the same Goldstein-Healy-adjusted "90%" CIs from Figure 10, and the outer tier are the same individual 90% CIs from Figure 1:
+
+```{r}
 # Double-tiered GH plot:
 # inner tiers are GH CIs,
 # outer tiers are usual 90% CIs
@@ -91,26 +128,39 @@ plotParList$tiers <- 2
 # we can improve it by controlling (X,Y) manually
 plotParList$legendX <- 12
 plotParList$legendY <- 53
-RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
+RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
+                  tikzText = TRUE)
+```
 
+Reproduce Figure 12, another plot of two-tiered error bars, where now the inner tier are the same individual 90% CIs from Figure 1, and the outer tier are demi-Bonferroni-corrected Goldstein-Healy-adjusted "90%" CIs (in fact 99.5498% CIs):
+
+```{r}
 # Double-tiered GH + Bonferroni plot:
 # inner tiers are usual 90% CIs,
 # outer tiers are 50-way demi-Bonferroni-corrected GH CIs
 plotParList$Bonferroni <- "demi"
-RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
+RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
+                  tikzText = TRUE)
 ```
 
-For this vignette, the plots above were automatically converted to PDF format using `knitr` with chunk option `dev='tikz'`. However, to save plots one at a time "manually," you can explicitly call the `tikz()` function from the `tikzDevice` package, as in the following example (not run).
+## Using `tikzDevice::tikz()` to save individual figures
 
-The `tikz()` function works much like `pdf()` or `png()` and other functions for saving plots from R scripts. Remember to call `dev.off()` after the plotting function runs.
+For this vignette, the figures above were automatically converted to PDF format using `knitr` with chunk option `dev='tikz'`. When not using `knitr`, we may prefer to save plots one at a time "manually." To do this, we can explicitly call the `tikz()` function from the `tikzDevice` package, as in the following example code.
 
-This will create and save a `.tex` file. You will need to compile it into a PDF separately, or you can use `texi2pdf()` which compiles the PDF and saves it in the current working directory.
+The `tikz()` function works much like `pdf()` or `png()` and other standard functions for saving plots from R scripts. We must remember to call `dev.off()` after the plotting function runs, to let R know the plot is ready to be saved.
+
+Using `tikz()` will create and save a `.tex` file. To convert this to a figure, we can:
+
+* compile it into a standalone PDF separately; or
+* use R's `texi2pdf()` which compiles the PDF and saves it in the current working directory; or
+* set `standAlone=FALSE` below, then copy-paste the contents of the saved `.tex` file directly into a larger `.tex` document.
 
 ```{r, eval=FALSE}
 # Not run:
 library(tikzDevice)
 tikz("/path/to/my/file.tex", standAlone = TRUE, width = 6.5, height = 8)
-RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
+RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
+                  tikzText = TRUE)
 dev.off()
 texi2pdf("/path/to/my/file.tex")
 ```

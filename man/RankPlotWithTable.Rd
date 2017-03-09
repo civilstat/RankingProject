@@ -4,9 +4,9 @@
 \alias{RankPlotWithTable}
 \title{Figure containing aligned table and plot of ranking data.}
 \usage{
-RankPlotWithTable(tableParList, plotParList, annotParList = NULL,
-  tableFunction = RankTable, plotFunction = RankPlot,
-  tableWidthProp = 3/8)
+RankPlotWithTable(tableParList, plotParList, tableFunction = RankTable,
+  plotFunction = RankPlot, tableWidthProp = 3/8, tikzText = FALSE,
+  annotRefName = NULL, annotRefRank = NULL, annotX = 0)
 }
 \arguments{
 \item{tableParList}{A required named list of arguments that will be passed
@@ -21,15 +21,6 @@ to \code{plotFunction} using \code{do.call()}. The default
 requires at least these three arguments:
 \code{est}, \code{se}, \code{names}.}
 
-\item{annotParList}{An optional named list of arguments for adding an extra
-annotation below the figure created by \code{plotFunction}.
-Currently centered at 0 on x-axis,
-so only useful when \code{plotType = "difference"}.
-If provided, the list must contain two required named elements
-(\code{refFullName} and \code{refRank}, the reference area's name and rank)
-and may contain one optional element (\code{tikzText},
-which formats text for tikz plotting if set to \code{TRUE}).}
-
 \item{tableFunction}{The function to use for plotting a table of the data
 on the left-hand side of the layout. Default is \code{\link{RankTable}}.}
 
@@ -39,6 +30,19 @@ on the right-hand side of the layout. Default is \code{\link{RankPlot}}.}
 \item{tableWidthProp}{A number between 0 and 1, for what proportion of the
 layout's width should be used to plot the table. The remaining proportion
 \code{1-tableWidthProp} is used to plot the figure.}
+
+\item{tikzText}{Logical, formats text for tikz plotting if \code{TRUE}).}
+
+\item{annotRefName, annotRefRank}{Optional rank and name of the reference
+area, for adding an extra
+annotation below the figure created by \code{plotFunction}.
+Currently centered at 0 on x-axis,
+so only useful when \code{plotType = "difference"}.
+If provided, the list must contain two required named elements
+(\code{refFullName} and \code{refRank}, the reference area's name and rank)}
+
+\item{annotX}{A number, showing where on the x-axis to center the annotation
+if \code{annotRefName} and \code{annotRefRank} are not \code{NULL}.}
 }
 \description{
 \code{RankPlotWithTable} aligns a table of ranking data with a plot of the
@@ -68,13 +72,13 @@ plotParList <- with(TravelTime2011,
 RankPlotWithTable(tableParList = tableParList,
   plotParList = plotParList)
 
-# Illustrating the use of annotParList:
+# Illustrating the use of annotRefName and annotRefRank:
 # Table with plot of 90\% confidence intervals for differences
 # between each state and USA average, with demi-Bonferroni correction
 plotParList$plotType <- "difference"
-annotParList <- list(refFullName = "United States", refRank = "NA")
 RankPlotWithTable(tableParList = tableParList,
-  plotParList = plotParList, annotParList = annotParList)
+  plotParList = plotParList, annotRefName = "United States",
+  annotRefRank = "NA")
 }
 \seealso{
 \code{\link{RankPlot}} and \code{\link{RankTable}}.

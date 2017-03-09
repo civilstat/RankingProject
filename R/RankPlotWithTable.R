@@ -3,10 +3,6 @@
 # so that the y-axis ticks are on right side,
 # and adjusting all the text.
 
-# TODO: replace annotParList with separate arguments in this function;
-# if tikzText=TRUE here, force it in RankPlot and RankTable too
-# (show user a warning if overriding / adding this setting?)
-
 
 #' Figure containing aligned table and plot of ranking data.
 #'
@@ -32,14 +28,6 @@
 #'   \code{plotFunction} is \code{\link{RankPlot}}, which
 #'   requires at least these three arguments:
 #'   \code{est}, \code{se}, \code{names}.
-#' @param annotParList An optional named list of arguments for adding an extra
-#'   annotation below the figure created by \code{plotFunction}.
-#'   Currently centered at 0 on x-axis,
-#'   so only useful when \code{plotType = "difference"}.
-#'   If provided, the list must contain two required named elements
-#'   (\code{refFullName} and \code{refRank}, the reference area's name and rank)
-#'   and may contain one optional element (\code{tikzText},
-#'   which formats text for tikz plotting if set to \code{TRUE}).
 #' @param tableFunction The function to use for plotting a table of the data
 #'   on the left-hand side of the layout. Default is \code{\link{RankTable}}.
 #' @param plotFunction The function to use for plotting a figure of the data
@@ -47,6 +35,16 @@
 #' @param tableWidthProp A number between 0 and 1, for what proportion of the
 #'   layout's width should be used to plot the table. The remaining proportion
 #'   \code{1-tableWidthProp} is used to plot the figure.
+#' @param tikzText Logical, formats text for tikz plotting if \code{TRUE}.
+#' @param annotRefName,annotRefRank Optional rank and name of the reference
+#'   area, for adding an extra
+#'   annotation below the figure created by \code{plotFunction}.
+#'   Currently centered at 0 on x-axis,
+#'   so only useful when \code{plotType = "difference"}.
+#'   If provided, the list must contain two required named elements
+#'   (\code{refFullName} and \code{refRank}, the reference area's name and rank)
+#' @param annotX A number, showing where on the x-axis to center the annotation
+#'   if \code{annotRefName} and \code{annotRefRank} are not \code{NULL}.
 #' @examples
 #' # Table with plot of individual 90% confidence intervals
 #' data(TravelTime2011)
@@ -61,19 +59,31 @@
 #' RankPlotWithTable(tableParList = tableParList,
 #'   plotParList = plotParList)
 #'
-#' # Illustrating the use of annotParList:
+#' # Illustrating the use of annotRefName and annotRefRank:
 #' # Table with plot of 90% confidence intervals for differences
 #' # between each state and USA average, with demi-Bonferroni correction
 #' plotParList$plotType <- "difference"
-#' annotParList <- list(refFullName = "United States", refRank = "NA")
 #' RankPlotWithTable(tableParList = tableParList,
-#'   plotParList = plotParList, annotParList = annotParList)
+#'   plotParList = plotParList, annotRefName = "United States",
+#'   annotRefRank = "NA")
 #' @seealso \code{\link{RankPlot}} and \code{\link{RankTable}}.
 #' @export
-RankPlotWithTable = function(tableParList, plotParList, annotParList = NULL,
+RankPlotWithTable = function(tableParList, plotParList,
                              tableFunction = RankTable,
                              plotFunction = RankPlot,
-                             tableWidthProp = 3/8) {
+                             tableWidthProp = 3/8, tikzText = FALSE,
+                             annotRefName = NULL, annotRefRank = NULL,
+                             annotX = 0) {
+
+  if(tikzText) {
+    if(is.null(tableParList$tikzText) | is.null(plotParList$tikzText)){
+      warning("Setting tikzText to TRUE in both tableParList and plotParList")
+    } else if (!tableParList$tikzText | !plotParList$tikzText) {
+      warning("Setting tikzText to TRUE in both tableParList and plotParList")
+    }
+    tableParList$tikzText <- TRUE
+    plotParList$tikzText <- TRUE
+  }
 
   oldpar <- par(no.readonly = TRUE)
   oldmar <- par('mar')
@@ -90,8 +100,8 @@ RankPlotWithTable = function(tableParList, plotParList, annotParList = NULL,
   par(xpd = FALSE, mar = c(oldmar[1], 1.1, oldmar[3], oldmar[4]))
   do.call(plotFunction, plotParList)
 
-  if(!is.null(annotParList)) {
-    if(!is.null(annotParList$tikzText) & isTRUE(annotParList$tikzText)) {
+  if(!is.null(annotRefName) & !is.null(annotRefRank)) {
+    if(tikzText) {
       textK = "($k^*$):~"
       textRank = "Rank:~ "
     } else {
@@ -100,10 +110,10 @@ RankPlotWithTable = function(tableParList, plotParList, annotParList = NULL,
     }
     # Create annotations on the bottom of the figure
     mtext(paste0("Reference ", tableParList$placeType, " ", textK, " "),
-          side=1, at=0, line=2, adj=1)
-    mtext(annotParList$refFullName, side=1, at=0, line=2, adj=0)
-    mtext(textRank, side=1, at=0, line=3, adj=1)
-    mtext(annotParList$refRank, side=1, at=0, line=3, adj=0)
+          side=1, at=annotX, line=2, adj=1)
+    mtext(annotRefName, side=1, at=annotX, line=2, adj=0)
+    mtext(textRank, side=1, at=annotX, line=3, adj=1)
+    mtext(annotRefRank, side=1, at=annotX, line=3, adj=0)
   }
 
   par(oldpar)

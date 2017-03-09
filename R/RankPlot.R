@@ -60,9 +60,9 @@
 #'   the table and plot side-by-side, so \code{layout} cannot be used within
 #'   a new \code{figureFunction}.
 #'
-#' See Goldstein and Healy (1995, JRSS) [cite?] for details on the
+#' See Goldstein and Healy (1995, JRSS) for details on the
 #'   "average" confidence level procedure used when \code{GH = TRUE}.
-#'   See Almond, Lewis, Tukey, and Yan (2000, TAS) [cite?] for details
+#'   See Almond, Lewis, Tukey, and Yan (2000, TAS) for details
 #'   on the "comparison intervals" procedure.
 #'
 #' @param est,se Vectors containing the point estimate and its standard error
@@ -148,6 +148,7 @@
 #'   see \code{\link{legend}} for details on specifying \code{x} by keyword.
 #' @param legendText String, or string vector, with legend text. By default,
 #'   each plot type adds informative legend text, but the user may override.
+#'   To remove legends entirely, set \code{legendText=NA}.
 #' @param lwdReg Positive number for the line width of regular lines.
 #'   Used for all intervals when \code{plotType = "individual"},
 #'   or for intervals not significantly different from the reference area
@@ -179,7 +180,7 @@ RankPlot = function(est, se, names, refName=NULL,
                     plotType = c("individual", "difference", "comparison", "columns"),
                     tiers = 1, GH = FALSE,
                     Bonferroni = ifelse(plotType == "individual", "none", "demi"),
-                    tikzText = NULL,
+                    tikzText = FALSE,
                     cex=1,
                     tickWidth=NULL,rangeFactor=1.2,
                     textPad = 0,
@@ -222,7 +223,7 @@ RankPlot = function(est, se, names, refName=NULL,
     return()
   }
 
-  if(!is.null(tikzText) & isTRUE(tikzText)) {
+  if(tikzText) {
     textR = "$\\hat{r}_k$"
     textTheta = ifelse(plotType == "difference",
                        "$\\theta_k-\\theta_{k^*}$",
@@ -303,12 +304,16 @@ RankPlot = function(est, se, names, refName=NULL,
     if(qC > qI) {
       q = qI
       qOut = qC
-      legendText = paste0(c("Inner ", "Outer "), legendDetails)
+      if(is.null(legendText)) {
+        legendText = paste0(c("Inner ", "Outer "), legendDetails)
+      }
     } else {
       q = qC
       qOut = qI
-      legendText = paste0(c("Inner ", "Outer "), rev(legendDetails),
-                         c("\n ", ""))
+      if(is.null(legendText)) {
+        legendText = paste0(c("Inner ", "Outer "), rev(legendDetails),
+                            c("\n ", ""))
+      }
     }
     moeOut = qOut*sePlot
   } else {
@@ -443,10 +448,15 @@ RankPlot = function(est, se, names, refName=NULL,
            legend = legendText, bty = "n",
            inset = 0.02, cex = 0.8)
   } else if(plotType != "individual") {
-    legend(x = legendX, y = legendY,
-           legend = c("Significantly Different",
-                      "Not Significantly Different"),
-           lwd = c(lwdBold, lwdReg), inset = 0.02, cex = 0.8, bg = "white",
-           title = paste0("Compared to ", refName))
+    if(is.null(legendText)) {
+      legendText = c("Significantly Different",
+                     "Not Significantly Different")
+    }
+    if(!all(is.na(legendText))) {
+      legend(x = legendX, y = legendY,
+             legend = legendText,
+             lwd = c(lwdBold, lwdReg), inset = 0.02, cex = 0.8, bg = "white",
+             title = paste0("Compared to ", refName))
+    }
   }
 }

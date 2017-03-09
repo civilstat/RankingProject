@@ -66,11 +66,11 @@ RankTable <- function(ranks, names, est, se, placeType = "State",
                      col1 = .15, col2 = .6, col3 = .85, col4 = 1,
                      textPos = 2, titleCex = 0.9,
                      titleLift = 1.5, contentCex = 0.7,
-                     columnsPlotRefLine = NULL, tikzText = NULL) {
+                     columnsPlotRefLine = NULL, tikzText = FALSE) {
 
   n <- length(ranks)
 
-  if(!is.null(tikzText) & isTRUE(tikzText)) {
+  if(tikzText) {
     textR = "$\\hat{r}_k$"
     textPlace = paste0("$", placeType, "\\ (k)$")
     textTheta = "$\\hat{\\theta}_k$"

@@ -7,7 +7,7 @@
 RankPlot(est, se, names, refName = NULL, confLevel = 0.9,
   plotType = c("individual", "difference", "comparison", "columns"),
   tiers = 1, GH = FALSE, Bonferroni = ifelse(plotType == "individual",
-  "none", "demi"), tikzText = NULL, cex = 1, tickWidth = NULL,
+  "none", "demi"), tikzText = FALSE, cex = 1, tickWidth = NULL,
   rangeFactor = 1.2, textPad = 0, legendX = "topleft", legendY = NULL,
   legendText = NULL, lwdReg = 1, lwdBold = 3, thetaLine = 1,
   regions = NULL, showYlab = FALSE, xlim = NULL, xlab = "", ylab = "",
@@ -110,7 +110,8 @@ past the interval endpoints when plotting. Positive values shift outwards
 see \code{\link{legend}} for details on specifying \code{x} by keyword.}
 
 \item{legendText}{String, or string vector, with legend text. By default,
-each plot type adds informative legend text, but the user may override.}
+each plot type adds informative legend text, but the user may override.
+To remove legends entirely, set \code{legendText=NA}.}
 
 \item{lwdReg}{Positive number for the line width of regular lines.
 Used for all intervals when \code{plotType = "individual"},
