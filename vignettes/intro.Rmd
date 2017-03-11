@@ -16,11 +16,13 @@ opts_chunk$set(fig.width=6.5, fig.height=8, cache=FALSE)
 
 This vignette introduces the `RankingProject` package, which accompanies "A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals" (Wright, Klein, and Wieczorek, 2017, *The American Statistician*, in press). For instructions on exactly replicating the article's main figures, please see the [`Primer`](primer.pdf) vignette.
 
-The package provides functions for plotting ranked tables of data side-by-side with their plots. The available visualizations include shaded columns plots, adjusted confidence intervals, and related plots intended for making one-to-many or many-to-many comparisons.
+The package provides functions for plotting ranked tables of data side-by-side with their plots. The available visualizations include shaded columns plots, adjusted confidence intervals, and related plots intended for making correct inferences about one-to-many or many-to-many comparisons.
 
 ## Data preparation and a simple figure
 
-First, we load the package and the `TravelTime2011` dataset used in the paper. We also create string versions of our estimates and their standard errors that will print with a consistent number of digits.
+First, we load the package and the `TravelTime2011` dataset used in the paper. This dataset contains 52 rows (estimates for each of the 50 US states and Washington, D.C., as well as a national-level estimate) and 7 columns. The variables `Estimate.2dec` and `SE.2dec` are estimates of the mean and its standard error for the mean travel time (in minutes) to work of workers 16 years and over who did not work at home, from the 2011 American Community Survey (ACS).
+
+We also create string versions of our estimates and their standard errors, for printing out tables with a consistent number of digits.
 
 ```{r}
 library(RankingProject)
@@ -40,7 +42,7 @@ USdata$SE.Print = substring(formatC(USdata$SE.2dec,
 Next, we set up several list-type objects to contain parameters needed for the tables and plots. We will use the full-USA estimate as the reference area. In particular, to plot individual confidence intervals, we set `plotType="individual"` inside `plotParList`.
 
 ```{r}
-# Set USA as the reference state
+# Set USA as the reference area
 refAbbr <- "USA"
 refRow  <- which(USdata$Abbreviation==refAbbr)
 
@@ -63,7 +65,7 @@ Finally, we create a simple plot of individual 90% confidence intervals (CIs), a
 RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
 ```
 
-However, such individual 90% confidence intervals are not really designed to be compared. As noted in the article, when reading individual CIs it is tempting to conclude that states with overlapping intervals are not significantly different at the $\alpha=0.10$ significance level, but this is not necessarily true. The `RankingProject` package includes several other plot types that are specifically designed for making inferences from a plot appropriately.
+However, such individual 90% confidence intervals are not explicitly designed for making comparisons. As noted in the article, when reading individual CIs it is tempting to conclude that states with overlapping intervals are not significantly different at the $\alpha=0.10$ significance level, but this is not necessarily true. The `RankingProject` package includes several other plot types that are specifically designed for making inferences from a plot appropriately.
 
 Notes: if we set `plotParList$refName=NULL` for the individual CIs plot above, the state abbreviations will flip sides around the median state instead of around the reference state. And if we wish, we can set `plotParList$legendText <- NA` to remove the default legend.
 
