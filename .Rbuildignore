@@ -2,3 +2,6 @@
 ^\.Rproj\.user$
 ^data-raw$
 ^00checkSUMMARY.txt$
+^cran-comments.md$
+^README\.Rmd$
+^README-.*\.png$
