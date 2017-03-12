@@ -143,9 +143,9 @@ Users may wish to modify this code and write
   the table and plot side-by-side, so \code{layout} cannot be used within
   a new \code{figureFunction}.
 
-See Goldstein and Healy (1995, JRSS) for details on the
+See Goldstein and Healy (1995) for details on the
   "average" confidence level procedure used when \code{GH = TRUE}.
-  See Almond, Lewis, Tukey, and Yan (2000, TAS) for details
+  See Almond et al. (2000) for details
   on the "comparison intervals" procedure.
 }
 \examples{
@@ -156,6 +156,14 @@ with(TravelTime2011,
               names = Abbreviation, refName = "USA",
               confLevel = 0.9, cex = 0.6,
               plotType = "individual"))
+}
+\references{
+Almond, R.G., Lewis, C., Tukey, J.W., and Yan, D. (2000).
+  "Displays for Comparing a Given State to Many Others,"
+  \emph{The American Statistician}, vol. 54, no. 2, 89-93.
+
+  Goldstein, H. and Healy, M.J.R. (1995). "The Graphical Presentation of a
+  Collection of Means," \emph{JRSS A}, vol. 158, no. 1, 175-177.
 }
 \seealso{
 \code{\link{RankPlotWithTable}} and \code{\link{RankTable}}.

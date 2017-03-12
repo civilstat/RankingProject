@@ -15,7 +15,7 @@
   \item{FIPS}{Federal Information Processing Standard (FIPS) code of the state or area; may be useful for linking with other datasets}
 }}
 \source{
-\url{http://www.census.gov/}
+\url{https://www.census.gov/}
 }
 \usage{
 TravelTime2011

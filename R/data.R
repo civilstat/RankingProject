@@ -17,5 +17,5 @@
 #'   \item{Region}{factor variable for geographic region of the state: Northeast, South, Midwest, West, Pacific (USA row has blank Region)}
 #'   \item{FIPS}{Federal Information Processing Standard (FIPS) code of the state or area; may be useful for linking with other datasets}
 #' }
-#' @source \url{http://www.census.gov/}
+#' @source \url{https://www.census.gov/}
 "TravelTime2011"

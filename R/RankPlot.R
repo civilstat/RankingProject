@@ -2,8 +2,6 @@
 # it won't have any effect if they tried setting non-default args
 # for anything that doesn't get passed to RankColumnPlot()
 
-# TODO: explicitly cite Almond et al (2000) and G-H (1995).
-
 # TODO: note which args do/don't apply to plotType = "columns"?
 
 # TODO: allow user to stop from showing *any* legend?
@@ -54,9 +52,9 @@
 #'   the table and plot side-by-side, so \code{layout} cannot be used within
 #'   a new \code{figureFunction}.
 #'
-#' See Goldstein and Healy (1995, JRSS) for details on the
+#' See Goldstein and Healy (1995) for details on the
 #'   "average" confidence level procedure used when \code{GH = TRUE}.
-#'   See Almond, Lewis, Tukey, and Yan (2000, TAS) for details
+#'   See Almond et al. (2000) for details
 #'   on the "comparison intervals" procedure.
 #'
 #' @param est,se Vectors containing the point estimate and its standard error
@@ -155,6 +153,12 @@
 #' @param xlim Vector of 2 numbers for x-axis limits. If \code{NULL},
 #'   will be automatically set using range of data
 #'   expanded by \code{rangeFactor}.
+#' @references Almond, R.G., Lewis, C., Tukey, J.W., and Yan, D. (2000).
+#'   "Displays for Comparing a Given State to Many Others,"
+#'   \emph{The American Statistician}, vol. 54, no. 2, 89-93.
+#'
+#'   Goldstein, H. and Healy, M.J.R. (1995). "The Graphical Presentation of a
+#'   Collection of Means," \emph{JRSS A}, vol. 158, no. 1, 175-177.
 #' @examples
 #' # Table of US states' mean travel times to work, from the 2011 ACS
 #' data(TravelTime2011)
