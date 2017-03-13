@@ -22,7 +22,7 @@ The "comparison" plots are based on figures and S code from
 Almond et al. (2000).
 The present package does not contain a direct modification of their S code,
 but draws inspiration from it. Their script was originally hosted at
-Statlib at \url{http://stat.cmu.edu/S/comprB} and may still be found at
+Statlib at \code{http://stat.cmu.edu/S/comprB} and may still be found at
 Statlib mirrors such as
 \url{http://ftp.uni-bayreuth.de/math/statlib/S/comprB}.
 
