@@ -7,17 +7,29 @@ vignette: >
   %\VignetteIndexEntry{Figures for 'A Primer on Visualizations for Comparing Populations...'}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+header-includes:
+  - \usepackage{tikz}
 ---
 
 ```{r, echo=FALSE, cache=FALSE}
 library(knitr)
 options(tikzMetricsDictionary="tikzDictionary")
-opts_chunk$set(dev='tikz', fig.width=6.5, fig.height=8, cache=FALSE)
+opts_chunk$set(fig.width=6.5, fig.height=8, cache=FALSE,
+               dev='tikz', external=FALSE,
+               out.width=6.5, out.height=8)
+# Fixed issue with dev='tikz' in Windows
+# by setting external=FALSE and a new plot hook, as here:
+# https://github.com/yihui/tikzDevice/issues/60
+knit_hooks$set(plot = function(x, options) {
+  if ('tikz' %in% options$dev && !options$external) {
+    hook_plot_tex(x, options)
+  } else hook_plot_md(x, options)
+})
 ```
 
 This vignette shows how to reproduce the main figures in "A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals" (Wright, Klein, and Wieczorek, 2017, *The American Statistician*, in press).
 
-Note: For this vignette itself, we automatically save the figures below using the `knitr` package with option `dev='tikz'` instead of saving them individually. In the final section of the vignette, we show an example of how to save individual plots using the `tikz()` function in the `tikzDevice` package.
+Note: For this vignette itself, we automatically save the figures below using the `knitr` package with option `dev="tikz"` instead of saving them individually. In the final section of the vignette, we show an example of how to save individual plots using the `tikz()` function in the `tikzDevice` package.
 
 ## Workflow to reproduce figures from the article
 
@@ -145,7 +157,7 @@ RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
 
 ## Using `tikzDevice::tikz()` to save individual figures
 
-For this vignette, the figures above were automatically converted to PDF format using `knitr` with chunk option `dev='tikz'`. When not using `knitr`, we may prefer to save plots one at a time "manually." To do this, we can explicitly call the `tikz()` function from the `tikzDevice` package, as in the following example code.
+For this vignette, the figures above were automatically converted to PDF format using `knitr` with chunk option `dev="tikz"`. When not using `knitr`, we may prefer to save plots one at a time "manually." To do this, we can explicitly call the `tikz()` function from the `tikzDevice` package, as in the following example code.
 
 The `tikz()` function works much like `pdf()` or `png()` and other standard functions for saving plots from R scripts. We must remember to call `dev.off()` after the plotting function runs, to let R know the plot is ready to be saved.
 
