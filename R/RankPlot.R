@@ -238,7 +238,7 @@ RankPlot = function(est, se, names, refName=NULL,
   extrange = rangeFactor*range
   unit = range2units(extrange)
 
-  # sort estimates from least to greatest (and by region, if specified);
+  # sort estimates from least to greatest;
   # match reference with index of sorted estimates
   estSort = sort(est)
   seSort = se[order(est)]

@@ -68,7 +68,13 @@ RankTable <- function(ranks, names, est, se, placeType = "State",
                      titleLift = 1.5, contentCex = 0.7,
                      columnsPlotRefLine = NULL, tikzText = FALSE) {
 
-  n <- length(ranks)
+  # sort estimates from least to greatest
+  estSort = sort(est)
+  seSort = se[order(est)]
+  namesSort = names[order(est)]
+  ranksSort = ranks[order(est)]
+  
+  n <- length(ranksSort)
 
   if(tikzText) {
     textR = "$\\hat{r}_k$"
@@ -89,13 +95,13 @@ RankTable <- function(ranks, names, est, se, placeType = "State",
     plot(c(0, rep(1, n + 1)), 0:(n + 1),
          yaxs='i', type='n', bty='n', xaxt='n', yaxt='n', xlab='', ylab='')
   }
-  text(rep(col1, n), 1:n, ranks, cex = contentCex, pos = textPos)
+  text(rep(col1, n), 1:n, ranksSort, cex = contentCex, pos = textPos)
   text(col1, n + titleLift, textR, cex = titleCex, pos = textPos, font = 2)
-  text(rep(col2, n), 1:n, names, cex = contentCex, pos = textPos)
+  text(rep(col2, n), 1:n, namesSort, cex = contentCex, pos = textPos)
   text(col2, n + titleLift, textPlace, cex = titleCex, pos = textPos, font = 2)
-  text(rep(col3, n), 1:n, est, cex = contentCex, pos = textPos)
+  text(rep(col3, n), 1:n, estSort, cex = contentCex, pos = textPos)
   text(col3, n + titleLift, textTheta, cex = titleCex, pos = textPos, font = 2)
-  text(rep(col4, n), 1:n, se, cex = contentCex, pos = textPos)
+  text(rep(col4, n), 1:n, seSort, cex = contentCex, pos = textPos)
   text(col4, n + titleLift, textSE, cex = titleCex, pos = textPos, font = 2)
 
   if(!is.null(columnsPlotRefLine)) {

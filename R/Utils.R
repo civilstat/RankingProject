@@ -49,16 +49,27 @@ range2units = function(extrange) {
 
 
 
-#### Pantyhose plot ####
+#### Shaded Columns Plot ####
 
 RankColumnPlot <- function(est, se, names, refName = NULL,
                            confLevel = 0.9) {
-  signifMatrix <- apply(cbind(est, se), 1, FindSignifInColumn,
-                        alldata = cbind(est, se), confLevel = confLevel)
-  colnames(signifMatrix) <- names
+  
+  # sort estimates from least to greatest;
+  # match reference with index of sorted estimates
+  estSort = sort(est)
+  seSort = se[order(est)]
+  namesSort = names[order(est)]
+  if(is.null(refName)) {
+    refInd = NA
+  } else {
+    refInd = which(namesSort == refName)
+  }
+  
+  signifMatrix <- apply(cbind(estSort, seSort), 1, FindSignifInColumn,
+                        alldata = cbind(estSort, seSort), confLevel = confLevel)
+  colnames(signifMatrix) <- namesSort
 
-  n <- length(est)
-  refInd <- ifelse(is.null(refName), NA, which(names[order(est)] == refName))
+  n <- length(estSort)
 
   RankHeatmap(signifMatrix, Rowv=NA, Colv=NA, scale='none',
               col = c('grey80','white','grey50'), cexCol = 0.6,
