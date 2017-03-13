@@ -409,7 +409,7 @@ RankPlot = function(est, se, names, refName=NULL,
                           ifelse(GH & Bonferroni != "none", "\nand ", ""),
                           ifelse(Bonferroni != "none",
                                  paste0(Bonferroni, "-Bonferroni"), ""),
-                          "\nadjusted ", 100*confLevel, textPercent, " intervals")
+                          "\nadjusted intervals")
     }
   }
   if(plotType == "individual" & !is.null(legendText)) {
