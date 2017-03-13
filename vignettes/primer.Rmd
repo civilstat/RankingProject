@@ -14,7 +14,7 @@ header-includes:
 ```{r, echo=FALSE, cache=FALSE}
 library(knitr)
 options(tikzMetricsDictionary="tikzDictionary")
-opts_chunk$set(fig.width=6.5, fig.height=8, cache=FALSE,
+opts_chunk$set(fig.width=6.5, fig.height=8, cache=FALSE, message=FALSE,
                dev='tikz', external=FALSE,
                out.width=6.5, out.height=8)
 # Fixed issue with dev='tikz' in Windows

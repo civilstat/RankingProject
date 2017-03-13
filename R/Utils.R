@@ -1,4 +1,4 @@
-ConfidenceLevelGH <- function(se, confLevel = .90) {
+ConfidenceLevelGH <- function(se, confLevel = .90, tol = 0.01) {
   # Based on Goldstein & Healy, using Tommy Wright's notation for z_alpha_a
 
   n <- length(se)
@@ -8,11 +8,26 @@ ConfidenceLevelGH <- function(se, confLevel = .90) {
       k[i,j] <- (se[i]+se[j])/sqrt(se[i]^2+se[j]^2)
     }
   }
-  mean_k <- mean(k, na.rm=TRUE)
+  k <- c(k[-which(is.na(k))])
+  mean_k <- mean(k)
 
-  alpha <- qnorm(1 - (1 - confLevel) / 2)
-  z_alpha_a <- alpha / mean_k
+  z_alpha <- qnorm(1 - (1 - confLevel) / 2)
+  z_alpha_a <- z_alpha / mean_k
   alpha_a <- 2 * (1 - pnorm(z_alpha_a))
+
+  alpha <- 1 - confLevel
+  achieved_alphas <- 2 * (1 - pnorm(z_alpha_a * k))
+  avg_alpha <- mean(achieved_alphas)
+  message(paste0("Achieved 'alphas' range from ",
+                 round(min(achieved_alphas), 4), " to ",
+                 round(max(achieved_alphas), 4),
+                 ", with mean ", round(avg_alpha, 4)))
+  if(abs(alpha - avg_alpha) > tol) {
+    warning(paste0("Achieved 'average alpha' = ", round(avg_alpha, 4),
+                   " is farther than tol = ", tol,
+                   " from target alpha = ", alpha))
+  }
+
   conf.level_a <- 1 - alpha_a
   return(conf.level_a)
 }

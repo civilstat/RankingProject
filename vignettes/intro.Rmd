@@ -11,7 +11,7 @@ vignette: >
 
 ```{r, echo=FALSE, cache=FALSE}
 library(knitr)
-opts_chunk$set(fig.width=6.5, fig.height=8, cache=FALSE)
+opts_chunk$set(fig.width=6.5, fig.height=8, cache=FALSE, message=FALSE)
 ```
 
 This vignette introduces the `RankingProject` package, which accompanies "A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals" (Wright, Klein, and Wieczorek, 2017, *The American Statistician*, in press). For instructions on exactly replicating the article's main figures, please see the `Primer` vignette:  
