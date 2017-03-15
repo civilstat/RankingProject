@@ -21,7 +21,7 @@ The package provides functions for plotting ranked tables of data side-by-side w
 
 ## Data preparation and a simple figure
 
-First, we load the package and the `TravelTime2011` dataset used in the paper. This dataset contains 52 rows (estimates for each of the 50 US states and Washington, D.C., as well as a national-level estimate) and 7 columns. The variables `Estimate.2dec` and `SE.2dec` are estimates of the mean and its standard error for the mean travel time (in minutes) to work of workers 16 years and over who did not work at home, from the 2011 American Community Survey (ACS).
+First, we load the package and the `TravelTime2011` dataset used in the paper. This dataset contains 51 rows (estimates for each of the 50 US states and Washington, D.C.) and 7 columns. The variables `Estimate.2dec` and `SE.2dec` are estimates of the mean and its standard error for the mean travel time (in minutes) to work of workers 16 years and over who did not work at home, from the 2011 American Community Survey (ACS).
 
 We also create string versions of our estimates and their standard errors, for printing out tables with a consistent number of digits.
 
@@ -40,11 +40,11 @@ USdata$SE.Print = substring(formatC(USdata$SE.2dec,
                             first = 2)
 ```
 
-Next, we set up several list-type objects to contain parameters needed for the tables and plots. We will use the full-USA estimate as the reference area. In particular, to plot individual confidence intervals, we set `plotType="individual"` inside `plotParList`.
+Next, we set up several list-type objects to contain parameters needed for the tables and plots. We will use Colorado (CO) as the reference area. In particular, to plot individual confidence intervals, we set `plotType="individual"` inside `plotParList`.
 
 ```{r}
-# Set USA as the reference area
-refAbbr <- "USA"
+# Set Colorado as the reference area
+refAbbr <- "CO"
 refRow  <- which(USdata$Abbreviation==refAbbr)
 
 # Set up parameter lists for table function and plot function
@@ -55,7 +55,7 @@ tableParList <- with(USdata,
 plotParList <- with(USdata,
                       list(est = Estimate.2dec, se = SE.2dec,
                            names = Abbreviation, refName = refAbbr,
-                           confLevel = .9, cex = 0.6,
+                           confLevel = .90, cex = 0.6,
                            plotType = "individual"))
 ```
 
@@ -71,28 +71,6 @@ However, such individual 90% confidence intervals are not explicitly designed fo
 Notes: if we set `plotParList$refName=NULL` for the individual CIs plot above, the state abbreviations will flip sides around the median state instead of around the reference state. And if we wish, we can set `plotParList$legendText <- NA` to remove the default legend.
 
 
-## Data preparation for other plot types and options
-
-First, we drop the full-USA row from the dataset and only compare states to one an other. We will use Colorado (CO) as the reference state, as in the article. We need to redefine the parameter lists to use this revised dataset.
-
-```{r}
-# Drop the full-USA row from the dataset
-USdata  <- USdata[-which(USdata$Abbreviation=="USA"), ]
-
-# Set Colorado as the reference state instead
-refAbbr <- "CO"
-refRow  <- which(USdata$Abbreviation==refAbbr)
-
-# Set up parameter lists for table function and plot function
-tableParList <- with(USdata,
-                     list(ranks = Rank, names = Abbreviation,
-                          est = Estimate.Print, se = SE.Print,
-                          placeType = "State"))
-plotParList <- with(USdata,
-                      list(est = Estimate.2dec, se = SE.2dec,
-                           names = Abbreviation, refName = refAbbr,
-                           confLevel = .9))
-```
 
 ## Shaded columns plot
 
@@ -105,12 +83,20 @@ First, we can use `plotParList$plotType="columns"` to create a grid or "shaded c
 plotParList$plotType <- "columns"
 # Specify where to position the "Reference State:" text,
 # and adjust column widths from their defaults
-tableParList = c(tableParList,
+tableParList <- c(tableParList,
                  list(columnsPlotRefLine = .7, col2 = .55, col3 = .8))
+# Use abbreviations instead of full names in the table, to save space
+tableParList$names <- USdata$Abbreviation
+# Use default plotting character size
+plotParList$cex <- NULL
+
+# Actually draw the figure
 RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
                   tableWidthProp = 2/7)
+
 # Reset defaults for future plots
 tableParList[c("columnsPlotRefLine", "col2", "col3")] <- NULL
+# Use full state names in the table for future plots
 tableParList$names <- USdata$State
 ```
 

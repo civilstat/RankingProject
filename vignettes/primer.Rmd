@@ -33,12 +33,11 @@ Note: For this vignette itself, we automatically save the figures below using th
 
 ## Workflow to reproduce figures from the article
 
-First, we load the package and the `TravelTime2011` dataset used in the paper. To match the article's figures, we drop the row containing the full-USA estimate. We also create string versions of our estimates and their standard errors that will print with a consistent number of digits.
+First, we load the package and the `TravelTime2011` dataset used in the paper. We also create string versions of our estimates and their standard errors that will print with a consistent number of digits.
 
 ```{r}
 library(RankingProject)
 data(TravelTime2011)
-USdata  <- subset(TravelTime2011, Abbreviation != "USA")
 head(USdata)
 
 # Format estimates and SEs into strings with 2 digits past the decimal
@@ -65,7 +64,7 @@ tableParList <- with(USdata,
 plotParList <- with(USdata,
                       list(est = Estimate.2dec, se = SE.2dec,
                            names = Abbreviation, refName = refAbbr,
-                           confLevel = .9, tikzText = TRUE))
+                           confLevel = .90, tikzText = TRUE))
 ```
 
 Reproduce Figure 3, the "shaded columns plot":

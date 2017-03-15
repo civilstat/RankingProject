@@ -33,8 +33,7 @@ library(RankingProject)
 # of workers 16 years and over who did not work at home,
 # from the 2011 American Community Survey (ACS)
 data(TravelTime2011)
-# Drop the national-level row
-USdata  <- TravelTime2011[-which(TravelTime2011$Abbreviation == "USA"), ]
+USdata <- TravelTime2011
 head(USdata)
 #>   Rank        State Estimate.2dec SE.2dec Abbreviation  Region FIPS
 #> 1    1 South Dakota         16.86    0.28           SD MIDWEST   46

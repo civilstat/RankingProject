@@ -43,8 +43,7 @@ library(RankingProject)
 # of workers 16 years and over who did not work at home,
 # from the 2011 American Community Survey (ACS)
 data(TravelTime2011)
-# Drop the national-level row
-USdata  <- TravelTime2011[-which(TravelTime2011$Abbreviation == "USA"), ]
+USdata <- TravelTime2011
 head(USdata)
 
 # Format estimates and SEs into strings with 2 digits past the decimal

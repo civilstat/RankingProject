@@ -4,8 +4,11 @@
 
 # TODO: note which args do/don't apply to plotType = "columns"?
 
-# TODO: allow user to stop from showing *any* legend?
-# e.g. if legendText = NA ??? in case the default legend is not wanted
+# TODO: add a function argument for whether the comparisons plot
+# should show *uncorrected* reference-state CI
+# or the current default demi-Bonferroni correction.
+# (The actual *comparison intervals* should still keep demi-Bonf,
+#  whether or not the reference state has Bonf-correction.)
 
 #############################################################
 #
@@ -260,6 +263,11 @@ RankPlot = function(est, se, names, refName=NULL,
     sePlot = sqrt(seSort[refInd]^2 + seSort^2)
     sePlot[refInd] = 0
   } else if(plotType == "comparison") {
+    # TODO: edit this into a function argument,
+    # in case users want *uncorrected* CI for reference state
+    # instead of default demi-Bonf.-corrected CI
+    # (also see below)
+    #
     # compute special "SEs" for comparison intervals
     sePlot = sqrt(seSort[refInd]^2 + seSort^2) - seSort[refInd]
     sePlot[refInd] = seSort[refInd]
@@ -310,6 +318,24 @@ RankPlot = function(est, se, names, refName=NULL,
 
   #compute error margins
   moe = q*sePlot
+
+  # TODO: edit this into a function argument,
+  # in case users want *uncorrected* CI for reference state
+  # instead of default demi-Bonf.-corrected CI
+  # (also see above)
+  #
+  # #compute error margins
+  # if(plotType != "comparison") {
+  #   moe = q*sePlot
+  # } else {
+  #   # compute special "SEs and MOEs" for comparison intervals
+  #   pRef = 1 - ((1 - confLevelC)/2)
+  #   pOther = 1 - ((1 - confLevelC)/denomC)
+  #   qRef = qnorm(pRef)
+  #   qOther = qnorm(pOther)
+  #   moe = qOther*sqrt(seSort[refInd]^2 + seSort^2) - qRef*seSort[refInd]
+  #   moe[refInd] = qRef*seSort[refInd]
+  # }
 
   if (is.null(xlim)) {
     xlower = (floor(min(estSort)/unit)-1)*unit
