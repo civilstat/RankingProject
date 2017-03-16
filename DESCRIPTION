@@ -1,7 +1,7 @@
 Package: RankingProject
 Type: Package
 Title: The Ranking Project: Visualizations for Comparing Populations
-Version: 0.1.0.9000
+Version: 0.1.0
 Date: 2017-03-15
 Authors@R: c(
     person("Jerzy", "Wieczorek", email = "jerzywieczorek@gmail.com", role = c("cre", "aut")),
@@ -12,7 +12,7 @@ Authors@R: c(
 Description: Functions to generate plots and tables for comparing independently-
     sampled populations. Companion package to "A Primer on Visualizations
     for Comparing Populations, Including the Issue of Overlapping Confidence
-    Intervals" (Wright, Klein, and Wieczorek, 2017).
+    Intervals" by Wright, Klein, and Wieczorek (2017, in press).
 License: GPL-2
 LazyData: TRUE
 Depends: R (>= 2.10)
