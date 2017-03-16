@@ -79,6 +79,9 @@ tableParList = c(tableParList,
                  list(columnsPlotRefLine = .7, col2 = .55, col3 = .8))
 RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
                   tableWidthProp = 2/7, tikzText = TRUE)
+```
+
+```{r}
 # Reset defaults for future plots
 tableParList[c("columnsPlotRefLine", "col2", "col3")] <- NULL
 ```

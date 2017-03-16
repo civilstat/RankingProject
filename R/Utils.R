@@ -53,7 +53,7 @@ range2units = function(extrange) {
 
 RankColumnPlot <- function(est, se, names, refName = NULL,
                            confLevel = 0.9) {
-  
+
   # sort estimates from least to greatest;
   # match reference with index of sorted estimates
   estSort = sort(est)
@@ -64,7 +64,7 @@ RankColumnPlot <- function(est, se, names, refName = NULL,
   } else {
     refInd = which(namesSort == refName)
   }
-  
+
   signifMatrix <- apply(cbind(estSort, seSort), 1, FindSignifInColumn,
                         alldata = cbind(estSort, seSort), confLevel = confLevel)
   colnames(signifMatrix) <- namesSort
@@ -100,11 +100,13 @@ FindSignifInColumn <- function(x, alldata, confLevel = 0.9){
 # so we can use the heatmap inside a larger layout
 #
 # The source is within src/library/stats/R/dendrogram.R
-# which states it is licensed under GPL-2,
+# which states that it is licensed under GPL-2,
 # and the heatmap() function is prefaced by this comment:
-# "original Andy Liaw; modified RG, MM :"
+# "original Andy Liaw; modified RG, MM"
+# (I assume these are Robert Gentleman and Martin Maechler?
+#  I've added all 3 as ctb in this package's DESCRIPTION file.)
 # See for instance here:
-# https://github.com/wch/r-source/blob/trunk/src/library/stats/R/dendrogram.R
+# https://svn.r-project.org/R/trunk/src/library/stats/R/dendrogram.R
 RankHeatmap <- function (x, Rowv = NULL, Colv = if (symm) "Rowv" else NULL,
                          distfun = dist, hclustfun = hclust, reorderfun = function(d,
                                                                                    w) reorder(d, w), add.expr, symm = FALSE, revC = identical(Colv,

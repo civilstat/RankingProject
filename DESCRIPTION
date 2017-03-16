@@ -1,11 +1,14 @@
 Package: RankingProject
 Type: Package
 Title: The Ranking Project: Visualizations for Comparing Populations
-Version: 0.0.0.9024
+Version: 0.1.0
 Date: 2017-03-15
 Authors@R: c(
     person("Jerzy", "Wieczorek", email = "jerzywieczorek@gmail.com", role = c("cre", "aut")),
-    person("Joel", "Beard", role = "ctb"))
+    person("Joel", "Beard", role = "ctb"),
+    person("Andy", "Liaw", role = "ctb"),
+    person("Robert", "Gentleman", role = "ctb"),
+    person("Martin", "Maechler", role = "ctb"))
 Description: Functions to generate plots and tables for comparing independently-
     sampled populations. Companion package to "A Primer on Visualizations
     for Comparing Populations, Including the Issue of Overlapping Confidence
