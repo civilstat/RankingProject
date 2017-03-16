@@ -3,6 +3,7 @@
 ^data-raw$
 ^00checkSUMMARY\.txt$
 ^cran-comments\.md$
+^README\.md$
 ^README\.Rmd$
 ^README-.*\.png$
 ^NEWS\.md$

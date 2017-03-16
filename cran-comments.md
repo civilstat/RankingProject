@@ -6,20 +6,17 @@
 ## R CMD check results
 There were no ERRORs or WARNINGs.
 
-There were 2 NOTEs:
+There was 1 NOTE:
 
 * checking CRAN incoming feasibility ... NOTE  
 Maintainer: ‘Jerzy Wieczorek <jerzywieczorek@gmail.com>’  
   
-New submission
+New submission  
+  
+Possibly mis-spelled words in DESCRIPTION:  
+  Wieczorek (15:36)
 
-This is my first submission.
-
-* checking top-level files ... NOTE  
-Files ‘README.md’ or ‘NEWS.md’ cannot be checked without ‘pandoc’ being installed.
-
-NEWS.md has been added to .Rbuildignore so I do not understand why there is a NOTE about it.
-
+This is my first submission. My name is correctly spelled.
 
 ## Downstream dependencies
 There are currently no downstream dependencies for this package.
