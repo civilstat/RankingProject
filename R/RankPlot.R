@@ -163,13 +163,15 @@
 #'   Goldstein, H. and Healy, M.J.R. (1995). "The Graphical Presentation of a
 #'   Collection of Means," \emph{JRSS A}, vol. 158, no. 1, 175-177.
 #' @examples
-#' # Table of US states' mean travel times to work, from the 2011 ACS
+#' # Plot of 90% confidence intervals for differences
+#' # between each state and Colorado, with demi-Bonferroni correction,
+#' # for US states' mean travel times to work, from the 2011 ACS
 #' data(TravelTime2011)
 #' with(TravelTime2011,
 #'      RankPlot(est = Estimate.2dec, se = SE.2dec,
-#'               names = Abbreviation, refName = "USA",
-#'               confLevel = 0.9, cex = 0.6,
-#'               plotType = "individual"))
+#'               names = Abbreviation, refName = "CO",
+#'               confLevel = 0.90, cex = 0.6,
+#'               plotType = "difference"))
 #' @seealso \code{\link{RankPlotWithTable}} and \code{\link{RankTable}}.
 #' @export
 RankPlot = function(est, se, names, refName=NULL,

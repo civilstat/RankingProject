@@ -47,6 +47,7 @@
 #'   if \code{annotRefName} and \code{annotRefRank} are not \code{NULL}.
 #' @examples
 #' # Table with plot of individual 90% confidence intervals
+#' # for US states' mean travel times to work, from the 2011 ACS
 #' data(TravelTime2011)
 #' tableParList <- with(TravelTime2011,
 #'   list(ranks = Rank, names = State,
@@ -54,18 +55,19 @@
 #'        placeType = "State"))
 #' plotParList <- with(TravelTime2011,
 #'   list(est = Estimate.2dec, se = SE.2dec,
-#'        names = Abbreviation, refName = "USA",
-#'        confLevel = .9, plotType = "individual", cex = 0.6))
+#'        names = Abbreviation,
+#'        confLevel = .90, plotType = "individual", cex = 0.6))
 #' RankPlotWithTable(tableParList = tableParList,
 #'   plotParList = plotParList)
 #'
 #' # Illustrating the use of annotRefName and annotRefRank:
 #' # Table with plot of 90% confidence intervals for differences
-#' # between each state and USA average, with demi-Bonferroni correction
+#' # between each state and Colorado, with demi-Bonferroni correction
 #' plotParList$plotType <- "difference"
+#' plotParList$refName <- "CO"
 #' RankPlotWithTable(tableParList = tableParList,
-#'   plotParList = plotParList, annotRefName = "United States",
-#'   annotRefRank = "NA")
+#'   plotParList = plotParList, annotRefName = "Colorado",
+#'   annotRefRank = USdata$Rank[which(USdata$Abbreviation == "CO")])
 #' @seealso \code{\link{RankPlot}} and \code{\link{RankTable}}.
 #' @export
 RankPlotWithTable = function(tableParList, plotParList,
