@@ -1,3 +1,8 @@
+## Resubmission
+This is a resubmission. In this version I have:
+
+* Added "in press" to the Description reference with no DOI.
+
 ## Test environments
 * local Ubuntu 14.04 install, R 3.3.3
 * local Windows 10 install, R 3.3.3
