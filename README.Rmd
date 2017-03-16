@@ -67,7 +67,7 @@ plotParList <- with(USdata,
                       list(est = Estimate.2dec, se = SE.2dec,
                            names = Abbreviation, refName = refAbbr,
                            confLevel = .9, cex = 0.6, thetaLine = 1.5,
-                           plotType = "difference"))
+                           plotType = "difference", lwdBold = 2))
 
 # Plot demi-Bonferroni-corrected 90% CIs
 # for the differences between Colorado and each other state,

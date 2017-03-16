@@ -161,6 +161,7 @@ Instead of using Goldstein and Healy (1995)'s adjustment to confidence levels, w
 ```{r}
 # CIs for differences from reference state
 plotParList$plotType <- "difference"
+plotParList$lwdBold <- 2
 RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
                   annotRefName = USdata$Rank[refRow],
                   annotRefRank = USdata$State[refRow])
