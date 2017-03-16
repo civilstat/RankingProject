@@ -67,7 +67,7 @@
 #' plotParList$refName <- "CO"
 #' RankPlotWithTable(tableParList = tableParList,
 #'   plotParList = plotParList, annotRefName = "Colorado",
-#'   annotRefRank = USdata$Rank[which(USdata$Abbreviation == "CO")])
+#'   annotRefRank = TravelTime2011$Rank[which(TravelTime2011$Abbreviation == "CO")])
 #' @seealso \code{\link{RankPlot}} and \code{\link{RankTable}}.
 #' @export
 RankPlotWithTable = function(tableParList, plotParList,
