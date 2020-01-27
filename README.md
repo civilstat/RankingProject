@@ -1,14 +1,22 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-The Ranking Project: Visualizations for Comparing Populations
-=============================================================
 
-The package `RankingProject` is a companion for the article "A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals" (Wright, Klein, and Wieczorek, 2017, *The American Statistician*, in press).
+# The Ranking Project: Visualizations for Comparing Populations
 
-The package provides functions for plotting ranked tables of data side-by-side with their plots. The available visualizations include shaded columns plots, adjusted confidence intervals, and related plots intended for making correct inferences about one-to-many or many-to-many comparisons.
+The package `RankingProject` is a companion for the article “A Primer on
+Visualizations for Comparing Populations, Including the Issue of
+Overlapping Confidence Intervals” (Wright, Klein, and Wieczorek, 2019,
+*The American Statistician*) and “A Joint Confidence Region for an
+Overall Ranking of Populations” (Klein, Wright, and Wieczorek, 2020,
+*Journal of the Royal Statistical Society: Series C*, in press).
 
-Installation
-------------
+The package provides functions for plotting ranked tables of data
+side-by-side with their plots. The available visualizations include
+shaded columns plots, adjusted confidence intervals, and related plots
+intended for making correct inferences about one-to-many or many-to-many
+comparisons.
+
+## Installation
 
 ``` r
 # install.packages("devtools")
@@ -16,15 +24,15 @@ Installation
 install_github("civilstat/RankingProject")
 ```
 
-To install the vignettes and exactly replicate figures from the paper, you will also need the `tikzDevice` package:
+To install the vignettes and exactly replicate figures from the paper,
+you will also need the `tikzDevice` package:
 
 ``` r
 # install.packages("tikzDevice")
 install_github("civilstat/RankingProject", build_vignettes = TRUE)
 ```
 
-Example
--------
+## Example
 
 ``` r
 library(RankingProject)
@@ -72,11 +80,19 @@ plotParList <- with(USdata,
 RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
 ```
 
-![](README-unnamed-chunk-4-1.png)
+![](README-unnamed-chunk-4-1.png)<!-- -->
 
-References
-----------
+## References
 
-Almond, R.G., Lewis, C., Tukey, J.W., and Yan, D. (2000). "Displays for Comparing a Given State to Many Others," *The American Statistician*, vol. 54, no. 2, 89-93.
+Almond, R.G., Lewis, C., Tukey, J.W., and Yan, D. (2000). “Displays for
+Comparing a Given State to Many Others,” *The American Statistician*,
+vol. 54, no. 2, 89-93, <DOI:10.1080/00031305.2000.10474517>.
 
-Wright, T., Klein, M., and Wieczorek, J. (2017). "A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals," *The American Statistician*, in press.
+Klein, M., Wright, T., and Wieczorek, J. (2020). “A Joint Confidence
+Region for an Overall Ranking of Populations,” *Journal of the Royal
+Statistical Society: Series C*, in press.
+
+Wright, T., Klein, M., and Wieczorek, J. (2019). “A Primer on
+Visualizations for Comparing Populations, Including the Issue of
+Overlapping Confidence Intervals,” *The American Statistician*, vol. 73,
+no. 2, 165-178, <DOI:10.1080/00031305.2017.1392359>.
