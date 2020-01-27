@@ -4,9 +4,17 @@
 \alias{RankPlotWithTable}
 \title{Figure containing aligned table and plot of ranking data.}
 \usage{
-RankPlotWithTable(tableParList, plotParList, tableFunction = RankTable,
-  plotFunction = RankPlot, tableWidthProp = 3/8, tikzText = FALSE,
-  annotRefName = NULL, annotRefRank = NULL, annotX = 0)
+RankPlotWithTable(
+  tableParList,
+  plotParList,
+  tableFunction = RankTable,
+  plotFunction = RankPlot,
+  tableWidthProp = 3/8,
+  tikzText = FALSE,
+  annotRefName = NULL,
+  annotRefRank = NULL,
+  annotX = 0
+)
 }
 \arguments{
 \item{tableParList}{A required named list of arguments that will be passed
@@ -85,4 +93,3 @@ RankPlotWithTable(tableParList = tableParList,
 \seealso{
 \code{\link{RankPlot}} and \code{\link{RankTable}}.
 }
-

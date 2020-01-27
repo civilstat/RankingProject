@@ -4,13 +4,29 @@
 \alias{RankPlot}
 \title{Figure containing a plot of ranking data.}
 \usage{
-RankPlot(est, se, names, refName = NULL, confLevel = 0.9,
+RankPlot(
+  est,
+  se,
+  names,
+  refName = NULL,
+  confLevel = 0.9,
   plotType = c("individual", "difference", "comparison", "columns"),
-  tiers = 1, GH = FALSE, Bonferroni = ifelse(plotType == "individual",
-  "none", "demi"), tikzText = FALSE, cex = 1, tickWidth = NULL,
-  rangeFactor = 1.2, textPad = 0, legendX = "topleft", legendY = NULL,
-  legendText = NULL, lwdReg = 1, lwdBold = 3, thetaLine = 1,
-  xlim = NULL)
+  tiers = 1,
+  GH = FALSE,
+  Bonferroni = ifelse(plotType == "individual", "none", "demi"),
+  tikzText = FALSE,
+  cex = 1,
+  tickWidth = NULL,
+  rangeFactor = 1.2,
+  textPad = 0,
+  legendX = "topleft",
+  legendY = NULL,
+  legendText = NULL,
+  lwdReg = 1,
+  lwdBold = 3,
+  thetaLine = 1,
+  xlim = NULL
+)
 }
 \arguments{
 \item{est, se}{Vectors containing the point estimate and its standard error
@@ -170,4 +186,3 @@ Almond, R.G., Lewis, C., Tukey, J.W., and Yan, D. (2000).
 \seealso{
 \code{\link{RankPlotWithTable}} and \code{\link{RankTable}}.
 }
-

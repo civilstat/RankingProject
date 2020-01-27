@@ -3,7 +3,6 @@
 \docType{package}
 \name{RankingProject}
 \alias{RankingProject}
-\alias{RankingProject-package}
 \title{The Ranking Project: Visualizations for Comparing Populations}
 \description{
 Functions to generate plots and tables for comparing independently-sampled
@@ -41,4 +40,3 @@ Almond, R.G., Lewis, C., Tukey, J.W., and Yan, D. (2000).
   Including the Issue of Overlapping Confidence Intervals,"
   \emph{The American Statistician}, in press.
 }
-

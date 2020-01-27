@@ -26,4 +26,4 @@ Suggests:
 VignetteBuilder: knitr
 URL: http://github.com/civilstat/RankingProject
 BugReports: http://github.com/civilstat/RankingProject/issues
-RoxygenNote: 5.0.1
+RoxygenNote: 7.0.2

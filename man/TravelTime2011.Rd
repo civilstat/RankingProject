@@ -28,4 +28,3 @@ for each of the 51 states (including Washington, D.C.),
 from the 2011 American Community Survey.
 }
 \keyword{datasets}
-
