@@ -21,7 +21,6 @@ LazyData: TRUE
 Depends: R (>= 2.10)
 Suggests:
     knitr (>= 1.15.1),
-    magick (>= 2.3),
     rmarkdown (>= 0.9.6),
     tikzDevice (>= 0.10-1)
 VignetteBuilder: knitr

@@ -96,3 +96,9 @@ Wright, T., Klein, M., and Wieczorek, J. (2019). “A Primer on
 Visualizations for Comparing Populations, Including the Issue of
 Overlapping Confidence Intervals,” *The American Statistician*, vol. 73,
 no. 2, 165-178, <DOI:10.1080/00031305.2017.1392359>.
+
+<!-- badges: start -->
+
+[![Travis build
+status](https://travis-ci.org/civilstat/RankingProject.svg?branch=master)](https://travis-ci.org/civilstat/RankingProject)
+<!-- badges: end -->
