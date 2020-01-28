@@ -1,0 +1,52 @@
+"Rank","State","Estimate.1dec","MOE.1dec","Abbreviation","Region","FIPS"
+2,"South Dakota",16.9,0.5,"SD","MIDWEST",46
+2,"North Dakota",16.9,0.6,"ND","MIDWEST",38
+4,"Wyoming",18.1,0.8,"WY","WEST",56
+4,"Nebraska",18.1,0.3,"NE","MIDWEST",31
+5,"Montana",18.2,0.5,"MT","WEST",30
+6,"Alaska",18.4,0.5,"AK","PACIFIC",2
+7,"Iowa",18.8,0.2,"IA","MIDWEST",19
+8,"Kansas",18.9,0.3,"KS","MIDWEST",20
+9,"Idaho",19.7,0.4,"ID","WEST",16
+10,"Oklahoma",21.1,0.2,"OK","SOUTH",40
+11,"Arkansas",21.3,0.4,"AR","SOUTH",5
+12,"New Mexico",21.4,0.4,"NM","WEST",35
+13,"Utah",21.6,0.3,"UT","WEST",49
+15,"Wisconsin",21.9,0.2,"WI","MIDWEST",55
+15,"Vermont",21.9,0.5,"VT","NORTHEAST",50
+16,"Oregon",22.5,0.3,"OR","WEST",41
+17,"Kentucky",22.9,0.2,"KY","SOUTH",21
+18,"Minnesota",23,0.2,"MN","MIDWEST",27
+20,"Ohio",23.1,0.1,"OH","MIDWEST",39
+20,"Missouri",23.1,0.2,"MO","MIDWEST",29
+23,"Rhode Island",23.4,0.5,"RI","NORTHEAST",44
+23,"North Carolina",23.4,0.2,"NC","SOUTH",37
+23,"Maine",23.4,0.4,"ME","NORTHEAST",23
+24,"Indiana",23.5,0.2,"IN","MIDWEST",18
+25,"South Carolina",23.6,0.3,"SC","SOUTH",45
+27,"Mississippi",23.9,0.4,"MS","SOUTH",28
+27,"Alabama",23.9,0.2,"AL","SOUTH",1
+29,"Nevada",24.1,0.4,"NV","WEST",32
+29,"Michigan",24.1,0.2,"MI","MIDWEST",26
+30,"Tennessee",24.2,0.2,"TN","SOUTH",47
+32,"Louisiana",24.5,0.2,"LA","SOUTH",22
+32,"Colorado",24.5,0.3,"CO","WEST",8
+34,"Texas",24.8,0.1,"TX","SOUTH",48
+34,"Arizona",24.8,0.2,"AZ","WEST",4
+35,"Connecticut",25,0.3,"CT","NORTHEAST",9
+36,"Delaware",25.3,0.6,"DE","SOUTH",10
+37,"Washington",25.5,0.2,"WA","WEST",53
+38,"West Virginia",25.6,0.5,"WV","SOUTH",54
+39,"Hawaii",25.7,0.4,"HI","PACIFIC",15
+40,"Florida",25.8,0.2,"FL","SOUTH",12
+41,"Pennsylvania",25.9,0.1,"PA","NORTHEAST",42
+42,"New Hampshire",26.9,0.5,"NH","NORTHEAST",33
+44,"Georgia",27.1,0.3,"GA","SOUTH",13
+44,"California",27.1,0.1,"CA","WEST",6
+45,"Virginia",27.7,0.2,"VA","SOUTH",51
+46,"Massachusetts",28,0.2,"MA","NORTHEAST",25
+47,"Illinois",28.2,0.2,"IL","MIDWEST",17
+48,"District of Columbia",30.1,0.5,"DC","SOUTH",11
+49,"New Jersey",30.5,0.2,"NJ","NORTHEAST",34
+50,"New York",31.5,0.2,"NY","NORTHEAST",36
+51,"Maryland",32.2,0.2,"MD","SOUTH",24

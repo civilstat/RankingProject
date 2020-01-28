@@ -8,3 +8,5 @@
 ^README-.*\.png$
 ^NEWS\.md$
 ^\.travis\.yml$
+^doc$
+^Meta$

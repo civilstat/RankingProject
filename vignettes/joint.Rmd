@@ -1,0 +1,62 @@
+---
+title: "Figures for 'A Joint Confidence Region for an Overall Ranking of Populations'"
+author: "Jerzy Wieczorek"
+date: "`r Sys.Date()`"
+output: rmarkdown::pdf_document
+vignette: >
+  %\VignetteIndexEntry{Figures for 'A Joint Confidence Region for an Overall Ranking of Populations'}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+header-includes:
+  - \usepackage{tikz}
+---
+
+```{r, echo=FALSE, cache=FALSE}
+library(knitr)
+options(tikzMetricsDictionary="tikzDictionary")
+opts_chunk$set(fig.width=6.5, fig.height=8, cache=FALSE, message=FALSE,
+               dev='tikz', external=FALSE,
+               out.width=6.5, out.height=8)
+# Fixed issue with dev='tikz' in Windows
+# by setting external=FALSE and a new plot hook, as here:
+# https://github.com/yihui/tikzDevice/issues/60
+knit_hooks$set(crop = NULL, plot = function(x, options) {
+  if ('tikz' %in% options$dev && !options$external) {
+    hook_plot_tex(x, options)
+  } else hook_plot_md(x, options)
+})
+```
+
+This vignette shows how to reproduce the main figures in "A Joint Confidence Region for an Overall Ranking of Populations" (Klein, Wright, and Wieczorek, 2020, *Journal of the Royal Statistical Society: Series C*, in press).
+
+Note: For this vignette itself, we automatically save the figures below using the `knitr` package with option `dev="tikz"` instead of saving them individually. In the final section of the vignette, we show an example of how to save individual plots using the `tikz()` function in the `tikzDevice` package.
+
+## Workflow to reproduce figures from the article
+
+First, we load the package and the `TravelTime2011.1dec` dataset used in the paper. Note that we are using the version of the data where estimates and Margins of Error have been rounded to 1 decimal place, causing some ranks to be tied.
+
+```{r}
+library(RankingProject)
+data(TravelTime2011.1dec)
+USdata <- TravelTime2011.1dec
+head(USdata)
+```
+
+Reproduce Figure 1, the "... plot":
+
+```{r}
+
+```
+
+Reproduce Figure 2, the "... plot":
+
+```{r}
+
+```
+
+
+## Using `tikzDevice::tikz()` to save individual figures
+
+For this vignette, the figures above were automatically converted to PDF format using `knitr` with chunk option `dev="tikz"`. When not using `knitr`, we may prefer to save plots one at a time "manually." To do this, we can explicitly call the `tikz()` function from the `tikzDevice` package. See example code in the `primer` vignette.
+
+
