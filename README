@@ -2,7 +2,7 @@
 The Ranking Project: Visualizations for Comparing Populations
 =============================================================
 
-The package `RankingProject` is a companion for the articles "A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals" (Wright, Klein, and Wieczorek, 2019, *The American Statistician*) and "A Joint Confidence Region for an Overall Ranking of Populations" (Klein, Wright, and Wieczorek, 2020, *Journal of the Royal Statistical Society: Series C*, in press).
+The package `RankingProject` is a companion for the articles "A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals" (Wright, Klein, and Wieczorek, 2019, *The American Statistician*) <DOI:10.1080/00031305.2017.1392359> and "A Joint Confidence Region for an Overall Ranking of Populations" (Klein, Wright, and Wieczorek, 2020, *Journal of the Royal Statistical Society: Series C*, in press).
 
 The package provides functions for plotting ranked tables of data side-by-side with their plots. The available visualizations include shaded columns plots, adjusted confidence intervals, and related plots intended for making correct inferences about one-to-many or many-to-many comparisons.
 

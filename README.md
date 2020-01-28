@@ -3,12 +3,22 @@
 
 # The Ranking Project: Visualizations for Comparing Populations
 
-The package `RankingProject` is a companion for the article “A Primer on
-Visualizations for Comparing Populations, Including the Issue of
-Overlapping Confidence Intervals” (Wright, Klein, and Wieczorek, 2019,
-*The American Statistician*) and “A Joint Confidence Region for an
-Overall Ranking of Populations” (Klein, Wright, and Wieczorek, 2020,
-*Journal of the Royal Statistical Society: Series C*, in press).
+<!-- badges: start -->
+
+[![Travis build
+status](https://travis-ci.org/civilstat/RankingProject.svg?branch=master)](https://travis-ci.org/civilstat/RankingProject)
+[![CRAN
+downloads](https://cranlogs.r-pkg.org/badges/RankingProject)](https://cran.r-project.org/package=RankingProject)
+<!-- badges: end -->
+
+The package `RankingProject` is a companion for the articles [“A Primer
+on Visualizations for Comparing Populations, Including the Issue of
+Overlapping Confidence
+Intervals”](https://doi.org/10.1080/00031305.2017.1392359) (Wright,
+Klein, and Wieczorek, 2019, *The American Statistician*) and “A Joint
+Confidence Region for an Overall Ranking of Populations” (Klein, Wright,
+and Wieczorek, 2020, *Journal of the Royal Statistical Society: Series
+C*, in press).
 
 The package provides functions for plotting ranked tables of data
 side-by-side with their plots. The available visualizations include
@@ -96,9 +106,3 @@ Wright, T., Klein, M., and Wieczorek, J. (2019). “A Primer on
 Visualizations for Comparing Populations, Including the Issue of
 Overlapping Confidence Intervals,” *The American Statistician*, vol. 73,
 no. 2, 165-178, <DOI:10.1080/00031305.2017.1392359>.
-
-<!-- badges: start -->
-
-[![Travis build
-status](https://travis-ci.org/civilstat/RankingProject.svg?branch=master)](https://travis-ci.org/civilstat/RankingProject)
-<!-- badges: end -->
