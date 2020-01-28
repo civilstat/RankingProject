@@ -20,7 +20,7 @@ opts_chunk$set(fig.width=6.5, fig.height=8, cache=FALSE, message=FALSE,
 # Fixed issue with dev='tikz' in Windows
 # by setting external=FALSE and a new plot hook, as here:
 # https://github.com/yihui/tikzDevice/issues/60
-knit_hooks$set(plot = function(x, options) {
+knit_hooks$set(crop = NULL, plot = function(x, options) {
   if ('tikz' %in% options$dev && !options$external) {
     hook_plot_tex(x, options)
   } else hook_plot_md(x, options)
