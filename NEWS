@@ -1,6 +1,6 @@
-# RankingProject 0.1.1.9000
+# RankingProject 0.2.0
 
-* (Placeholder for next development version.)
+* New vignette and dataset to reproduce figures from "A Joint Confidence Region for an Overall Ranking of Populations" by Klein, Wright, and Wieczorek (2020, in press).
 
 # RankingProject 0.1.1
 
