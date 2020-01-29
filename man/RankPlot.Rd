@@ -79,7 +79,7 @@ and the "outer tiers" run past the cross-bars
 all the way to the ends of each interval.
 One of the tiers will show uncorrected
 \code{confLevel*100}\% confidence intervals,
-and the other tier will show the Golstein-Healy and/or Bonferroni
+and the other tier will show the Goldstein-Healy and/or Bonferroni
 adjusted intervals. A legend will show which tier is which;
 usually Goldstein-Healy alone gives shorter intervals (inner tier),
 but Bonferroni corrections make them into longer intervals (outer tier).}

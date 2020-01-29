@@ -3,13 +3,18 @@
 #' Functions to generate plots and tables for comparing independently-sampled
 #' populations. Companion package to "A Primer on Visualizations for Comparing
 #' Populations, Including the Issue of Overlapping Confidence Intervals"
-#' (Wright, Klein, and Wieczorek, 2017,
-#' \emph{The American Statistician}, in press).
+#' by Wright, Klein, and Wieczorek (2019)
+#' <DOI:10.1080/00031305.2017.1392359>
+#' and "A Joint Confidence Region for an Overall Ranking of Populations"
+#' by Klein, Wright, and Wieczorek (2020, in press).
 #' See the Intro vignette (html) for an overview and examples:
 #' \code{vignette("intro", package = "RankingProject")}.
 #' See the Primer vignette (pdf)
-#' for code which replicates the main figures from the article:
+#' for code which replicates the main figures from the 2019 article:
 #' \code{vignette("primer", package = "RankingProject")}.
+#' See the Joint vignette (pdf)
+#' for code which replicates the main figures from the 2020 article:
+#' \code{vignette("joint", package = "RankingProject")}.
 #'
 #' The "comparison" plots are based on figures and S code from
 #' Almond et al. (2000).
@@ -26,12 +31,18 @@
 #'
 #' @references Almond, R.G., Lewis, C., Tukey, J.W., and Yan, D. (2000).
 #'   "Displays for Comparing a Given State to Many Others,"
-#'   \emph{The American Statistician}, vol. 54, no. 2, 89-93.
+#'   \emph{The American Statistician}, vol. 54, no. 2, 89-93,
+#'   DOI:10.1080/00031305.2000.10474517.
 #'
-#'   Wright, T., Klein, M., and Wieczorek, J. (2017).
+#'   Klein, M., Wright, T., and Wieczorek, J. (2020).
+#'   "A Joint Confidence Region for an Overall Ranking of Populations,"
+#'   \emph{Journal of the Royal Statistical Society: Series C}, in press.
+#'
+#'   Wright, T., Klein, M., and Wieczorek, J. (2019).
 #'   "A Primer on Visualizations for Comparing Populations,
 #'   Including the Issue of Overlapping Confidence Intervals,"
-#'   \emph{The American Statistician}, in press.
+#'   \emph{The American Statistician}, vol. 73, no. 2, 165-178,
+#'   DOI:10.1080/00031305.2017.1392359.
 #'
 #' @importFrom graphics abline arrows axis image layout legend mtext par plot
 #'   points rect segments text title
