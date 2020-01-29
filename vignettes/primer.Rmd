@@ -13,12 +13,6 @@ header-includes:
 ---
 
 ```{r, echo=FALSE, cache=FALSE}
-# Fixing issue with some CRAN build environments
-# not having LaTeX preview package by default
-if(system('kpsewhich preview.sty') != 0) {
-  tinytex::tlmgr_install("preview")
-}
-
 library(knitr)
 options(tikzMetricsDictionary="tikzDictionary",
         tikzMetricPackages = c("\\usepackage[utf8]{inputenc}","\\usepackage[T1]{fontenc}",

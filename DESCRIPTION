@@ -22,8 +22,7 @@ Depends: R (>= 2.10)
 Suggests:
     knitr (>= 1.15.1),
     rmarkdown (>= 0.9.6),
-    tikzDevice (>= 0.10-1),
-    tinytex (>= 0.19)
+    tikzDevice (>= 0.10-1)
 VignetteBuilder: knitr
 URL: http://github.com/civilstat/RankingProject
 BugReports: http://github.com/civilstat/RankingProject/issues
