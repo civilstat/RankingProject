@@ -21,7 +21,7 @@
 #'
 #' The code for the "columns" plots is directly based on R's
 #' \code{stats::heatmap()}
-#' function, with minor modifications to remove dendograms and allow the heatmap
+#' function, with minor modifications to remove dendrograms and allow the heatmap
 #' to be placed inside a larger \code{layout()}.
 #'
 #' @references Almond, R.G., Lewis, C., Tukey, J.W., and Yan, D. (2000).
