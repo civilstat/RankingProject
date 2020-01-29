@@ -2,4 +2,6 @@
 
 language: R
 cache: packages
-os: linux
+os:
+  - linux
+  - osx
