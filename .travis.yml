@@ -3,5 +3,4 @@
 language: R
 cache: packages
 os:
-  - osx
   - linux
