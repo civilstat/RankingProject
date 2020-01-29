@@ -9,11 +9,14 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 header-includes:
   - \usepackage{tikz}
+  - \usepackage{preview}
 ---
 
 ```{r, echo=FALSE, cache=FALSE}
 library(knitr)
-options(tikzMetricsDictionary="tikzDictionary")
+options(tikzMetricsDictionary="tikzDictionary",
+        tikzMetricPackages = c("\\usepackage[utf8]{inputenc}","\\usepackage[T1]{fontenc}",
+                               "\\usetikzlibrary{calc}", "\\usepackage{amssymb}"))
 opts_chunk$set(fig.width=6.5, fig.height=8, cache=FALSE, message=FALSE,
                dev='tikz', external=FALSE,
                out.width=6.5, out.height=8)
