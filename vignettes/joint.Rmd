@@ -30,7 +30,9 @@ knit_hooks$set(crop = NULL, plot = function(x, options) {
 
 This vignette shows how to reproduce the main figures in "A Joint Confidence Region for an Overall Ranking of Populations" (Klein, Wright, and Wieczorek, 2020, *Journal of the Royal Statistical Society: Series C*, in press).
 
-Note: For this vignette itself, we automatically save the figures below using the `knitr` package with option `dev="tikz"` instead of saving them individually. In the final section of the vignette, we show an example of how to save individual plots using the `tikz()` function in the `tikzDevice` package.
+Note: For this vignette itself, we automatically save the figures below using the `knitr` package with option `dev="tikz"` instead of saving them individually. For an example of how to save individual plots using the `tikz()` function in the `tikzDevice` package, please see the `Primer` vignette:  
+`vignette("primer", package = "RankingProject")`
+
 
 ## Workflow to reproduce figures from the article
 
