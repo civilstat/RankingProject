@@ -1,8 +1,8 @@
 Package: RankingProject
 Type: Package
 Title: The Ranking Project: Visualizations for Comparing Populations
-Version: 0.2.1.9000
-Date: 2020-01-29
+Version: 0.2.1.9001
+Date: 2021-01-13
 Authors@R: c(
     person("Jerzy", "Wieczorek", email = "jerzywieczorek@gmail.com", role = c("cre", "aut")),
     person("Joel", "Beard", role = "ctb"),
@@ -14,8 +14,8 @@ Description: Functions to generate plots and tables for comparing independently-
     for Comparing Populations, Including the Issue of Overlapping Confidence
     Intervals" by Wright, Klein, and Wieczorek (2019)
     <DOI:10.1080/00031305.2017.1392359> and "A Joint Confidence Region for an
-    Overall Ranking of Populations" by Klein, Wright, and Wieczorek (2020, in
-    press).
+    Overall Ranking of Populations" by Klein, Wright, and Wieczorek (2020)
+    <DOI:10.1111/rssc.12402>.
 License: GPL-2
 LazyData: TRUE
 Depends: R (>= 2.10)

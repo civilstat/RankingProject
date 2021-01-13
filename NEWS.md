@@ -1,3 +1,7 @@
+# RankingProject 0.2.1.9001
+
+* Development version: updated DOI and citation details for published JRSS-C article. New option for `RankPlot` function to use independence assumption when making multiple comparison corrections.
+
 # RankingProject 0.2.1.9000
 
 * Development version: builds the slower vignettes only on maintainer's machine.
