@@ -1,3 +1,12 @@
+# TODO: change the single Bonferroni arg to two different args:
+# multcomp.scope = "none", "demi", "full"
+# multcomp.type  = "none", "bonferroni", "independence"
+# ???
+# Or just keep it as one arg for now,
+# with "demibonf" "demiind" "fullbonf" or "fullind",
+# and refactor it later???
+
+
 # TODO: sanitize args when plotType = "columns", warning users that
 # it won't have any effect if they tried setting non-default args
 # for anything that doesn't get passed to RankColumnPlot()
