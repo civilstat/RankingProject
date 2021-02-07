@@ -24,6 +24,6 @@ Suggests:
     rmarkdown (>= 0.9.6),
     tikzDevice (>= 0.10-1)
 VignetteBuilder: knitr
-URL: http://github.com/civilstat/RankingProject
-BugReports: http://github.com/civilstat/RankingProject/issues
+URL: https://github.com/civilstat/RankingProject
+BugReports: https://github.com/civilstat/RankingProject/issues
 RoxygenNote: 7.1.1
