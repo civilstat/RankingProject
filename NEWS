@@ -1,3 +1,7 @@
+# RankingProject 0.3.0.9000
+
+* Development version:
+
 # RankingProject 0.3.0
 
 * New argument `multcomp.type` in `RankPlot` function allows use of independence assumption when making multiple comparison corrections.
