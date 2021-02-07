@@ -4,7 +4,8 @@
 \name{TravelTime2011.1dec}
 \alias{TravelTime2011.1dec}
 \title{Mean travel times to work, from 2011 ACS, rounded to 1 decimal place.}
-\format{A data frame with 51 rows and 7 variables:
+\format{
+A data frame with 51 rows and 7 variables:
 \describe{
   \item{Rank}{state rank, by estimated mean travel time, where 1 is lowest travel time and 51 is highest}
   \item{State}{full name of the state}
@@ -13,7 +14,8 @@
   \item{Abbreviation}{postal abbreviation of the state}
   \item{Region}{factor variable for geographic region of the state: Northeast, South, Midwest, West, Pacific}
   \item{FIPS}{Federal Information Processing Standard (FIPS) code of the state; may be useful for linking with other datasets}
-}}
+}
+}
 \source{
 \url{https://www.census.gov/}
 }

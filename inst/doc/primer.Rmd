@@ -30,7 +30,7 @@ knit_hooks$set(crop = NULL, plot = function(x, options) {
 })
 ```
 
-This vignette shows how to reproduce the main figures in "A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals" (Wright, Klein, and Wieczorek, 2017, *The American Statistician*, in press).
+This vignette shows how to reproduce the main figures in ["A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals"](https://doi.org/10.1080/00031305.2017.1392359) (Wright, Klein, and Wieczorek, 2019, *The American Statistician*).
 
 Note: For this vignette itself, we automatically save the figures below using the `knitr` package with option `dev="tikz"` instead of saving them individually. In the final section of the vignette, we show an example of how to save individual plots using the `tikz()` function in the `tikzDevice` package.
 

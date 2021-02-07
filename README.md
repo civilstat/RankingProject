@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![Travis build
-status](https://travis-ci.org/civilstat/RankingProject.svg?branch=master)](https://travis-ci.org/civilstat/RankingProject)
+status](https://travis-ci.com/civilstat/RankingProject.svg?branch=master)](https://travis-ci.com/civilstat/RankingProject)
 [![CRAN
 downloads](https://cranlogs.r-pkg.org/badges/RankingProject)](https://cran.r-project.org/package=RankingProject)
 <!-- badges: end -->

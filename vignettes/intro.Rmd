@@ -14,8 +14,8 @@ library(knitr)
 opts_chunk$set(fig.width=6.5, fig.height=8, cache=FALSE, message=FALSE)
 ```
 
-This vignette introduces the `RankingProject` package, which accompanies "A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals" (Wright, Klein, and Wieczorek, 2017, *The American Statistician*, in press). For instructions on exactly replicating the article's main figures, please see the `Primer` vignette:  
-`vignette("primer", package = "RankingProject")`
+This vignette introduces the `RankingProject` package, which accompanies the articles ["A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals"](https://doi.org/10.1080/00031305.2017.1392359) (Wright, Klein, and Wieczorek, 2019, *The American Statistician*) and ["A Joint Confidence Region for an Overall Ranking of Populations"](https://doi.org/10.1111/rssc.12402) (Klein, Wright, and Wieczorek, 2020, *Journal of the Royal Statistical Society: Series C*). For instructions on exactly replicating the article's main figures, please see the `Primer` and `Joint` vignettes:  
+`vignette("primer", package = "RankingProject")` and `vignette("joint", package = "RankingProject")`
 
 The package provides functions for plotting ranked tables of data side-by-side with their plots. The available visualizations include shaded columns plots, adjusted confidence intervals, and related plots intended for making correct inferences about one-to-many or many-to-many comparisons.
 

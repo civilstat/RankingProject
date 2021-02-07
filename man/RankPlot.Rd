@@ -25,7 +25,8 @@ RankPlot(
   lwdReg = 1,
   lwdBold = 3,
   thetaLine = 1,
-  xlim = NULL
+  xlim = NULL,
+  multcomp.type = c("bonferroni", "independence")
 )
 }
 \arguments{
@@ -50,7 +51,7 @@ to be highlighted by vertical lines, if specified).}
 (uncorrected) hypothesis tests and/or confidence intervals. E.g. with
 \code{plotType = "individual"}, \code{confLevel = 0.9} will plot
 individual 90\% confidence intervals. If using \code{GH = TRUE}
-and/or \code{Bonferroni != "none"}, the Goldstein-Healy and/or Bonferroni
+and/or \code{Bonferroni != "none"}, the Goldstein-Healy and/or Bonferroni/Independence
 corrections will be applied to the \code{confLevel} baseline.}
 
 \item{plotType}{Which type of ranking plot to use. See vignettes for
@@ -58,14 +59,14 @@ examples and details.
 \itemize{
 \item \code{"individual"} is used for usual individual
 confidence intervals, with or without Goldstein-Healy adjustment and/or
-(demi or full) Bonferroni corrections.
+(demi or full) Bonferroni/Independence corrections.
 \item \code{"difference"} shows confidence intervals for the differences
 between the reference area \code{refName} and all other areas.
 \item \code{"comparison"} also compares the reference area \code{refName}
 to all others, but using the "comparison intervals"
 of Almond et al. (2000).
 \item \code{"columns"} plots a grid of shaded columns, where each column
-uses shading to report demi-Bonferroni-corrected significance tests
+uses shading to report demi-Bonferroni/Independence-corrected significance tests
 for comparing the reference area (labeled at the bottom of the column)
 with all other areas.
 }}
@@ -79,10 +80,10 @@ and the "outer tiers" run past the cross-bars
 all the way to the ends of each interval.
 One of the tiers will show uncorrected
 \code{confLevel*100}\% confidence intervals,
-and the other tier will show the Goldstein-Healy and/or Bonferroni
+and the other tier will show the Goldstein-Healy and/or Bonferroni/Independence
 adjusted intervals. A legend will show which tier is which;
 usually Goldstein-Healy alone gives shorter intervals (inner tier),
-but Bonferroni corrections make them into longer intervals (outer tier).}
+but Bonferroni/Independence corrections make them into longer intervals (outer tier).}
 
 \item{GH}{Logical, for whether or not to plot adjusted
 confidence intervals at an "average" \code{confLevel*100}\%
@@ -90,16 +91,20 @@ confidence level as in Goldstein and Healy (1995).
 Can only be used with \code{plotType = "individual"}.}
 
 \item{Bonferroni}{Whether and how to correct for multiple comparisons by a
-Bonferroni correction to the confidence level of the tests or intervals.
+Bonferroni or Independence correction to the confidence level of the tests or intervals.
 \code{"none"} performs no correction; \code{"demi"} corrects for
 comparing one reference area to all \code{n-1} other areas; and
 \code{"full"} corrects for comparing all possible \code{choose(n-1, 2)}
 pairs of areas.
 If \code{GH = TRUE}, the Goldstein-Healy adjustment
-is performed first, and any Bonferroni correction is applied afterwards.
+is performed first, and any Bonferroni/Independence correction is applied afterwards.
 Settings \code{"none"} and \code{"full"} can only be used
 with \code{plotType = "individual"};
-all other plot types use the setting \code{"demi"}.}
+all other plot types use the setting \code{"demi"}.
+(For now, use the \code{multcomp.type} argument to specify whether the correction
+should rely on Bonferroni (default) or on an assumption of Independence.
+In the future, this package will be refactored
+so that the multiple-comparisons arguments are better named!)}
 
 \item{tikzText}{Logical, for whether or not to format text for tikz plotting.}
 
@@ -143,6 +148,14 @@ when \code{plotType = c("difference", "comparison")}.}
 \item{xlim}{Vector of 2 numbers for x-axis limits. If \code{NULL},
 will be automatically set using range of data
 expanded by \code{rangeFactor}.}
+
+\item{multcomp.type}{Whether multiple comparison corrects should use a
+Bonferroni correction (\code{"bonferroni"})
+or an independence-based correction (\code{"independence"}).
+See Section 4 of the paper "A Joint Confidence Region..." (2020, JRSS-C)
+for the difference in these two corrections.
+(In the future, this package will be refactored
+so that the multiple-comparisons arguments are better named!)}
 }
 \description{
 \code{RankPlot} creates a figure with a plot of ranking data,

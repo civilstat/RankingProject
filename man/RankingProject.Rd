@@ -11,7 +11,8 @@ Populations, Including the Issue of Overlapping Confidence Intervals"
 by Wright, Klein, and Wieczorek (2019)
 <DOI:10.1080/00031305.2017.1392359>
 and "A Joint Confidence Region for an Overall Ranking of Populations"
-by Klein, Wright, and Wieczorek (2020, in press).
+by Klein, Wright, and Wieczorek (2020)
+<DOI:10.1111/rssc.12402>.
 See the Intro vignette (html) for an overview and examples:
 \code{vignette("intro", package = "RankingProject")}.
 See the Primer vignette (pdf)
@@ -43,7 +44,8 @@ Almond, R.G., Lewis, C., Tukey, J.W., and Yan, D. (2000).
 
   Klein, M., Wright, T., and Wieczorek, J. (2020).
   "A Joint Confidence Region for an Overall Ranking of Populations,"
-  \emph{Journal of the Royal Statistical Society: Series C}, in press.
+  \emph{Journal of the Royal Statistical Society: Series C}, vol. 69, no.3, 589-606,
+  DOI:10.1111/rssc.12402.
 
   Wright, T., Klein, M., and Wieczorek, J. (2019).
   "A Primer on Visualizations for Comparing Populations,
