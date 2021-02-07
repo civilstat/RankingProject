@@ -1,10 +1,17 @@
-# TODO: change the single Bonferroni arg to two different args:
+# TODO: change the single Bonferroni arg into two different args:
 # multcomp.scope = "none", "demi", "full"
 # multcomp.type  = "none", "bonferroni", "independence"
 # ???
-# Or just keep it as one arg for now,
-# with "demibonf" "demiind" "fullbonf" or "fullind",
-# and refactor it later???
+# ...
+# For now, let's keep original Bonferroni arg,
+# and *add* a new arg multcomp.type = "independence", "bonferroni"
+# -- this will be confusing
+#    since the Bonf arg actually specifies none/demi/full,
+#    not whether it's Bonf or Indep or another correction...
+# but it's the fastest way to add an Independence option
+# given my very limited time this week.
+# We'll refactor this later!
+
 
 
 # TODO: sanitize args when plotType = "columns", warning users that
@@ -87,21 +94,21 @@
 #'   (uncorrected) hypothesis tests and/or confidence intervals. E.g. with
 #'   \code{plotType = "individual"}, \code{confLevel = 0.9} will plot
 #'   individual 90\% confidence intervals. If using \code{GH = TRUE}
-#'   and/or \code{Bonferroni != "none"}, the Goldstein-Healy and/or Bonferroni
+#'   and/or \code{Bonferroni != "none"}, the Goldstein-Healy and/or Bonferroni/Independence
 #'   corrections will be applied to the \code{confLevel} baseline.
 #' @param plotType Which type of ranking plot to use. See vignettes for
 #'   examples and details.
 #'   \itemize{
 #'   \item \code{"individual"} is used for usual individual
 #'   confidence intervals, with or without Goldstein-Healy adjustment and/or
-#'   (demi or full) Bonferroni corrections.
+#'   (demi or full) Bonferroni/Independence corrections.
 #'   \item \code{"difference"} shows confidence intervals for the differences
 #'   between the reference area \code{refName} and all other areas.
 #'   \item \code{"comparison"} also compares the reference area \code{refName}
 #'   to all others, but using the "comparison intervals"
 #'   of Almond et al. (2000).
 #'   \item \code{"columns"} plots a grid of shaded columns, where each column
-#'   uses shading to report demi-Bonferroni-corrected significance tests
+#'   uses shading to report demi-Bonferroni/Independence-corrected significance tests
 #'   for comparing the reference area (labeled at the bottom of the column)
 #'   with all other areas.
 #'   }
@@ -114,25 +121,29 @@
 #'   all the way to the ends of each interval.
 #'   One of the tiers will show uncorrected
 #'   \code{confLevel*100}\% confidence intervals,
-#'   and the other tier will show the Goldstein-Healy and/or Bonferroni
+#'   and the other tier will show the Goldstein-Healy and/or Bonferroni/Independence
 #'   adjusted intervals. A legend will show which tier is which;
 #'   usually Goldstein-Healy alone gives shorter intervals (inner tier),
-#'   but Bonferroni corrections make them into longer intervals (outer tier).
+#'   but Bonferroni/Independence corrections make them into longer intervals (outer tier).
 #' @param GH Logical, for whether or not to plot adjusted
 #'   confidence intervals at an "average" \code{confLevel*100}\%
 #'   confidence level as in Goldstein and Healy (1995).
 #'   Can only be used with \code{plotType = "individual"}.
 #' @param Bonferroni Whether and how to correct for multiple comparisons by a
-#'   Bonferroni correction to the confidence level of the tests or intervals.
+#'   Bonferroni or Independence correction to the confidence level of the tests or intervals.
 #'   \code{"none"} performs no correction; \code{"demi"} corrects for
 #'   comparing one reference area to all \code{n-1} other areas; and
 #'   \code{"full"} corrects for comparing all possible \code{choose(n-1, 2)}
 #'   pairs of areas.
 #'   If \code{GH = TRUE}, the Goldstein-Healy adjustment
-#'   is performed first, and any Bonferroni correction is applied afterwards.
+#'   is performed first, and any Bonferroni/Independence correction is applied afterwards.
 #'   Settings \code{"none"} and \code{"full"} can only be used
 #'   with \code{plotType = "individual"};
 #'   all other plot types use the setting \code{"demi"}.
+#'   (For now, use the \code{multcomp.type} argument to specify whether the correction
+#'   should rely on Bonferroni (default) or on an assumption of Independence.
+#'   In the future, this package will be refactored
+#'   so that the multiple-comparisons arguments are better named!)
 #' @param tikzText Logical, for whether or not to format text for tikz plotting.
 #' @param cex \strong{C}haracter \strong{ex}pansion factor for
 #'   the points use to plot each area's point estimate, and for the
@@ -165,6 +176,13 @@
 #' @param xlim Vector of 2 numbers for x-axis limits. If \code{NULL},
 #'   will be automatically set using range of data
 #'   expanded by \code{rangeFactor}.
+#' @param multcomp.type Whether multiple comparison corrects should use a
+#'   Bonferroni correction (\code{"bonferroni"})
+#'   or an independence-based correction (\code{"independence"}).
+#'   See Section 4 of the paper "A Joint Confidence Region..." (2020, JRSS-C)
+#'   for the difference in these two corrections.
+#'   (In the future, this package will be refactored
+#'   so that the multiple-comparisons arguments are better named!)
 #' @references Almond, R.G., Lewis, C., Tukey, J.W., and Yan, D. (2000).
 #'   "Displays for Comparing a Given State to Many Others,"
 #'   \emph{The American Statistician}, vol. 54, no. 2, 89-93.
@@ -194,8 +212,8 @@ RankPlot = function(est, se, names, refName=NULL,
                     textPad = 0,
                     legendX = "topleft", legendY = NULL, legendText = NULL,
                     lwdReg = 1, lwdBold = 3, thetaLine = 1,
-                    xlim=NULL) {
-
+                    xlim=NULL,
+                    multcomp.type = c("bonferroni", "independence")) {
   n = length(est)
   stopifnot(length(se) == n & length(names) == n)
   stopifnot(is.numeric(est) & is.numeric(se))
@@ -205,6 +223,7 @@ RankPlot = function(est, se, names, refName=NULL,
   stopifnot(tiers %in% 1:2)
   stopifnot(GH %in% c(TRUE, FALSE))
   Bonferroni = match.arg(Bonferroni, c("none", "demi", "full"))
+  multcomp.type = match.arg(multcomp.type, c("bonferroni", "independence"))
   if(plotType != "individual") {
     if(is.null(refName) & plotType != "columns") {
       stop("Must provide refName")
@@ -219,13 +238,14 @@ RankPlot = function(est, se, names, refName=NULL,
       stop("Must use tiers=1 unless plotType='individual'")
     }
   }
-  if(tiers == 2) { # need at least one of GH or Bonf correction
+  if(tiers == 2) { # need at least one of GH or Bonf/Indep correction
     stopifnot(GH | Bonferroni != "none")
   }
 
   if(plotType == "columns") {
     RankColumnPlot(est = est, se = se, names = names,
-                   refName = refName, confLevel = confLevel)
+                   refName = refName, confLevel = confLevel,
+                   multcomp.type = multcomp.type)
     # Don't continue with rest of plotting function below
     return()
   }
@@ -276,7 +296,7 @@ RankPlot = function(est, se, names, refName=NULL,
   } else if(plotType == "comparison") {
     # TODO: edit this into a function argument,
     # in case users want *uncorrected* CI for reference state
-    # instead of default demi-Bonf.-corrected CI
+    # instead of default demi-mult-corrected CI
     # (also see below)
     #
     # compute special "SEs" for comparison intervals
@@ -284,16 +304,20 @@ RankPlot = function(est, se, names, refName=NULL,
     sePlot[refInd] = seSort[refInd]
   }
 
-  denomC = 2 * switch(Bonferroni,
-                      none = 1, demi = n-1, full= choose(n, 2))
+  nrCorr = switch(Bonferroni,
+                  none = 1, demi = n-1, full = choose(n, 2))
   confLevelC = ifelse(GH, ConfidenceLevelGH(se, confLevel),
                       confLevel)
   if(tiers == 2) {
-    # Individual CIs: no Bonferroni or Goldstein-Healy correction
+    # Individual CIs: no Bonferroni/Indep or Goldstein-Healy correction
     pI = 1 - ((1 - confLevel)/2)
     qI = qnorm(pI)
     # Corrected CIs
-    pC = 1 - ((1 - confLevelC)/denomC)
+    if(multcomp.type == "bonferroni") {
+      pC = 1 - ((1 - confLevelC)/(2*nrCorr))
+    } else if(multcomp.type == "independence") {
+      pC = 1 - (1 - (confLevelC)^(1/nrCorr))/2
+    }
     qC = qnorm(pC)
 
     legendDetails = c(paste0("tier: individual ", 100*confLevel,
@@ -303,7 +327,8 @@ RankPlot = function(est, se, names, refName=NULL,
                              ifelse(GH & Bonferroni != "none",
                                     "\nand ", ""),
                              ifelse(Bonferroni != "none",
-                                    paste0(Bonferroni, "-Bonferroni"), ""),
+                                    paste0(Bonferroni, ifelse(multcomp.type == "bonferroni",
+                                                              "-Bonferroni", "-Independence")), ""),
                              "\nadjusted intervals"))
 
     # Compare and assign bigger factor to outer tier
@@ -323,7 +348,11 @@ RankPlot = function(est, se, names, refName=NULL,
     }
     moeOut = qOut*sePlot
   } else {
-    p = 1 - ((1 - confLevelC)/denomC)
+    if(multcomp.type == "bonferroni") {
+      p = 1 - ((1 - confLevelC)/(2*nrCorr))
+    } else if(multcomp.type == "independence") {
+      p = 1 - (1 - (confLevelC)^(1/nrCorr))/2
+    }
     q = qnorm(p)
   }
 
@@ -341,7 +370,7 @@ RankPlot = function(est, se, names, refName=NULL,
   # } else {
   #   # compute special "SEs and MOEs" for comparison intervals
   #   pRef = 1 - ((1 - confLevelC)/2)
-  #   pOther = 1 - ((1 - confLevelC)/denomC)
+  #   pOther = 1 - ((1 - confLevelC)/(2*nrCorr))
   #   qRef = qnorm(pRef)
   #   qOther = qnorm(pOther)
   #   moe = qOther*sqrt(seSort[refInd]^2 + seSort^2) - qRef*seSort[refInd]
@@ -445,7 +474,8 @@ RankPlot = function(est, se, names, refName=NULL,
       legendText = paste0(ifelse(GH, "Goldstein-Healy", ""),
                           ifelse(GH & Bonferroni != "none", "\nand ", ""),
                           ifelse(Bonferroni != "none",
-                                 paste0(Bonferroni, "-Bonferroni"), ""),
+                                 paste0(Bonferroni, ifelse(multcomp.type == "bonferroni",
+                                                           "-Bonferroni", "-Independence")), ""),
                           "\nadjusted intervals")
     }
   }

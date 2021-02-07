@@ -52,7 +52,9 @@ range2units = function(extrange) {
 #### Shaded Columns Plot ####
 
 RankColumnPlot <- function(est, se, names, refName = NULL,
-                           confLevel = 0.9) {
+                           confLevel = 0.9, multcomp.type = "bonferroni") {
+
+  stopifnot(multcomp.type %in% c("bonferroni", "independence"))
 
   # sort estimates from least to greatest;
   # match reference with index of sorted estimates
@@ -66,7 +68,8 @@ RankColumnPlot <- function(est, se, names, refName = NULL,
   }
 
   signifMatrix <- apply(cbind(estSort, seSort), 1, FindSignifInColumn,
-                        alldata = cbind(estSort, seSort), confLevel = confLevel)
+                        alldata = cbind(estSort, seSort), confLevel = confLevel,
+                        multcomp.type = multcomp.type)
   colnames(signifMatrix) <- namesSort
 
   n <- length(estSort)
@@ -78,18 +81,22 @@ RankColumnPlot <- function(est, se, names, refName = NULL,
 
 
 
-FindSignifInColumn <- function(x, alldata, confLevel = 0.9){
+FindSignifInColumn <- function(x, alldata, confLevel = 0.9, multcomp.type = "bonferroni"){
   # x[1] and x[2] are the current area's est and se;
   # alldata[, 1] and alldata[, 2] are all the ests and ses.
 
-  # Demi-Bonferroni-correction for error margins, for (n-1) comparisons
+  # Demi-Bonferroni/Independence-correction for error margins, for (n-1) comparisons
   n=nrow(alldata)
-  p.Bonf = 1 - ((1 - confLevel)/2)/(n-1)
-  q.Bonf = qnorm(p.Bonf)
+  if(multcomp.type == "bonferroni") {
+    p.multcomp = 1 - ((1 - confLevel)/2)/(n-1)
+  } else if(multcomp.type == "independence") {
+    p.multcomp = 1 - (1 - (confLevel)^(1/(n-1)))/2
+  }
+  q.multcomp = qnorm(p.multcomp)
 
   x <- as.matrix(x)
   x <- cbind(x[1],x[2])
-  (abs(alldata[,1]-x[1]) > q.Bonf*sqrt(alldata[,2]^2+x[2]^2)) * sign(alldata[,1]-x[1])
+  (abs(alldata[,1]-x[1]) > q.multcomp*sqrt(alldata[,2]^2+x[2]^2)) * sign(alldata[,1]-x[1])
 }
 
 
