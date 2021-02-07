@@ -28,18 +28,25 @@ comparisons.
 
 ## Installation
 
+Either install from CRAN:
+
 ``` r
-# install.packages("devtools")
-# library("devtools")
-install_github("civilstat/RankingProject")
+install.packages("RankingProject")
 ```
 
-To install the vignettes and exactly replicate figures from the paper,
+Or install the latest development version from GitHub:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("civilstat/RankingProject",
+                         build_vignettes = TRUE)
+```
+
+To exactly replicate figures from the paper, following the vignettes,
 you will also need the `tikzDevice` package:
 
 ``` r
 # install.packages("tikzDevice")
-install_github("civilstat/RankingProject", build_vignettes = TRUE)
 ```
 
 ## Example
@@ -90,7 +97,7 @@ plotParList <- with(USdata,
 RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
 ```
 
-![](README-unnamed-chunk-4-1.png)<!-- -->
+![](README-unnamed-chunk-5-1.png)<!-- -->
 
 ## References
 

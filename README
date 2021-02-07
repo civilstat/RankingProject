@@ -9,17 +9,23 @@ The package provides functions for plotting ranked tables of data side-by-side w
 Installation
 ------------
 
+Either install from CRAN:
 ``` r
-# install.packages("devtools")
-# library("devtools")
-install_github("civilstat/RankingProject")
+install.packages("RankingProject")
 ```
 
-To install the vignettes and exactly replicate figures from the paper, you will also need the `tikzDevice` package:
+Or install the latest development version from GitHub:
+``` r
+# install.packages("devtools")
+devtools::install_github("civilstat/RankingProject",
+                         build_vignettes = TRUE)
+```
+
+To exactly replicate figures from the paper, following the vignettes,
+you will also need the `tikzDevice` package:
 
 ``` r
 # install.packages("tikzDevice")
-install_github("civilstat/RankingProject", build_vignettes = TRUE)
 ```
 
 Example
