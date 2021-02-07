@@ -1,6 +1,10 @@
+# RankingProject 0.3.0
+
+* New argument `multcomp.type` in `RankPlot` function allows use of independence assumption when making multiple comparison corrections.
+
 # RankingProject 0.2.1.9001
 
-* Development version: updated DOI and citation details for published JRSS-C article. New option for `RankPlot` function to use independence assumption when making multiple comparison corrections.
+* Development version: updated DOI and citation details for published JRSS-C article.
 
 # RankingProject 0.2.1.9000
 

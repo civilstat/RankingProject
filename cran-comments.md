@@ -1,8 +1,7 @@
 ## Test environments
-* macOS 10.13.6 (on travis-ci), R 3.6.2
-* ubuntu 16.04 (on travis-ci), R 3.6.2
-* local Ubuntu 14.04 install, R 3.4.4
-* local Windows 10 install, R 3.6.2
+* macOS 10.13.6 (on travis-ci), R 4.0.3
+* ubuntu 16.04.6 (on travis-ci), R 4.0.2
+* local Windows 10 install, R 4.0.2
 * win-builder (devel and release)
 * rhub::check_for_cran()
 
