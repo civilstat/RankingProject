@@ -33,7 +33,7 @@ knit_hooks$set(crop = NULL, plot = function(x, options) {
 
 This vignette shows how to reproduce the main figures in ["A Joint Confidence Region for an Overall Ranking of Populations"](https://doi.org/10.1111/rssc.12402) (Klein, Wright, and Wieczorek, 2020, *Journal of the Royal Statistical Society: Series C*).
 
-Note: For this vignette itself, we automatically save the figures below using the `knitr` package with option `dev="tikz"` instead of saving them individually. For an example of how to save individual plots using the `tikz()` function in the `tikzDevice` package, please see the `Primer` vignette:  
+Note: For this vignette itself, we automatically save the figures below using the `knitr` package with option `dev="tikz"` instead of saving them individually. For an example of how to save individual plots using the `tikz()` function in the `tikzDevice` package, please see the `Primer` vignette:
 `vignette("primer", package = "RankingProject")`
 
 
@@ -97,7 +97,7 @@ axis(2, at = 1:n, las = 2, cex.axis = 0.7)
 ```
 
 \begin{landscape}
-```{r, fig.width=8.5, fig.height=5.5, echo=FALSE}
+```{r joint-fig1, fig.width=8.5, fig.height=5.5, echo=FALSE}
 par(xpd = TRUE, mar = c(6.3, 2.8, 0.3, 0.3) + 0.1)
 plot(c(0, n+1), c(0, n), type='n', bty='n', xaxt='n', yaxt='n', xlab='', ylab='',
      xaxs = 'i', yaxs = 'i')
@@ -165,7 +165,7 @@ axis(2, at = seq(16, 32, by = 2), las = 2, cex.axis = 0.7)
 ```
 
 \begin{landscape}
-```{r, fig.width=8.5, fig.height=5.5, echo=FALSE}
+```{r joint-fig2, fig.width=8.5, fig.height=5.5, echo=FALSE}
 stopifnot(15 <= min(IndepCiLo) & max(IndepCiHi) <= 35)
 thetamin = 15.5
 thetamax = 33

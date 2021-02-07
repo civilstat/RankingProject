@@ -1,4 +1,4 @@
-## ---- echo=FALSE, cache=FALSE-------------------------------------------------
+## ---- echo=FALSE, cache=FALSE--------------------------
 library(knitr)
 options(tikzMetricsDictionary="tikzDictionary",
         tikzMetricPackages = c("\\usepackage[utf8]{inputenc}","\\usepackage[T1]{fontenc}",
@@ -15,7 +15,8 @@ knit_hooks$set(crop = NULL, plot = function(x, options) {
   } else hook_plot_md(x, options)
 })
 
-## -----------------------------------------------------------------------------
+
+## ------------------------------------------------------
 library(RankingProject)
 data(TravelTime2011)
 USdata <- TravelTime2011
@@ -29,14 +30,15 @@ USdata$SE.Print = substring(formatC(USdata$SE.2dec,
                                     format = 'f', digits = 2),
                             first = 2)
 
-## -----------------------------------------------------------------------------
+
+## ------------------------------------------------------
 # Set Colorado as the reference state
 refAbbr <- "CO"
 refRow  <- which(USdata$Abbreviation==refAbbr)
 
 # Set up parameter lists for table function and figure function
 tableParList <- with(USdata,
-                     list(ranks = Rank, names = Abbreviation, 
+                     list(ranks = Rank, names = Abbreviation,
                           est = Estimate.Print, se = SE.Print,
                           placeType = "State", tikzText = TRUE))
 plotParList <- with(USdata,
@@ -44,7 +46,8 @@ plotParList <- with(USdata,
                            names = Abbreviation, refName = refAbbr,
                            confLevel = .90, tikzText = TRUE))
 
-## -----------------------------------------------------------------------------
+
+## ----primer-fig3---------------------------------------
 # Shaded Columns plot
 plotParList$plotType <- "columns"
 # Specify where to position the "Reference State:" text,
@@ -54,11 +57,13 @@ tableParList = c(tableParList,
 RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
                   tableWidthProp = 2/7, tikzText = TRUE)
 
-## -----------------------------------------------------------------------------
+
+## ------------------------------------------------------
 # Reset defaults for future plots
 tableParList[c("columnsPlotRefLine", "col2", "col3")] <- NULL
 
-## -----------------------------------------------------------------------------
+
+## ----primer-fig1---------------------------------------
 # For all remaining figures,
 # table will show full state names instead of abbreviations
 tableParList$names <- USdata$State
@@ -69,7 +74,8 @@ plotParList$cex <- 0.6
 RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
                   tikzText = TRUE)
 
-## -----------------------------------------------------------------------------
+
+## ----primer-fig4---------------------------------------
 # CIs for differences from ref
 plotParList$plotType <- "difference"
 RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
@@ -77,7 +83,8 @@ RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
                   annotRefRank = USdata$Rank[refRow],
                   tikzText = TRUE)
 
-## -----------------------------------------------------------------------------
+
+## ----primer-fig7---------------------------------------
 # Comparison intervals
 plotParList$plotType <- "comparison"
 plotParList$thetaLine <- 1.5
@@ -85,14 +92,16 @@ RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
                   tikzText = TRUE)
 plotParList$thetaLine <- NULL
 
-## -----------------------------------------------------------------------------
+
+## ----primer-fig10--------------------------------------
 # Goldstein-Healy adjusted CIs
 plotParList$plotType <- "individual"
 plotParList$GH <- TRUE
 RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
                   tikzText = TRUE)
 
-## -----------------------------------------------------------------------------
+
+## ----primer-fig11--------------------------------------
 # Double-tiered GH plot:
 # inner tiers are GH CIs,
 # outer tiers are usual 90% CIs
@@ -104,7 +113,8 @@ plotParList$legendY <- 52
 RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
                   tikzText = TRUE)
 
-## -----------------------------------------------------------------------------
+
+## ----primer-fig12--------------------------------------
 # Double-tiered GH + Bonferroni plot:
 # inner tiers are usual 90% CIs,
 # outer tiers are 50-way demi-Bonferroni-corrected GH CIs
@@ -112,12 +122,13 @@ plotParList$Bonferroni <- "demi"
 RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
                   tikzText = TRUE)
 
-## ---- eval=FALSE--------------------------------------------------------------
-#  # Not run:
-#  library(tikzDevice)
-#  tikz("/path/to/my/file.tex", standAlone = TRUE, width = 6.5, height = 8)
-#  RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
-#                    tikzText = TRUE)
-#  dev.off()
-#  tools::texi2pdf("/path/to/my/file.tex")
+
+## ---- eval=FALSE---------------------------------------
+## # Not run:
+## library(tikzDevice)
+## tikz("/path/to/my/file.tex", standAlone = TRUE, width = 6.5, height = 8)
+## RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
+##                   tikzText = TRUE)
+## dev.off()
+## tools::texi2pdf("/path/to/my/file.tex")
 

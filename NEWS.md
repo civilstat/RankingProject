@@ -1,6 +1,6 @@
-# RankingProject 0.3.0.9000
+# RankingProject 0.3.1
 
-* Development version:
+* Patch for missing vignettes: using `R.rsp` to include precompiled, compressed PDFs for vignettes that were missing from previous release.
 
 # RankingProject 0.3.0
 
