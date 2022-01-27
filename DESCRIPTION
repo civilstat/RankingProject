@@ -1,11 +1,12 @@
 Package: RankingProject
 Type: Package
 Title: The Ranking Project: Visualizations for Comparing Populations
-Version: 0.3.1.9000
+Version: 0.3.1.9001
 Date: 2021-02-07
 Authors@R: c(
     person("Jerzy", "Wieczorek", email = "jerzywieczorek@gmail.com", role = c("cre", "aut")),
     person("Joel", "Beard", role = "ctb"),
+    person("Adam", "Hall", role = "ctb"),
     person("Andy", "Liaw", role = "ctb"),
     person("Robert", "Gentleman", role = "ctb"),
     person("Martin", "Maechler", role = "ctb"))

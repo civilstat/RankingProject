@@ -52,9 +52,15 @@ range2units = function(extrange) {
 #### Shaded Columns Plot ####
 
 RankColumnPlot <- function(est, se, names, refName = NULL,
-                           confLevel = 0.9, multcomp.type = "bonferroni") {
+                           confLevel = 0.9,
+                           multcomp.scope = "demi",
+                           multcomp.type = "bonferroni") {
 
-  stopifnot(multcomp.type %in% c("bonferroni", "independence"))
+  # 1/27/2022: by Adam Hall's suggestion, also allow "none" or "full" for multcomp.scope
+  # (at least here, if user decides to work with these underlying plotting functions directly,
+  #  even if we require "demi" in the wrapper function RankPlot() itself)
+  multcomp.scope = match.arg(multcomp.scope, c("none", "demi", "full"))
+  multcomp.type = match.arg(multcomp.type, c("bonferroni", "independence"))
 
   # sort estimates from least to greatest;
   # match reference with index of sorted estimates
@@ -69,6 +75,7 @@ RankColumnPlot <- function(est, se, names, refName = NULL,
 
   signifMatrix <- apply(cbind(estSort, seSort), 1, FindSignifInColumn,
                         alldata = cbind(estSort, seSort), confLevel = confLevel,
+                        multcomp.scope = multcomp.scope,
                         multcomp.type = multcomp.type)
   colnames(signifMatrix) <- namesSort
 
@@ -81,16 +88,30 @@ RankColumnPlot <- function(est, se, names, refName = NULL,
 
 
 
-FindSignifInColumn <- function(x, alldata, confLevel = 0.9, multcomp.type = "bonferroni"){
+FindSignifInColumn <- function(x, alldata, confLevel = 0.9,
+                               multcomp.scope = "demi",
+                               multcomp.type = "bonferroni"){
   # x[1] and x[2] are the current area's est and se;
   # alldata[, 1] and alldata[, 2] are all the ests and ses.
 
-  # Demi-Bonferroni/Independence-correction for error margins, for (n-1) comparisons
-  n=nrow(alldata)
-  if(multcomp.type == "bonferroni") {
-    p.multcomp = 1 - ((1 - confLevel)/2)/(n-1)
+  multcomp.scope = match.arg(multcomp.scope, c("none", "demi", "full"))
+  multcomp.type = match.arg(multcomp.type, c("bonferroni", "independence"))
+
+  # Default to demi-Bonferroni/Independence-correction for error margins, for (n-1) comparisons
+  n = nrow(alldata)
+
+  # 1/27/2022: by Adam Hall's suggestion, also allow "none" or "full" for multcomp.scope
+  # (at least here, if user decides to work with these underlying plotting functions directly,
+  #  even if we require "demi" in the wrapper function RankPlot() itself)
+  nrCorr = switch(multcomp.scope,
+                  none = 1, demi = n-1, full = choose(n, 2))
+
+  if(multcomp.scope == "none") {
+    p.multcomp = 1 - ((1 - confLevel)/2)
+  } else if(multcomp.type == "bonferroni") {
+    p.multcomp = 1 - ((1 - confLevel)/2)/(nrCorr-1)
   } else if(multcomp.type == "independence") {
-    p.multcomp = 1 - (1 - (confLevel)^(1/(n-1)))/2
+    p.multcomp = 1 - (1 - (confLevel)^(1/(nrCorr-1)))/2
   }
   q.multcomp = qnorm(p.multcomp)
 

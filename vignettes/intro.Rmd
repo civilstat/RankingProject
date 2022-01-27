@@ -76,7 +76,7 @@ Notes: if we set `plotParList$refName=NULL` for the individual CIs plot above, t
 
 First, we can use `plotParList$plotType="columns"` to create a grid or "shaded columns plot" that simply shows which states are significantly different from one another. We start with significance level $\alpha=0.10$ and apply a "demi-Bonferroni" correction for 50 comparisons between one reference state and all other states. Then we perform these 50 one-to-many tests within each column of the plot, testing the reference state (labeled at the bottom of the column) against each other state at significance level $\alpha/50 = 0.002$.
 
-(The intended audience behind this demi-Bonferroni correction is a reader who already has one reference state in mind, such as his or her home state, and does not care about comparisons that exclude this particular state. For more general all-to-all comparisons, the 50-way demi-Bonferroni correction could be replaced with a ${51 \choose 2}$-way full-Bonferroni correction, but this has not been implemented in the package for this plot type yet.)
+(The intended audience behind this demi-Bonferroni correction is a reader who already has one reference state in mind, such as his or her home state, and does not care about comparisons that exclude this particular state. For more general all-to-all comparisons, the 50-way demi-Bonferroni correction could be replaced with a ${51 \choose 2}$-way full-Bonferroni correction.)
 
 ```{r}
 # Shaded Columns plot
@@ -138,7 +138,7 @@ However, the Goldstein-Healy adjustment allows for visual inspection of overlap,
 # Double-tiered GH + Bonferroni plot:
 # inner tiers are usual 90% CIs,
 # outer tiers are 50-way demi-Bonferroni-corrected GH CIs
-plotParList$Bonferroni <- "demi"
+plotParList$multcomp.scope <- "demi"
 RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
 ```
 
@@ -148,10 +148,10 @@ Finally, if we do not have a reference state in mind, we may prefer to use a ful
 # Double-tiered GH + Bonferroni plot:
 # inner tiers are usual 90% CIs,
 # outer tiers are (51 choose 2)-way full-Bonferroni-corrected GH CIs
-plotParList$Bonferroni <- "full"
+plotParList$multcomp.scope <- "full"
 RankPlotWithTable(tableParList = tableParList, plotParList = plotParList)
 # Reset defaults for future plots
-plotParList[c("Bonferroni", "GH", "tiers", "legendX", "legendY")] <- NULL
+plotParList[c("multcomp.scope", "GH", "tiers", "legendX", "legendY")] <- NULL
 ```
 
 ## Plotting differences from the reference state

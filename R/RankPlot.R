@@ -11,6 +11,15 @@
 # but it's the fastest way to add an Independence option
 # given my very limited time this week.
 # We'll refactor this later!
+#
+# 1/27/2022:
+# Replacing Bonferroni arg with multcomp.scope arg,
+# and (for now) moving Bonferroni arg to end of list of possible fn args,
+# with a warning that it has been deprecated:
+# https://r-pkgs.org/release.html#compatibility
+# LATER after a few months, at next package release after this one (new *minor* version nr),
+# change it from a warning to an error to show it's defunct and not just deprecated;
+# and eventually, at next *major* version nr change, drop the Bonf arg entirely.
 
 
 
@@ -94,7 +103,7 @@
 #'   (uncorrected) hypothesis tests and/or confidence intervals. E.g. with
 #'   \code{plotType = "individual"}, \code{confLevel = 0.9} will plot
 #'   individual 90\% confidence intervals. If using \code{GH = TRUE}
-#'   and/or \code{Bonferroni != "none"}, the Goldstein-Healy and/or Bonferroni/Independence
+#'   and/or \code{multcomp.scope != "none"}, the Goldstein-Healy and/or Bonferroni/Independence
 #'   corrections will be applied to the \code{confLevel} baseline.
 #' @param plotType Which type of ranking plot to use. See vignettes for
 #'   examples and details.
@@ -115,7 +124,7 @@
 #' @param tiers Numeric, either 1 for usual confidence intervals,
 #'   or 2 for two-tiered intervals. 2 can only be used with
 #'   \code{plotType = "individual"}, when either \code{GH = TRUE}
-#'   or \code{Bonferroni != "none"} or both.
+#'   or \code{multcomp.scope != "none"} or both.
 #'   In that case, the "inner tiers" run between each interval's cross-bars,
 #'   and the "outer tiers" run past the cross-bars
 #'   all the way to the ends of each interval.
@@ -129,21 +138,26 @@
 #'   confidence intervals at an "average" \code{confLevel*100}\%
 #'   confidence level as in Goldstein and Healy (1995).
 #'   Can only be used with \code{plotType = "individual"}.
-#' @param Bonferroni Whether and how to correct for multiple comparisons by a
-#'   Bonferroni or Independence correction to the confidence level of the tests or intervals.
+#' @param multcomp.scope Whether to correct for multiple comparisons,
+#'   and if so, for how many
+#'   (by a correction to the confidence level of the tests or intervals).
 #'   \code{"none"} performs no correction; \code{"demi"} corrects for
 #'   comparing one reference area to all \code{n-1} other areas; and
 #'   \code{"full"} corrects for comparing all possible \code{choose(n-1, 2)}
 #'   pairs of areas.
+#'   Also use the \code{multcomp.type} argument to specify whether the correction
+#'   should rely on Bonferroni (default) or on an assumption of Independence.
 #'   If \code{GH = TRUE}, the Goldstein-Healy adjustment
 #'   is performed first, and any Bonferroni/Independence correction is applied afterwards.
 #'   Settings \code{"none"} and \code{"full"} can only be used
 #'   with \code{plotType = "individual"};
 #'   all other plot types use the setting \code{"demi"}.
-#'   (For now, use the \code{multcomp.type} argument to specify whether the correction
-#'   should rely on Bonferroni (default) or on an assumption of Independence.
-#'   In the future, this package will be refactored
-#'   so that the multiple-comparisons arguments are better named!)
+#' @param multcomp.type (Only used if \code{multcomp.scope != "none"}.)
+#'   Whether multiple comparison corrections should use a
+#'   Bonferroni correction (\code{"bonferroni"})
+#'   or an independence-based correction (\code{"independence"}).
+#'   See Section 4 of the paper "A Joint Confidence Region..." (2020, JRSS-C)
+#'   for the difference in these two corrections.
 #' @param tikzText Logical, for whether or not to format text for tikz plotting.
 #' @param cex \strong{C}haracter \strong{ex}pansion factor for
 #'   the points use to plot each area's point estimate, and for the
@@ -176,13 +190,7 @@
 #' @param xlim Vector of 2 numbers for x-axis limits. If \code{NULL},
 #'   will be automatically set using range of data
 #'   expanded by \code{rangeFactor}.
-#' @param multcomp.type Whether multiple comparison corrects should use a
-#'   Bonferroni correction (\code{"bonferroni"})
-#'   or an independence-based correction (\code{"independence"}).
-#'   See Section 4 of the paper "A Joint Confidence Region..." (2020, JRSS-C)
-#'   for the difference in these two corrections.
-#'   (In the future, this package will be refactored
-#'   so that the multiple-comparisons arguments are better named!)
+#' @param Bonferroni Deprecated name for the \code{multcomp.scope} argument.
 #' @references Almond, R.G., Lewis, C., Tukey, J.W., and Yan, D. (2000).
 #'   "Displays for Comparing a Given State to Many Others,"
 #'   \emph{The American Statistician}, vol. 54, no. 2, 89-93.
@@ -205,7 +213,7 @@ RankPlot = function(est, se, names, refName=NULL,
                     confLevel = 0.9,
                     plotType = c("individual", "difference", "comparison", "columns"),
                     tiers = 1, GH = FALSE,
-                    Bonferroni = ifelse(plotType == "individual", "none", "demi"),
+                    multcomp.scope = ifelse(plotType == "individual", "none", "demi"),
                     tikzText = FALSE,
                     cex=1,
                     tickWidth=NULL,rangeFactor=1.2,
@@ -213,7 +221,8 @@ RankPlot = function(est, se, names, refName=NULL,
                     legendX = "topleft", legendY = NULL, legendText = NULL,
                     lwdReg = 1, lwdBold = 3, thetaLine = 1,
                     xlim=NULL,
-                    multcomp.type = c("bonferroni", "independence")) {
+                    multcomp.type = c("bonferroni", "independence"),
+                    Bonferroni) {
   n = length(est)
   stopifnot(length(se) == n & length(names) == n)
   stopifnot(is.numeric(est) & is.numeric(se))
@@ -222,14 +231,24 @@ RankPlot = function(est, se, names, refName=NULL,
   plotType = match.arg(plotType)
   stopifnot(tiers %in% 1:2)
   stopifnot(GH %in% c(TRUE, FALSE))
-  Bonferroni = match.arg(Bonferroni, c("none", "demi", "full"))
+
+  # Deprecate old argument name (Bonferroni -> multcomp.scope), as advised in:
+  # https://r-pkgs.org/release.html#compatibility
+  if (!missing(Bonferroni)) {
+    warning("argument `Bonferroni` is deprecated; please use `multcomp.scope` instead.",
+            call. = FALSE)
+    multcomp.scope <- Bonferroni
+  }
+
+  multcomp.scope = match.arg(multcomp.scope, c("none", "demi", "full"))
   multcomp.type = match.arg(multcomp.type, c("bonferroni", "independence"))
+
   if(plotType != "individual") {
     if(is.null(refName) & plotType != "columns") {
       stop("Must provide refName")
     }
-    if(Bonferroni != "demi") {
-      stop("Must use Bonferroni='demi' unless plotType='individual'")
+    if(multcomp.scope != "demi") {
+      stop("Must use multcomp.scope='demi' unless plotType='individual'")
     }
     if(GH) {
       stop("Must use GH=FALSE unless plotType='individual'")
@@ -239,7 +258,7 @@ RankPlot = function(est, se, names, refName=NULL,
     }
   }
   if(tiers == 2) { # need at least one of GH or Bonf/Indep correction
-    stopifnot(GH | Bonferroni != "none")
+    stopifnot(GH | multcomp.scope != "none")
   }
 
   if(plotType == "columns") {
@@ -304,7 +323,7 @@ RankPlot = function(est, se, names, refName=NULL,
     sePlot[refInd] = seSort[refInd]
   }
 
-  nrCorr = switch(Bonferroni,
+  nrCorr = switch(multcomp.scope,
                   none = 1, demi = n-1, full = choose(n, 2))
   confLevelC = ifelse(GH, ConfidenceLevelGH(se, confLevel),
                       confLevel)
@@ -324,10 +343,10 @@ RankPlot = function(est, se, names, refName=NULL,
                              textPercent, " CIs\n "),
                       paste0("tier: ",
                              ifelse(GH, "Goldstein-Healy", ""),
-                             ifelse(GH & Bonferroni != "none",
+                             ifelse(GH & multcomp.scope != "none",
                                     "\nand ", ""),
-                             ifelse(Bonferroni != "none",
-                                    paste0(Bonferroni, ifelse(multcomp.type == "bonferroni",
+                             ifelse(multcomp.scope != "none",
+                                    paste0(multcomp.scope, ifelse(multcomp.type == "bonferroni",
                                                               "-Bonferroni", "-Independence")), ""),
                              "\nadjusted intervals"))
 
@@ -468,13 +487,13 @@ RankPlot = function(est, se, names, refName=NULL,
 
   # add legend
   if(plotType == "individual" & is.null(legendText)) {
-    if(!GH & Bonferroni == "none") {
+    if(!GH & multcomp.scope == "none") {
       legendText = paste0(100*confLevel, textPercent, " confidence intervals")
     } else {
       legendText = paste0(ifelse(GH, "Goldstein-Healy", ""),
-                          ifelse(GH & Bonferroni != "none", "\nand ", ""),
-                          ifelse(Bonferroni != "none",
-                                 paste0(Bonferroni, ifelse(multcomp.type == "bonferroni",
+                          ifelse(GH & multcomp.scope != "none", "\nand ", ""),
+                          ifelse(multcomp.scope != "none",
+                                 paste0(multcomp.scope, ifelse(multcomp.type == "bonferroni",
                                                            "-Bonferroni", "-Independence")), ""),
                           "\nadjusted intervals")
     }
