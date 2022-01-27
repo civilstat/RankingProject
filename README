@@ -21,7 +21,7 @@ devtools::install_github("civilstat/RankingProject",
                          build_vignettes = TRUE)
 ```
 
-To exactly replicate figures from the paper, following the vignettes,
+To exactly replicate figures from the papers, following the vignettes,
 you will also need the `tikzDevice` package:
 
 ``` r
