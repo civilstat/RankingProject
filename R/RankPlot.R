@@ -214,6 +214,7 @@ RankPlot = function(est, se, names, refName=NULL,
                     plotType = c("individual", "difference", "comparison", "columns"),
                     tiers = 1, GH = FALSE,
                     multcomp.scope = ifelse(plotType == "individual", "none", "demi"),
+                    multcomp.type = c("bonferroni", "independence"),
                     tikzText = FALSE,
                     cex=1,
                     tickWidth=NULL,rangeFactor=1.2,
@@ -221,7 +222,6 @@ RankPlot = function(est, se, names, refName=NULL,
                     legendX = "topleft", legendY = NULL, legendText = NULL,
                     lwdReg = 1, lwdBold = 3, thetaLine = 1,
                     xlim=NULL,
-                    multcomp.type = c("bonferroni", "independence"),
                     Bonferroni) {
   n = length(est)
   stopifnot(length(se) == n & length(names) == n)

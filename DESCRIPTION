@@ -28,4 +28,4 @@ Suggests:
 VignetteBuilder: knitr, R.rsp
 URL: https://github.com/civilstat/RankingProject
 BugReports: https://github.com/civilstat/RankingProject/issues
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2

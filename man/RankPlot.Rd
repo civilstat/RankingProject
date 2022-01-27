@@ -13,7 +13,8 @@ RankPlot(
   plotType = c("individual", "difference", "comparison", "columns"),
   tiers = 1,
   GH = FALSE,
-  Bonferroni = ifelse(plotType == "individual", "none", "demi"),
+  multcomp.scope = ifelse(plotType == "individual", "none", "demi"),
+  multcomp.type = c("bonferroni", "independence"),
   tikzText = FALSE,
   cex = 1,
   tickWidth = NULL,
@@ -26,7 +27,7 @@ RankPlot(
   lwdBold = 3,
   thetaLine = 1,
   xlim = NULL,
-  multcomp.type = c("bonferroni", "independence")
+  Bonferroni
 )
 }
 \arguments{
@@ -51,7 +52,7 @@ to be highlighted by vertical lines, if specified).}
 (uncorrected) hypothesis tests and/or confidence intervals. E.g. with
 \code{plotType = "individual"}, \code{confLevel = 0.9} will plot
 individual 90\% confidence intervals. If using \code{GH = TRUE}
-and/or \code{Bonferroni != "none"}, the Goldstein-Healy and/or Bonferroni/Independence
+and/or \code{multcomp.scope != "none"}, the Goldstein-Healy and/or Bonferroni/Independence
 corrections will be applied to the \code{confLevel} baseline.}
 
 \item{plotType}{Which type of ranking plot to use. See vignettes for
@@ -74,7 +75,7 @@ with all other areas.
 \item{tiers}{Numeric, either 1 for usual confidence intervals,
 or 2 for two-tiered intervals. 2 can only be used with
 \code{plotType = "individual"}, when either \code{GH = TRUE}
-or \code{Bonferroni != "none"} or both.
+or \code{multcomp.scope != "none"} or both.
 In that case, the "inner tiers" run between each interval's cross-bars,
 and the "outer tiers" run past the cross-bars
 all the way to the ends of each interval.
@@ -90,21 +91,27 @@ confidence intervals at an "average" \code{confLevel*100}\%
 confidence level as in Goldstein and Healy (1995).
 Can only be used with \code{plotType = "individual"}.}
 
-\item{Bonferroni}{Whether and how to correct for multiple comparisons by a
-Bonferroni or Independence correction to the confidence level of the tests or intervals.
+\item{multcomp.scope}{Whether to correct for multiple comparisons,
+and if so, for how many
+(by a correction to the confidence level of the tests or intervals).
 \code{"none"} performs no correction; \code{"demi"} corrects for
 comparing one reference area to all \code{n-1} other areas; and
-\code{"full"} corrects for comparing all possible \code{choose(n-1, 2)}
+\code{"full"} corrects for comparing all possible \code{choose(n, 2)}
 pairs of areas.
+Also use the \code{multcomp.type} argument to specify whether the correction
+should rely on Bonferroni (default) or on an assumption of Independence.
 If \code{GH = TRUE}, the Goldstein-Healy adjustment
 is performed first, and any Bonferroni/Independence correction is applied afterwards.
 Settings \code{"none"} and \code{"full"} can only be used
 with \code{plotType = "individual"};
-all other plot types use the setting \code{"demi"}.
-(For now, use the \code{multcomp.type} argument to specify whether the correction
-should rely on Bonferroni (default) or on an assumption of Independence.
-In the future, this package will be refactored
-so that the multiple-comparisons arguments are better named!)}
+all other plot types use the setting \code{"demi"}.}
+
+\item{multcomp.type}{(Only used if \code{multcomp.scope != "none"}.)
+Whether multiple comparison corrections should use a
+Bonferroni correction (\code{"bonferroni"})
+or an independence-based correction (\code{"independence"}).
+See Section 4 of the paper "A Joint Confidence Region..." (2020, JRSS-C)
+for the difference in these two corrections.}
 
 \item{tikzText}{Logical, for whether or not to format text for tikz plotting.}
 
@@ -149,13 +156,7 @@ when \code{plotType = c("difference", "comparison")}.}
 will be automatically set using range of data
 expanded by \code{rangeFactor}.}
 
-\item{multcomp.type}{Whether multiple comparison corrects should use a
-Bonferroni correction (\code{"bonferroni"})
-or an independence-based correction (\code{"independence"}).
-See Section 4 of the paper "A Joint Confidence Region..." (2020, JRSS-C)
-for the difference in these two corrections.
-(In the future, this package will be refactored
-so that the multiple-comparisons arguments are better named!)}
+\item{Bonferroni}{Deprecated name for the \code{multcomp.scope} argument.}
 }
 \description{
 \code{RankPlot} creates a figure with a plot of ranking data,
