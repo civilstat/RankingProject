@@ -143,7 +143,7 @@
 #'   (by a correction to the confidence level of the tests or intervals).
 #'   \code{"none"} performs no correction; \code{"demi"} corrects for
 #'   comparing one reference area to all \code{n-1} other areas; and
-#'   \code{"full"} corrects for comparing all possible \code{choose(n-1, 2)}
+#'   \code{"full"} corrects for comparing all possible \code{choose(n, 2)}
 #'   pairs of areas.
 #'   Also use the \code{multcomp.type} argument to specify whether the correction
 #'   should rely on Bonferroni (default) or on an assumption of Independence.
