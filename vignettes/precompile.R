@@ -30,6 +30,13 @@
 
 setwd("vignettes")
 
+## TODO: (1/27/2022) For some reason, knit() is saving a corrupted PDF for me here,
+##   but if I save CopyOfprimer.Rmd and knit it with the RStudio knit button,
+##   then save the resulting file from temp directory to vignettes (and rename to primer.pdf),
+##   it works!
+##   So I'm doing that process manually instead of the knit() lines in this script :(
+##   but would like to figure it out another time in the future.
+##   Meanwhile I'm only making edits to primer.Rmd.orig, not further edits within CopyOfprimer.Rmd
 knitr::knit("primer.Rmd.orig", "primer.pdf")
 knitr::purl("primer.Rmd.orig", "primer.R")
 tools::compactPDF("primer.pdf", gs_quality = "ebook")

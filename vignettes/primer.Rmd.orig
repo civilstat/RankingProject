@@ -156,7 +156,7 @@ Reproduce Figure 12, another plot of two-tiered error bars, where now the inner 
 # Double-tiered GH + Bonferroni plot:
 # inner tiers are usual 90% CIs,
 # outer tiers are 50-way demi-Bonferroni-corrected GH CIs
-plotParList$Bonferroni <- "demi"
+plotParList$multcomp.scope <- "demi"
 RankPlotWithTable(tableParList = tableParList, plotParList = plotParList,
                   tikzText = TRUE)
 ```

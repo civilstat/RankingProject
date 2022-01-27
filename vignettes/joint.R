@@ -1,4 +1,4 @@
-## ---- echo=FALSE, cache=FALSE--------------------------
+## ---- echo=FALSE, cache=FALSE-------------------------------------------------------------------------------
 library(knitr)
 options(tikzMetricsDictionary="tikzDictionary",
         tikzMetricPackages = c("\\usepackage[utf8]{inputenc}","\\usepackage[T1]{fontenc}",
@@ -16,7 +16,7 @@ knit_hooks$set(crop = NULL, plot = function(x, options) {
 })
 
 
-## ------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------
 library(RankingProject)
 data(TravelTime2011.1dec)
 USdata <- TravelTime2011.1dec
@@ -37,7 +37,7 @@ attach(USdata)
 # USdata$BonfCiHi = with(USdata, round(Estimate.1dec + Z.Bonf/Z*MOE.1dec, 1))
 
 
-## ---- eval=FALSE---------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------------------------------------
 ## par(xpd = TRUE, mar = c(6.3, 2.8, 0.3, 0.3) + 0.1)
 ## plot(c(0, n+1), c(0, n), type='n', bty='n', xaxt='n', yaxt='n', xlab='', ylab='',
 ##      xaxs = 'i', yaxs = 'i')
@@ -69,7 +69,7 @@ attach(USdata)
 ## axis(2, at = 1:n, las = 2, cex.axis = 0.7)
 
 
-## ----joint-fig1, fig.width=8.5, fig.height=5.5, echo=FALSE----
+## ----joint-fig1, fig.width=8.5, fig.height=5.5, echo=FALSE--------------------------------------------------
 par(xpd = TRUE, mar = c(6.3, 2.8, 0.3, 0.3) + 0.1)
 plot(c(0, n+1), c(0, n), type='n', bty='n', xaxt='n', yaxt='n', xlab='', ylab='',
      xaxs = 'i', yaxs = 'i')
@@ -101,7 +101,7 @@ text(1:n + 0.5, par("usr")[3] - 2.0, labels = State, srt = 45, pos = 2, xpd = TR
 axis(2, at = 1:n, las = 2, cex.axis = 0.7)
 
 
-## ---- eval=FALSE---------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------------------------------------
 ## stopifnot(15 <= min(IndepCiLo) & max(IndepCiHi) <= 35)
 ## thetamin = 15.5
 ## thetamax = 33
@@ -133,7 +133,7 @@ axis(2, at = 1:n, las = 2, cex.axis = 0.7)
 ## axis(2, at = seq(16, 32, by = 2), las = 2, cex.axis = 0.7)
 
 
-## ----joint-fig2, fig.width=8.5, fig.height=5.5, echo=FALSE----
+## ----joint-fig2, fig.width=8.5, fig.height=5.5, echo=FALSE--------------------------------------------------
 stopifnot(15 <= min(IndepCiLo) & max(IndepCiHi) <= 35)
 thetamin = 15.5
 thetamax = 33
