@@ -15,9 +15,8 @@ knitr::opts_chunk$set(
 # The Ranking Project: Visualizations for Comparing Populations
 
 <!-- badges: start -->
-[![Travis build status](https://travis-ci.com/civilstat/RankingProject.svg?branch=master)](https://travis-ci.com/civilstat/RankingProject)
-[![CRAN downloads](https://cranlogs.r-pkg.org/badges/RankingProject)](https://cran.r-project.org/package=RankingProject)
 [![R-CMD-check](https://github.com/civilstat/RankingProject/workflows/R-CMD-check/badge.svg)](https://github.com/civilstat/RankingProject/actions)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/RankingProject)](https://cran.r-project.org/package=RankingProject)
 <!-- badges: end -->
 
 The package `RankingProject` is a companion for the articles ["A Primer on Visualizations for Comparing Populations, Including the Issue of Overlapping Confidence Intervals"](https://doi.org/10.1080/00031305.2017.1392359) (Wright, Klein, and Wieczorek, 2019, *The American Statistician*) and ["A Joint Confidence Region for an Overall Ranking of Populations"](https://doi.org/10.1111/rssc.12402) (Klein, Wright, and Wieczorek, 2020, *Journal of the Royal Statistical Society: Series C*).

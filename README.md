@@ -5,11 +5,9 @@
 
 <!-- badges: start -->
 
-[![Travis build
-status](https://travis-ci.com/civilstat/RankingProject.svg?branch=master)](https://travis-ci.com/civilstat/RankingProject)
+[![R-CMD-check](https://github.com/civilstat/RankingProject/workflows/R-CMD-check/badge.svg)](https://github.com/civilstat/RankingProject/actions)
 [![CRAN
 downloads](https://cranlogs.r-pkg.org/badges/RankingProject)](https://cran.r-project.org/package=RankingProject)
-[![R-CMD-check](https://github.com/civilstat/RankingProject/workflows/R-CMD-check/badge.svg)](https://github.com/civilstat/RankingProject/actions)
 <!-- badges: end -->
 
 The package `RankingProject` is a companion for the articles [“A Primer

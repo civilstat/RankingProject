@@ -1,14 +1,12 @@
-## Resubmission
-This is a resubmission. In this version I have:
-
-* Used `R.rsp` to include pre-compiled, compressed PDFs for two vignettes that did not show up in the previous release.
+## Update to maintainer's address
+I am still the same maintainer (Jerzy Wieczorek), but I am changing the email address listed in DESCRIPTION from my home address (jerzywieczorek@gmail.com) to my work address (jawieczo@colby.edu) instead.
 
 ## Test environments
-* macOS 10.13.6 (on travis-ci), R 4.0.3
-* ubuntu 16.04.6 (on travis-ci), R 4.0.2
-* local Windows 10 install, R 4.0.2
-* win-builder (devel and release)
-* rhub::check_for_cran()
+* local Windows 10 install, R 4.1.2
+* devtools::check_rhub()
+* devtools::check_win_release()
+* devtools::check_win_devel()
+* GitHub Actions for macOS-latest (release), windows-latest (release), ubuntu-latest (devel), ubuntu-latest (release), ubuntu-latest (oldrel-1)
 
 ## R CMD check results
 There were no ERRORs, WARNINGs, or NOTEs.
@@ -17,7 +15,7 @@ There were no ERRORs, WARNINGs, or NOTEs.
 There are currently no downstream dependencies for this package.
 
 ## Vignette build requirements
-Per your policies [1], this package's `tikz`-based vignettes are precompiled on the maintainer’s machine because they take a long time (5-15 minutes) to run. The precompiled PDFs are included as vignettes by using `R.rsp`.
+Per CRAN policies [1], this package's `tikz`-based vignettes are precompiled on the maintainer’s machine because they take a long time (about 15 minutes) to run. The precompiled PDFs are included as vignettes by using `R.rsp`.
 However, the HTML vignette `intro`, which is enabled everywhere, does exercise all the features of the package.
 
 [1] https://cran.r-project.org/web/packages/policies.html
