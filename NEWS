@@ -1,16 +1,16 @@
 # RankingProject 0.4.0
 
-* Rename `RankPlot()` argument `Bonferroni` to `multcomp.scope`; deprecate the old name but still allow it for now.
-* Allow `RankColumnPlot()` and `FindSignifInColumn()` to choose `multcomp.scope` too, and add Adam Hall as contributor.
+* Rename 'RankPlot()' argument 'Bonferroni' to 'multcomp.scope'; deprecate the old name but still allow it for now.
+* Allow 'RankColumnPlot()' and 'FindSignifInColumn()' to choose 'multcomp.scope' too, and add Adam Hall as contributor.
 * Fix typo in docs: full correction is [n choose 2], not [(n-1) choose 2].
 
 # RankingProject 0.3.1
 
-* Patch for missing vignettes: using `R.rsp` to include precompiled, compressed PDFs for vignettes that were missing from previous release.
+* Patch for missing vignettes: using 'R.rsp' to include precompiled, compressed PDFs for vignettes that were missing from previous release.
 
 # RankingProject 0.3.0
 
-* New argument `multcomp.type` in `RankPlot` function allows use of independence assumption when making multiple comparison corrections.
+* New argument 'multcomp.type' in 'RankPlot' function allows use of independence assumption when making multiple comparison corrections.
 
 # RankingProject 0.2.1.9001
 
