@@ -1,3 +1,7 @@
+# RankingProject 0.4.0.9000
+
+* Development version: 
+
 # RankingProject 0.4.0
 
 * Rename `RankPlot()` argument `Bonferroni` to `multcomp.scope`; deprecate the old name but still allow it for now.
