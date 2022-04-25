@@ -1,10 +1,11 @@
 Package: RankingProject
 Type: Package
 Title: The Ranking Project: Visualizations for Comparing Populations
-Version: 0.4.0.9000
-Date: 2022-02-01
+Version: 0.4.0.9001
+Date: 2022-04-25
 Authors@R: c(
-    person("Jerzy", "Wieczorek", email = "jawieczo@colby.edu", role = c("cre", "aut")),
+    person("Jerzy", "Wieczorek", email = "jawieczo@colby.edu", role = c("cre", "aut"),
+           comment = c(ORCID = "0000-0002-2859-6534")),
     person("Joel", "Beard", role = "ctb"),
     person("Adam", "Hall", role = "ctb"),
     person("Andy", "Liaw", role = "ctb"),
